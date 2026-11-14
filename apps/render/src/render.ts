@@ -10,6 +10,8 @@ export interface RenderRequest {
   format: Format;
   scale: 1 | 2 | 3 | 4;
   quality: number; // 1-100, jpg only
+  /** Data URLs for uploaded assets; honored only for trusted (Pro) requests. */
+  attachments?: Record<string, string>;
 }
 
 export interface RenderResult {
@@ -29,7 +31,7 @@ function getBrowser(): Promise<Browser> {
 }
 
 export async function renderImage(req: RenderRequest, selfOrigin: string): Promise<RenderResult> {
-  const html = await buildCardHtml(req.config, { fontBaseUrl: selfOrigin });
+  const html = await buildCardHtml(req.config, { fontBaseUrl: selfOrigin, attachments: req.attachments });
   const browser = await getBrowser();
   const context = await browser.newContext({ deviceScaleFactor: req.scale, viewport: { width: 1600, height: 1200 } });
   try {

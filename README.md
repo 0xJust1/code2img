@@ -1,60 +1,79 @@
-# Code2Img — code to image (Phase 1 MVP)
+# Code2Img — code to image
 
 Turn code snippets into pixel-perfect images (PNG / JPG / PDF) through ONE server-side
-Playwright pipeline. Phase 1 scope: monorepo, editor, render service, docker-compose.
-Auth/DB, Stripe, API, MCP, landing/SEO ship in Phases 2–7 (see `docs/checklist-phase1.md`).
+Playwright pipeline. Phase 2 adds: auth (Better Auth, magic link), entitlements
+(`can(plan, feature)`), Stripe (Checkout + Portal + webhooks idempotents, test mode),
+features Pro (logo/background upload, sans watermark, 4x), dashboard compte.
 
 ## Stack
 
 - **pnpm workspaces, TypeScript strict**, ESLint flat config, Vitest, Playwright (E2E)
-- `packages/shared` — single source of truth: brand, config schema (zod, 50 KB code limit),
-  language auto-detection, 18 Shiki themes, 7 monospace fonts, backgrounds, and
-  **`buildCardHtml(config)`** — the pure HTML builder used by BOTH the editor preview (iframe)
-  and the render service. What you see is what the server renders, by construction.
-- `apps/render` — Fastify + Playwright Chromium. SHA-256 cache on the normalized config,
-  15 s timeout, BullMQ queue when `REDIS_URL` is set (inline otherwise, same code path),
-  self-hosted fonts, watermark forced server-side (`ENFORCE_WATERMARK=true`).
-- `apps/web` — Next.js editor: live preview, all card options, URL-hash presets,
-  keyboard shortcuts (`Ctrl/⌘+E` export, `Ctrl/⌘+K` copy link), WCAG AA focus styles.
-- `packages/sdk`, `packages/mcp` — typed stubs for Phases 4–5 (monorepo shape kept).
-- `node:crypto` SHA-256 hashing lives in `@code2img/shared/hash` (node-only subpath) so the
-  browser bundle stays clean.
+- `packages/shared` — brand, config schema (zod, 50 KB code), thèmes/polices, backgrounds,
+  `buildCardHtml(config)`, **entitlements** (`can`, `maxScale`, `effectivePlan` avec grâce).
+  Utilisé par l'éditeur ET le service de rendu : un seul pipeline, WYSIWYG par construction.
+- `packages/db` — schéma Drizzle (users/Better Auth, api_keys, images, share_links,
+  presets, uploads, usage_counters, webhook_events) + migrations SQL (`drizzle/`) +
+  helpers PGlite (tests). Lazy : sans `DATABASE_URL` l'app tourne en mode Phase 1.
+- `apps/render` — Fastify + Playwright Chromium. Cache SHA-256, timeout 15 s, BullMQ
+  optionnel. **Trust boundary** : un header `x-internal-token` (match `RENDER_INTERNAL_TOKEN`)
+  active le mode Pro ; sans token, watermark forcé, scale plafonné à 2x, uploads ignorés.
+- `apps/web` — Next.js : éditeur, `/login` (magic link), `/dashboard` (presets, assets,
+  facturation, export RGPD, suppression de compte), routes API (render, uploads, presets,
+  billing, webhooks Stripe, me).
 
 ## Install & dev
 
 ```bash
 pnpm install
-pnpm dev          # web on :3000, render on :3002 (tsx watch)
-open http://localhost:3000
-```
-
-Without Redis, renders run inline (dev-friendly). With Redis (`REDIS_URL=redis://localhost:6379`),
-the same POST enqueues through BullMQ.
-
-## Test
-
-```bash
-pnpm test   # shared (9) + render pipeline with real Chromium (7)
-pnpm e2e    # editor -> live preview -> PNG export through /api/render
+pnpm dev          # web :3000, render :3002 (tsx watch)
+pnpm test         # shared (16) + render (10) + web stripe/auth (7) — PGlite, aucun serveur requis
 pnpm typecheck && pnpm lint
 ```
 
-## Deploy (target: justin@192.168.1.45, Docker, pending human go)
+## Postgres natif (sur 1.45, pas de Docker)
+
+Procédure de provisioning (à exécuter en tant qu'admin sur 1.45) :
 
 ```bash
-cp .env.example .env   # set POSTGRES_PASSWORD
-docker compose up -d --build
-# web on :3000; appnet is internal (no outbound internet for Chromium),
-# network sandbox is double-enforced in-page (page.route aborts non-self requests)
+sudo -u postgres psql <<'SQL'
+CREATE ROLE code2img LOGIN PASSWORD '<mot-de-passe-généré>';
+CREATE DATABASE code2img OWNER code2img;
+SQL
+# puis migrer :
+psql "postgres://code2img:<mdp>@127.0.0.1:5432/code2img" -f packages/db/drizzle/0000_*.sql
 ```
 
-Render service: `POST /render` `{config, format: png|jpg|pdf, scale: 1-4, quality}`,
-`GET /render/:presetB64url` (stateless OG/debug render), `GET /fonts/:file`, `GET /healthz`.
+Ensuite renseigner `DATABASE_URL` dans l'environnement des services (voir unit systemd).
+Tant qu'il est absent : auth/billing/dashboard répondent 503, l'éditeur Phase 1 fonctionne.
 
-## Phase 2 notes
+## Déploiement natif (192.168.1.45)
 
-- Postgres + Redis are already provisioned in compose; DATABASE_URL is reserved.
-- Prices are env-driven (`PRICE_*`); watermark removal is the first paid gate.
+Services systemd user (+ linger) : `code2img-web.service` (port **3335**),
+`code2img-render.service` (port **3002**). Déploiement = rsync/tar du repo →
+`pnpm install` → `pnpm --filter @code2img/web build` → `systemctl --user restart code2img-*`.
+
+Secrets : `AUTH_SECRET`, `RENDER_INTERNAL_TOKEN`, `DATABASE_URL` (+ Stripe test).
+Voir `.env.example`.
+
+## Stripe (mode test uniquement — live = go humain)
+
+```bash
+stripe login
+stripe listen --forward-to localhost:3335/api/webhooks/stripe   # récupère whsec_...
+# créer les prix :
+stripe prices create --unit-amount=700 --currency=eur --recurring=interval=month ...
+```
+
+Prix en env : `STRIPE_PRICE_PRO_MONTHLY` (7 €/mois), `STRIPE_PRICE_PRO_YEARLY` (59 €/an).
+Checkout : `automatic_tax` (Stripe Tax) + Portal. Webhooks : signature vérifiée,
+idempotence via `webhook_event`, `past_due` → 3 jours de grâce puis downgrade
+(watermark revient automatiquement via `effectivePlan`), 5 échecs → dead-letter.
+
+## API render
+
+`POST /render` `{config, format: png|jpg|pdf, scale: 1-4, quality, attachments?}`,
+`GET /render/:presetB64url` (stateless, free tier), `GET /fonts/:file`, `GET /healthz`.
+Le watermark/scale/uploads sont appliqués **dans le pipeline serveur**, jamais côté client.
 
 License note: inspired by ray.so (MIT © Raycast Technologies) — reimplementation, no ray.so
 assets or branding. Brand constants live only in `packages/shared/src/brand.ts`.

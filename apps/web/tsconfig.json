@@ -6,6 +6,8 @@
     "allowJs": true,
     "incremental": true,
     "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": { "@/*": ["./src/*"] },
     "module": "esnext",
     "moduleResolution": "bundler",
     "lib": ["dom", "dom.iterable", "es2022"]

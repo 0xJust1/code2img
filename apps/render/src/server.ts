@@ -9,7 +9,17 @@ const PORT = Number(process.env.PORT ?? 3002);
 const HOST = process.env.HOST ?? "0.0.0.0";
 export const SELF_ORIGIN = process.env.SELF_ORIGIN ?? `http://127.0.0.1:${PORT}`;
 
-const app = Fastify({ logger: true, bodyLimit: 300_000, trustProxy: true });
+// Internal token: only requests carrying it are trusted (Pro entitlements already
+// verified by the web app). Without the token everything renders on the free tier.
+function isTrusted(req: { headers: Record<string, string | string[] | undefined> }): boolean {
+  const token = process.env.RENDER_INTERNAL_TOKEN;
+  if (!token) return false;
+  const header = req.headers["x-internal-token"];
+  const value = Array.isArray(header) ? header[0] : header;
+  return value === token;
+}
+
+const app = Fastify({ logger: true, bodyLimit: 8_000_000, trustProxy: true }); // attachments ride as data URLs
 
 app.get("/healthz", async () => ({ ok: true }));
 
@@ -26,7 +36,7 @@ app.get("/render/:preset", async (req, reply) => {
 app.post("/render", async (req, reply) => {
   let parsed;
   try {
-    parsed = parseRenderBody(req.body);
+    parsed = parseRenderBody(req.body, isTrusted(req));
   } catch (err) {
     return reply.code(400).send({ error: (err as Error).message });
   }

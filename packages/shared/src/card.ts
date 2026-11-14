@@ -8,6 +8,8 @@ import { RATIO_DIMS, type CardConfig } from "./config";
 export interface CardHtmlOptions {
   /** Base URL for /fonts/:file (self-origin in render service, relative or absolute in editor preview). */
   fontBaseUrl?: string;
+  /** Data URLs for uploaded assets, keyed by storage filename. Trusted callers only. */
+  attachments?: Record<string, string>;
 }
 
 const escapeHtml = (s: string) =>
@@ -59,6 +61,12 @@ function markHighlighted(html: string, lines: number[]): string {
 
 export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = {}): Promise<string> {
   const font = getFont(config.font);
+  // Uploaded assets resolve only when the caller supplied their bytes (trusted path);
+  // otherwise the Pro-only features silently degrade to defaults.
+  const bgImage =
+    config.background.type === "image" ? opts.attachments?.[config.background.file] : undefined;
+  const bgCss = bgImage ? `#000 url("${bgImage}") center/cover no-repeat` : backgroundCss(config.background);
+  const logoSrc = config.logo ? opts.attachments?.[config.logo] : undefined;
   const lang = config.language === "auto" ? detectLanguage(config.code) : config.language;
   const codeHtml = markHighlighted(await highlight(config.code, lang, config.theme), config.highlightLines);
   const themeBg = await themeBackground(config.theme);
@@ -75,12 +83,13 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
           ? `<div class="titlebar minimal"><span class="title">${escapeHtml(config.title)}</span></div>`
           : `<div class="titlebar mac"><span class="dots" aria-hidden="true"><i class="d1"></i><i class="d2"></i><i class="d3"></i></span><span class="title">${escapeHtml(config.title)}</span></div>`;
 
-  const showMeta = Boolean(config.author.name || config.author.link || config.watermark);
+  const showMeta = Boolean(config.author.name || config.author.link || config.watermark || logoSrc);
   const authorLink = config.author.link
     ? `<a href="${escapeHtml(config.author.link)}" rel="noopener">${escapeHtml(config.author.name || config.author.link)}</a>`
     : escapeHtml(config.author.name);
+  const logoHtml = logoSrc ? `<img class="logo" src="${logoSrc}" alt="">` : "";
   const meta = showMeta
-    ? `<div class="meta"><span class="author">${authorLink}</span>${
+    ? `<div class="meta"><span class="author">${logoHtml}${authorLink}</span>${
         config.watermark ? `<a class="watermark" href="${WATERMARK_URL}">${WATERMARK_TEXT}</a>` : ""
       }</div>`
     : "";
@@ -113,8 +122,8 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
 <title>${APP_NAME}</title>
 <style>
 ${fontFaces}
-*{box-sizing:border-box}body{margin:0;background:${config.background.type === "transparent" ? "transparent" : backgroundCss(config.background)}}
-#capture{background:${backgroundCss(config.background)};${captureStyle}}
+*{box-sizing:border-box}body{margin:0;background:${config.background.type === "transparent" ? "transparent" : bgCss}}
+#capture{background:${bgCss};${captureStyle}}
 .card{background:${themeBg};${cardStyle};color:${metaColor};font-family:'${font.family}',ui-monospace,monospace}
 .titlebar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(128,128,140,.25);font-size:12px;color:${metaColor};opacity:.9}
 .titlebar .title{flex:1;text-align:center;font-family:ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -128,6 +137,7 @@ pre .line.hl{background:rgba(125,125,160,.22);box-shadow:inset 3px 0 0 rgba(125,
 .meta{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 20px 14px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px}
 .meta a{color:inherit;text-decoration:none;opacity:.75}
 .meta a:hover{opacity:1;text-decoration:underline}
+.meta .logo{height:20px;max-width:160px;object-fit:contain;vertical-align:middle;margin-right:8px}
 pre code{counter-reset:line;display:block}
 </style></head>
 <body><div id="capture"><div class="card">

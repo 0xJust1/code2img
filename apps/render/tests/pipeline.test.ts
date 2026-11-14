@@ -51,13 +51,33 @@ describe("cache", () => {
     expect(pdf.buf.subarray(0, 4).toString()).toBe("%PDF");
   });
 
-  it("forces the watermark server-side", async () => {
-    const r = req();
-    r.config = { ...r.config, watermark: false };
-    const out = await doRender(r, SELF);
-    // Free tier: watermark stays on even when asked off — verify by comparing with watermark=true.
-    const withWm = await doRender(req(), SELF);
-    expect(out.buf.equals(withWm.buf)).toBe(true);
+  it("forces the watermark server-side for untrusted requests", async () => {
+    // Untrusted path (no internal token): watermark:false is stripped before render.
+    const parsed = parseRenderBody({ config: { code: "x", watermark: false } });
+    expect(parsed.config.watermark).toBe(true);
+  });
+
+  it("clamps scale to 2 for untrusted requests", () => {
+    const parsed = parseRenderBody({ config: { code: "x" }, scale: 4 });
+    expect(parsed.scale).toBe(2);
+  });
+
+  it("drops uploaded assets for untrusted requests", () => {
+    const parsed = parseRenderBody({
+      config: { code: "x", background: { type: "image", file: "a.webp" }, logo: "a.png" },
+    });
+    expect(parsed.config.logo).toBeUndefined();
+    expect(parsed.config.background.type).toBe("solid");
+  });
+
+  it("trusts requests carrying attachments (Pro path)", () => {
+    const parsed = parseRenderBody(
+      { config: { code: "x", watermark: false, logo: "a.png" }, scale: 4, attachments: { "a.png": "data:image/png;base64,x" } },
+      true,
+    );
+    expect(parsed.config.watermark).toBe(false);
+    expect(parsed.scale).toBe(4);
+    expect(parsed.attachments?.["a.png"]).toContain("data:image/png");
   });
 
   it("png can be transparent", async () => {

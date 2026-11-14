@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { FONTS, THEMES } from "./themes";
-import { backgroundSchema } from "./backgrounds";
+import { UPLOAD_FILE_RE, backgroundSchema } from "./backgrounds";
 
 export const MAX_CODE_BYTES = 50_000;
 export const DEFAULT_FONT_SIZE = 16;
@@ -38,6 +38,9 @@ export const cardConfigSchema = z.object({
     .object({ name: z.string().max(80).default(""), link: z.string().max(200).default("") })
     .default({}),
   watermark: z.boolean().default(true),
+  // Pro-only: uploaded logo, referenced by storage filename (resolved to a data URL
+  // via `attachments` for trusted requests — see backgrounds.ts).
+  logo: z.string().max(80).regex(UPLOAD_FILE_RE).optional(),
 });
 
 export type CardConfig = z.infer<typeof cardConfigSchema>;

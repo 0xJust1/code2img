@@ -17,7 +17,13 @@ export const gradientPresets = [
 
 export const patterns = ["dots", "grid", "stripes"] as const;
 
+export const UPLOAD_FILE_RE = /^[\w-]+\.(png|jpe?g|webp)$/;
+
+// { type: "image", file } is a Pro-only background: `file` is a stored upload filename.
+// The bytes are never in the schema — callers resolve them into `attachments` (data URLs)
+// which are honored only for trusted requests (see render pipeline).
 export const backgroundSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("image"), file: z.string().max(80).regex(UPLOAD_FILE_RE) }),
   z.object({ type: z.literal("gradient"), preset: z.string() }),
   z.object({ type: z.literal("solid"), color: z.string().regex(/^#[0-9a-fA-F]{3,8}$/) }),
   z.object({ type: z.literal("mesh"), colors: z.array(z.string().regex(/^#[0-9a-fA-F]{3,8}$/)).min(2).max(5) }),
@@ -56,5 +62,9 @@ export function backgroundCss(bg: Background): string {
     }
     case "transparent":
       return "transparent";
+    // Image backgrounds are resolved by the caller (attachments); this is only a neutral fallback
+    // for previews without the upload bytes.
+    case "image":
+      return "#1e1e2e";
   }
 }

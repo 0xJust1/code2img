@@ -5,4 +5,7 @@ export default tseslint.config(
   { ignores: ["**/dist/**", "**/next-env.d.ts", "**/.next/**", "**/node_modules/**", "**/test-results/**"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    rules: { "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }] },
+  },
 );

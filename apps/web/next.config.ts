@@ -6,10 +6,8 @@ const renderUrl = process.env.RENDER_URL ?? "http://localhost:3002";
 const nextConfig: NextConfig = {
   transpilePackages: ["@code2img/shared"],
   async rewrites() {
-    return [
-      { source: "/api/render", destination: `${renderUrl}/render` },
-      { source: "/api/fonts/:file", destination: `${renderUrl}/fonts/:file` },
-    ];
+    // /api/render is a route handler now (auth + entitlements live there).
+    return [{ source: "/api/fonts/:file", destination: `${renderUrl}/fonts/:file` }];
   },
 };
 

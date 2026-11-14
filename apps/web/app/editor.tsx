@@ -45,17 +45,45 @@ export default function Editor() {
   const [scale, setScale] = useState(2);
   const [quality, setQuality] = useState(90);
   const [widthMode, setWidthMode] = useState<"auto" | "fixed">(cfg.width ? "fixed" : "auto");
+  const [plan, setPlan] = useState<string>("free");
+  const [assets, setAssets] = useState<{ file: string; kind: string }[]>([]);
+  const [previewAssets, setPreviewAssets] = useState<Record<string, string>>({}); // file -> data URL
   const codeRef = useRef<HTMLTextAreaElement>(null);
   const cfgRef = useRef(cfg);
   cfgRef.current = cfg;
 
   useEffect(() => setMounted(true), []);
 
+  // Session + Pro assets (owner-only endpoints; anonymous users stay free-tier).
+  useEffect(() => {
+    void (async () => {
+      const me = await fetch("/api/me").then((r) => r.json()).catch(() => null);
+      const p = me?.entitlements?.plan ?? "free";
+      setPlan(p);
+      if (p !== "pro") return;
+      const ups = await fetch("/api/me/assets").then((r) => (r.ok ? r.json() : { uploads: [] })).catch(() => ({ uploads: [] }));
+      const list = (ups.uploads ?? []) as { storageKey: string; kind: string }[];
+      setAssets(list.map((u) => ({ file: u.storageKey, kind: u.kind })));
+      const map: Record<string, string> = {};
+      await Promise.all(
+        list.map(async (u) => {
+          const blob = await fetch(`/api/uploads/${u.storageKey}`).then((r) => (r.ok ? r.blob() : null)).catch(() => null);
+          if (blob) map[u.storageKey] = await new Promise<string>((res) => {
+            const fr = new FileReader();
+            fr.onload = () => res(fr.result as string);
+            fr.readAsDataURL(blob); // data URL: survives the sandboxed srcDoc iframe
+          });
+        }),
+      );
+      setPreviewAssets(map);
+    })();
+  }, []);
+
   // Live preview: same buildCardHtml as the server pipeline -> WYSIWYG by construction.
   useEffect(() => {
     let alive = true;
     const t = setTimeout(() => {
-      buildCardHtml(cfg, { fontBaseUrl: "/api/fonts" })
+      buildCardHtml(cfg, { fontBaseUrl: "/api/fonts", attachments: previewAssets })
         .then((h) => alive && setHtml(h))
         .catch((e) => alive && setError(String(e)));
     }, 150);
@@ -63,7 +91,7 @@ export default function Editor() {
       alive = false;
       clearTimeout(t);
     };
-  }, [cfg]);
+  }, [cfg, previewAssets]);
 
   // Preset serialization in the URL hash (shareable link).
   useEffect(() => {
@@ -119,6 +147,29 @@ export default function Editor() {
     },
     [format, scale, quality],
   );
+
+  const uploadAsset = useCallback(async (f: File) => {
+    const fd = new FormData();
+    fd.append("file", f);
+    // kind inferred: images used as logo must be small/flat; default to background.
+    fd.append("kind", f.type === "image/png" && f.size < 300_000 ? "logo" : "background");
+    setStatus("Uploading…");
+    const r = await fetch("/api/uploads", { method: "POST", body: fd });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      setError(j.error ?? "upload failed");
+      setStatus("");
+      return;
+    }
+    setAssets((a) => [...a, { file: j.file, kind: j.kind }]);
+    const dataUrl = await new Promise<string>((res) => {
+      const fr = new FileReader();
+      fr.onload = () => res(fr.result as string);
+      fr.readAsDataURL(f);
+    });
+    setPreviewAssets((m) => ({ ...m, [j.file]: dataUrl }));
+    setStatus(`Uploaded ${j.file}`);
+  }, []);
 
   const copyLink = useCallback(async () => {
     await navigator.clipboard.writeText(location.href);
@@ -300,6 +351,7 @@ export default function Editor() {
                     : t === "solid" ? { type: "solid", color: "#0f2027" }
                     : t === "mesh" ? { type: "mesh", colors: ["#ff9966", "#654ea3", "#1bffff"] }
                     : t === "pattern" ? { type: "pattern", pattern: "dots", color: "#3a3a52", base: "#1e1e2e" }
+                    : t === "image" ? { type: "image", file: assets.find((a) => a.kind === "background")?.file ?? "" }
                     : { type: "transparent" },
                 }));
               }} aria-label="Background type">
@@ -307,9 +359,20 @@ export default function Editor() {
                 <option value="solid">Solid</option>
                 <option value="mesh">Mesh</option>
                 <option value="pattern">Pattern</option>
+                {plan === "pro" && <option value="image">Custom image (Pro)</option>}
                 <option value="transparent">Transparent</option>
               </select>
             </label>
+            {bg.type === "image" && (
+              <label className="full">
+                Uploaded background
+                <select value={bg.file} onChange={(e) => setCfg((c) => ({ ...c, background: { type: "image", file: e.target.value } }))}>
+                  {assets.filter((a) => a.kind === "background").map((a) => (
+                    <option key={a.file} value={a.file}>{a.file}</option>
+                  ))}
+                </select>
+              </label>
+            )}
             {bg.type === "gradient" && (
               <label className="full">
                 Preset
@@ -384,6 +447,41 @@ export default function Editor() {
               Author link
               <input type="url" value={cfg.author.link} onChange={(e) => patch({ author: { ...cfg.author, link: e.target.value } })} placeholder="https://…" />
             </label>
+            {plan === "pro" ? (
+              <>
+                <label className="check">
+                  <input type="checkbox" checked={cfg.watermark} onChange={(e) => patch({ watermark: e.target.checked })} />
+                  <span>Watermark (Pro can disable)</span>
+                </label>
+                <label className="full">
+                  Logo (Pro)
+                  <select
+                    value={cfg.logo ?? ""}
+                    onChange={(e) => patch({ logo: e.target.value || undefined })}
+                  >
+                    <option value="">None</option>
+                    {assets.filter((a) => a.kind === "logo").map((a) => (
+                      <option key={a.file} value={a.file}>{a.file}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="full">
+                  Upload asset (2 MB max, png/jpeg/webp)
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) void uploadAsset(f);
+                    }}
+                  />
+                </label>
+              </>
+            ) : (
+              <label className="full" style={{ color: "#888" }}>
+                Watermark / logo / custom background are Pro — <a href="/dashboard">upgrade</a>
+              </label>
+            )}
           </div>
         </div>
       </aside>
@@ -405,7 +503,7 @@ export default function Editor() {
             <label style={{ maxWidth: 90 }}>
               Scale
               <select value={scale} onChange={(e) => setScale(+e.target.value)} aria-label="Export scale" disabled={format === "jpg" && scale > 4}>
-                {[1, 2, 3, 4].map((s) => (
+                {(plan === "pro" ? [1, 2, 3, 4] : [1, 2]).map((s) => (
                   <option key={s} value={s}>
                     {s}x
                   </option>
@@ -425,6 +523,9 @@ export default function Editor() {
           <button className="ghost" onClick={() => void copyLink()}>
             Copy link
           </button>
+          <a href={plan === "free" ? "/login" : "/dashboard"} style={{ alignSelf: "center", fontSize: 13 }}>
+            {plan === "free" ? "Sign in" : "Dashboard"}
+          </a>
           <span className="status" aria-live="polite">{status}</span>
           {error && <span className="error" role="alert">{error}</span>}
         </div>

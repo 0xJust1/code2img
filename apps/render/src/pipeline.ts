@@ -12,29 +12,46 @@ const connection: ConnectionOptions | undefined = process.env.REDIS_URL
   ? { url: process.env.REDIS_URL }
   : undefined;
 
-export function parseRenderBody(body: unknown): RenderRequest {
-  const raw = body as { config?: unknown; format?: string; scale?: number; quality?: number };
-  const config = normalizeConfig(raw.config);
-  const format = (["png", "jpg", "pdf"] as const).includes(raw.format as never) ? (raw.format as RenderRequest["format"]) : "png";
-  const scale = ([1, 2, 3, 4] as const).includes(raw.scale as never) ? (raw.scale as RenderRequest["scale"]) : 2;
-  const quality = typeof raw.quality === "number" ? raw.quality : 90;
-  return { config, format, scale, quality };
+// Trusted requests (internal token from the web app, which owns entitlement checks)
+// may carry `attachments`: data URLs for uploaded logo/background keyed by filename.
+export interface RenderBody extends RenderRequest {
+  attachments?: Record<string, string>;
 }
 
-export function requestKey(req: RenderRequest): string {
+export function parseRenderBody(body: unknown, trusted = false): RenderBody {
+  const raw = body as {
+    config?: unknown;
+    format?: string;
+    scale?: number;
+    quality?: number;
+    attachments?: Record<string, string>;
+  };
+  let config = normalizeConfig(raw.config);
+  if (!trusted) {
+    // Free tier: watermark always on, 2x max, no uploaded assets. Server-side enforced.
+    config = { ...config, watermark: true };
+    if (config.logo) delete config.logo;
+    if (config.background.type === "image") config = { ...config, background: { type: "solid", color: "#1e1e2e" } };
+  }
+  const format = (["png", "jpg", "pdf"] as const).includes(raw.format as never) ? (raw.format as RenderRequest["format"]) : "png";
+  const scale = (["1", "2", "3", "4"] as const).includes(String(raw.scale) as never)
+    ? (raw.scale as RenderRequest["scale"])
+    : 2;
+  const capped = (trusted ? scale : Math.min(scale, 2)) as RenderRequest["scale"];
+  const quality = typeof raw.quality === "number" ? raw.quality : 90;
+  const attachments = trusted && raw.attachments ? raw.attachments : undefined;
+  return { config, format, scale: capped, quality, attachments };
+}
+
+export function requestKey(req: RenderRequest & { attachments?: Record<string, string> }): string {
   return createHash("sha256")
-    .update(JSON.stringify([req.config, req.format, req.scale, req.format === "jpg" ? req.quality : 0]))
+    .update(JSON.stringify([req.config, req.format, req.scale, req.format === "jpg" ? req.quality : 0, req.attachments ?? null]))
     .digest("hex");
 }
 
-function enforceServerSideRules(req: RenderRequest): RenderRequest {
-  // Watermark removal is a paid entitlement (Phase 2). Until entitlements exist, it is forced on.
-  const forced = { ...req.config, watermark: process.env.ENFORCE_WATERMARK === "false" ? req.config.watermark : true };
-  return { ...req, config: cardConfigSchema.parse(forced) };
-}
-
-export async function doRender(req: RenderRequest, selfOrigin: string): Promise<RenderResult> {
-  const safe = enforceServerSideRules(req);
+export async function doRender(req: RenderBody, selfOrigin: string): Promise<RenderResult> {
+  // Normalize once here too: direct callers (tests, queue) get schema defaults applied.
+  const safe: RenderBody = { ...req, config: cardConfigSchema.parse(req.config) };
   const key = requestKey(safe);
   const cached = cacheGet<RenderResult>(key);
   if (cached) return cached;
