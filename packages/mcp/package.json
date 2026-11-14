@@ -1,0 +1,10 @@
+{
+  "name": "@code2img/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc --noEmit" },
+  "dependencies": { "@code2img/shared": "workspace:*" },
+  "devDependencies": { "typescript": "^5.7.2" }
+}

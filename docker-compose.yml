@@ -1,0 +1,55 @@
+# code2img — Phase 1 deployment target: justin@192.168.1.45 (Docker auto-hébergé, PAS de Vercel/Neon).
+# appnet is internal: no outbound internet for any service (Chromium sandbox is double-enforced
+# at the page.route level). Publish only what must be reachable.
+name: code2img
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: code2img
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: code2img
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [appnet]
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "allkeys-lru"]
+    networks: [appnet]
+    restart: unless-stopped
+
+  render:
+    build:
+      context: .
+      dockerfile: apps/render/Dockerfile
+    environment:
+      PORT: 3002
+      REDIS_URL: redis://redis:6379
+      SELF_ORIGIN: http://render:3002
+      ENFORCE_WATERMARK: "true"
+    # Hard network-level sandbox: render must never reach the internet.
+    networks: [appnet]
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      RENDER_URL: http://render:3002
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on: [render, redis, postgres]
+    networks: [appnet]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
+networks:
+  appnet:
+    internal: true
