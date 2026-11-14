@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { createAuthClient } from "better-auth/react";
-import { magicLinkClient } from "better-auth/client/plugins";
 import Link from "next/link";
-
-// The client talks to the same /api/auth mount; magic link only (social disabled by default).
-export const authClient = createAuthClient({ plugins: [magicLinkClient()] });
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
