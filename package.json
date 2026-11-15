@@ -5,7 +5,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "dev": "pnpm -r --parallel --filter './apps/*' dev",
-    "build": "pnpm -r build",
+    "build": "pnpm --filter code2img-mcp build && pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
     "test": "pnpm -r test",

@@ -110,6 +110,30 @@ export const openapiDocument = {
         },
       },
     },
+    "/v1/share": {
+      post: {
+        tags: ["Images"],
+        summary: "Create a public share page",
+        description:
+          "Renders the snippet, stores it and returns a public page with an OpenGraph preview. " +
+          "Expires after 7 days unless `expiry` says otherwise; the code itself is never stored.",
+        requestBody: { required: true, content: json({ $ref: "#/components/schemas/ShareRequest" }) },
+        responses: {
+          "201": { description: "Share page", content: json({ $ref: "#/components/schemas/ShareLink" }) },
+          ...problemResponses,
+          "504": { description: "Render failed or timed out", content: { "application/problem+json": { schema: { $ref: "#/components/schemas/Problem" } } } },
+        },
+      },
+      get: {
+        tags: ["Account"],
+        summary: "List your share pages",
+        responses: {
+          "200": { description: "Share pages, newest first", content: json({ type: "object", properties: { shares: { type: "array", items: { $ref: "#/components/schemas/ShareLink" } } } }) },
+          "401": problemResponses["401"],
+          "403": problemResponses["403"],
+        },
+      },
+    },
     "/v1/signed-url": {
       post: {
         tags: ["Images"],
@@ -187,6 +211,32 @@ export const openapiDocument = {
       StoredImage: {
         type: "object",
         properties: { id: { type: "string", format: "uuid" }, url: { type: "string", format: "uri" }, format: { type: "string" }, bytes: { type: "integer" }, expires_at: { type: "string", format: "date-time" } },
+      },
+      ShareRequest: {
+        type: "object",
+        properties: {
+          code: { type: "string", maxLength: MAX_CODE_BYTES, description: "Shortcut for config.code" },
+          language: { type: "string" },
+          theme: { type: "string" },
+          font: { type: "string" },
+          title: { type: "string" },
+          config: { type: "object", additionalProperties: true },
+          format: { type: "string", enum: ["png", "jpg"], default: "png" },
+          scale: { type: "integer", enum: [1, 2, 3, 4] },
+          expiry: { type: "string", enum: ["1d", "7d", "30d", "never"], default: "7d" },
+          utm: { type: "object", properties: { source: { type: "string" }, medium: { type: "string" }, campaign: { type: "string" } } },
+        },
+      },
+      ShareLink: {
+        type: "object",
+        properties: {
+          slug: { type: "string" },
+          url: { type: "string", format: "uri" },
+          path: { type: "string" },
+          state: { type: "string", enum: ["active", "expired", "deleted"] },
+          expires_at: { type: "string", format: "date-time", nullable: true },
+          created_at: { type: "string", format: "date-time" },
+        },
       },
       SignedUrlRequest: {
         type: "object",

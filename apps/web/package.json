@@ -13,6 +13,7 @@
   "dependencies": {
     "@code2img/db": "workspace:*",
     "@code2img/shared": "workspace:*",
+    "code2img-mcp": "workspace:*",
     "better-auth": "^1.2.0",
     "drizzle-orm": "^0.38.3",
     "ioredis": "^5",

@@ -1,10 +1,45 @@
 {
-  "name": "@code2img/mcp",
+  "name": "code2img-mcp",
   "version": "0.1.0",
-  "private": true,
+  "description": "Model Context Protocol server for Code2Img: render code screenshots from Claude Desktop, Cursor, VS Code or Windsurf (stdio), or call the hosted server at https://code2img.app/mcp.",
+  "license": "MIT",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "typecheck": "tsc --noEmit" },
-  "dependencies": { "@code2img/shared": "workspace:*" },
-  "devDependencies": { "typescript": "^5.7.2" }
+  "bin": {
+    "code2img-mcp": "./dist/stdio.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./http": {
+      "types": "./dist/http.d.ts",
+      "default": "./dist/http.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
 }

@@ -170,5 +170,46 @@ images, compteurs + cohérence OpenAPI ↔ SDK ↔ fichiers de route) et
 BASE_URL=http://192.168.1.45:3335 API_KEY=c2i_live_… node scripts/api-contract.mjs
 ```
 
+## Serveur MCP (Phase 5) — `/mcp` + `code2img-mcp`
+
+Un seul serveur, deux transports, même code (`packages/mcp`) :
+
+- **Remote** : `https://code2img.app/mcp` (Streamable HTTP, stateless), auth par clé API
+  (`Authorization: Bearer …`). Route `apps/web/app/mcp/route.ts` ; un `GET` avec
+  `Accept: text/html` sert la page de configuration `/mcp`.
+- **stdio** : `npx -y code2img-mcp` avec `CODE2IMG_API_KEY` (Claude Desktop, Cursor, VS Code,
+  Windsurf). `CODE2IMG_API_URL` pour viser une instance auto-hébergée.
+
+| Outil | Rôle |
+|---|---|
+| `render_code_image` | rendu → bloc image + URL publique 30 j |
+| `list_themes` / `list_languages` / `list_backgrounds` | ids valides avant rendu |
+| `create_share_link` | page publique OG, expirable (`1d`/`7d`/`30d`/`never`) |
+| `get_usage` | quota restant de la clé |
+| `get_share_urls` | pages publiques récentes du compte |
+
+Décisions :
+
+- **Le serveur MCP est un client de l'API publique** : quotas, entitlements, watermark et
+  confidentialité sont appliqués une seule fois (aucune règle dupliquée). Côté remote il
+  s'appelle en boucle locale (`127.0.0.1:$PORT/api`).
+- **Auth** : la route `/mcp` ne vérifie que la clé (1 requête DB) ; chaque appel d'outil
+  consomme le quota de la clé, comme un appel REST.
+- **OAuth** : documenté comme cible (page `/mcp`), non implémenté — les clients MCP
+  n'ont aujourd'hui que le couple `url` + `headers`, que les clés API couvrent.
+- `/v1/share` (clé API) a été ajouté pour `create_share_link`/`get_share_urls` : mêmes
+  règles et mêmes lignes que `/api/share` (session), seul l'auth diffère.
+- `llms.txt` sert la carte courte (endpoints, MCP, catalogues, quotas) pour les agents.
+
+Tests : `packages/mcp/tests/server.test.ts` (vrai client MCP ↔ serveur, transport mémoire,
+API simulée) et `packages/mcp/scripts/mcp-smoke.mjs` (client MCP réel sur l'instance déployée) :
+
+```bash
+BASE_URL=http://192.168.1.45:3335 API_KEY=c2i_live_… node packages/mcp/scripts/mcp-smoke.mjs
+```
+
+Build/publish du paquet : `pnpm --filter code2img-mcp build` (génère `dist/`), puis
+`pnpm --filter code2img-mcp publish` depuis un compte npm propriétaire du nom.
+
 License note: inspired by ray.so (MIT © Raycast Technologies) — reimplementation, no ray.so
 assets or branding. Brand constants live only in `packages/shared/src/brand.ts`.

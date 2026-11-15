@@ -29,6 +29,7 @@ import { sign, verify, canonical, signableString } from "../src/lib/api/sign";
 import { findReplay, remember, requestHash } from "../src/lib/api/idempotency";
 import { deleteImage, readImage, saveImage } from "../src/lib/api/images";
 import { bumpUsage, readUsage } from "../src/lib/api/guard";
+import { createShare, listShares } from "../src/lib/share-db";
 
 delete process.env.REDIS_URL; // force the in-process limiter
 process.env.SHARE_IMAGES_DIR = await mkdtemp(path.join(os.tmpdir(), "c2i-api-"));
@@ -259,5 +260,16 @@ describe("api contract", () => {
     expect(catalog).toContain(THEMES[0]);
     expect(catalog).toContain(FONTS[0]!.id);
     expect(catalog).toContain(LANGUAGES[1]);
+  });
+});
+describe("share pages (api)", () => {
+  it("lists only the owner's pages, newest first, with their state", async () => {
+    const mine = await createShare(db, { userId: USER, bytes: PNG, format: "png", visualConfig: { code: "" }, expiry: "7d" });
+    await createShare(db, { userId: OTHER, bytes: PNG, format: "png", visualConfig: { code: "" }, expiry: "never" });
+    const listed = await listShares(db, USER);
+    expect(listed.map((s) => s.slug)).toContain(mine.slug);
+    expect(listed.every((s) => s.state === "active")).toBe(true);
+    const otherList = await listShares(db, OTHER);
+    expect(otherList.map((s) => s.slug)).not.toContain(mine.slug);
   });
 });

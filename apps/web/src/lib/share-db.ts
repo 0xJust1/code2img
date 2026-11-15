@@ -1,6 +1,6 @@
 // Share links in the DB: create, read, owner-delete. Pure DB + storage, no HTTP,
 // so the route handlers stay thin and the tests exercise the real logic.
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { tables, type Database } from "@code2img/db";
 import { createHash, randomUUID } from "node:crypto";
 import { deleteObject, getObject, putObject } from "./storage";
@@ -74,6 +74,23 @@ export async function createShare(
   const utm = opts.utm ?? null;
   await db.insert(tables.shareLinks).values({ id: randomUUID(), imageId, slug, expiresAt, utm });
   return { slug, storageKey, format: opts.format, expiresAt, utm, ownerId: opts.userId, state: "active" };
+}
+
+/** Owner's own pages, newest first — the API-key route (MCP `get_share_urls`) reads these. */
+export async function listShares(db: Database, userId: string, limit = 50) {
+  const rows = await db
+    .select({ link: tables.shareLinks })
+    .from(tables.shareLinks)
+    .innerJoin(tables.images, eq(tables.shareLinks.imageId, tables.images.id))
+    .where(eq(tables.images.userId, userId))
+    .orderBy(desc(tables.shareLinks.createdAt))
+    .limit(limit);
+  return rows.map(({ link }) => ({
+    slug: link.slug,
+    state: shareState(link),
+    expiresAt: link.expiresAt,
+    createdAt: link.createdAt,
+  }));
 }
 
 /** Soft delete (the row keeps the history), then drop the bytes. False = not found / not owner. */

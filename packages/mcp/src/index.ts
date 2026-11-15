@@ -1,6 +1,4 @@
-// Phase 5 delivers the MCP server (remote /mcp + npm stdio, 7 tools). Stub keeps the monorepo shape.
-import { APP_NAME, APP_URL } from "@code2img/shared";
-
-export function mcpServerInfo() {
-  return { name: APP_NAME.toLowerCase(), url: `${APP_URL}/mcp`, planned: "Phase 5" };
-}
+// Code2Img MCP server: one implementation, two transports — `./http` for the hosted
+// endpoint (apps/web mounts it at /mcp) and the `code2img-mcp` bin for stdio.
+export { createMcpServer, SERVER_INFO, SERVER_INSTRUCTIONS } from "./server.js";
+export { Api, ApiFailure, DEFAULT_API_URL } from "./client.js";
