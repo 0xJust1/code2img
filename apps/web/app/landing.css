@@ -235,6 +235,9 @@
 .mk-foot .legal { margin-top: var(--s8); color: var(--ink-3); font-size: var(--fs-body); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); }
 .mk-foot .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .mk-foot .legal a:hover { color: var(--ink); }
+.mk-foot .legal a.icon { display: inline-flex; align-items: center; text-decoration: none; }
+.mk-foot .legal .icons { display: inline-flex; gap: var(--s4); align-items: center; }
+.mk-foot .legal a.icon:hover { color: var(--ink); }
 
 /* ——— entrance (the observer is the inline REVEAL_JS; no client component) —————
    The visible state is the default one: the animation only runs once JS marks the element. */
