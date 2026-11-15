@@ -162,10 +162,10 @@ export default function Dashboard() {
         ) : (
           <div className="dash-row">
             <button onClick={() => checkout("pro-monthly")} disabled={busy} className="btn btn-primary">
-              Go Pro — 7 €/mo
+              Go Pro — 3 €/mo
             </button>
             <button onClick={() => checkout("pro-yearly")} disabled={busy} className="btn">
-              Go Pro — 59 €/yr
+              Go Pro — 29 €/yr
             </button>
           </div>
         )}

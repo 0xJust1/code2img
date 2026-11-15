@@ -467,6 +467,6 @@ const PRICE_FR = {
 
 export const COUNTS = { themes: THEMES.length, fonts: FONTS.length, languages: DETECTED_LANGUAGES.length };
 export const PRICES = {
-  monthly: Number(process.env.PRICE_PRO_MONTHLY_EUR ?? 7),
-  yearly: Number(process.env.PRICE_PRO_YEARLY_EUR ?? 59),
+  monthly: Number(process.env.PRICE_PRO_MONTHLY_EUR ?? 3),
+  yearly: Number(process.env.PRICE_PRO_YEARLY_EUR ?? 29),
 };

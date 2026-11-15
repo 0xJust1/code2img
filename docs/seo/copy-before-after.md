@@ -43,7 +43,7 @@ number in the copy is sourced from the repo.
 | h1 | Code in, image out. | Code to image. |
 | lead | Paste a snippet, pick a theme, export a pixel-perfect PNG in seconds. Share a link, or render it from the API and from your AI agent. | Paste a snippet, choose a theme, export PNG, JPG or PDF. There is no account to create: the same render is one POST away for a script and one tool call away for an agent. |
 | feature 3 h3 | One render pipeline, three doors | One pipeline, three ways in |
-| pricing h2 | Free to use. 7 € a month to make it yours. | Free to use. Pro is 7 € a month. |
+| pricing h2 | Free to use. 3 € a month to make it yours. | Free to use. Pro is 3 € a month. |
 | dev paragraph | 19 languages are recognised automatically. | 17 languages are recognised automatically. |
 
 Why the H1 lost its rhythm: `Code in, image out.` is the better headline and the worse H1. The
@@ -60,7 +60,7 @@ Title is 58 characters, description 151. Both render from `HOME.en`; verified in
 | description | Collez un extrait, choisissez un thème, exportez un PNG, JPG ou PDF net. Partagez un lien public, ou générez-le depuis l'API et depuis votre agent IA. | Transformez du code en image dans le navigateur : collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF, ou passez par l'API REST et le serveur MCP. |
 | h1 | Du code, une image. | Du code à l'image. |
 | lead | Collez un extrait, choisissez un thème, exportez un PNG net en quelques secondes. Partagez un lien, ou passez par l'API et par votre agent IA. | Collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF. Aucun compte à créer : le même rendu s'obtient par un POST depuis un script, ou par un appel d'outil depuis un agent. |
-| pricing h2 | Gratuit, ou 7 € par mois. | Gratuit. Pro à 7 € par mois. |
+| pricing h2 | Gratuit, ou 3 € par mois. | Gratuit. Pro à 3 € par mois. |
 
 `code en image` measures 20/mo in France. The page is not an acquisition channel; it is the French
 door to a product that speaks English by default. It got the same query alignment because it costs

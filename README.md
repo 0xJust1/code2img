@@ -61,10 +61,10 @@ Voir `.env.example`.
 stripe login
 stripe listen --forward-to localhost:3335/api/webhooks/stripe   # récupère whsec_...
 # créer les prix :
-stripe prices create --unit-amount=700 --currency=eur --recurring=interval=month ...
+stripe prices create --unit-amount=300 --currency=eur --recurring=interval=month ...
 ```
 
-Prix en env : `STRIPE_PRICE_PRO_MONTHLY` (7 €/mois), `STRIPE_PRICE_PRO_YEARLY` (59 €/an).
+Prix en env : `STRIPE_PRICE_PRO_MONTHLY` (3 €/mois), `STRIPE_PRICE_PRO_YEARLY` (29 €/an).
 Checkout : `automatic_tax` (Stripe Tax) + Portal. Webhooks : signature vérifiée,
 idempotence via `webhook_event`, `past_due` → 3 jours de grâce puis downgrade
 (watermark revient automatiquement via `effectivePlan`), 5 échecs → dead-letter.
