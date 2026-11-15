@@ -1,9 +1,9 @@
 # Code2Img — code to image
 
 Turn code snippets into pixel-perfect images (PNG / JPG / PDF) through ONE server-side
-Playwright pipeline. Phase 2 adds: auth (Better Auth, magic link), entitlements
-(`can(plan, feature)`), Stripe (Checkout + Portal + webhooks idempotents, test mode),
-features Pro (logo/background upload, sans watermark, 4x), dashboard compte.
+Playwright pipeline. Phase 3 adds: public share pages `/i/[slug]` with Open Graph /
+Twitter / Farcaster metadata, expiring and owner-deletable links, UTM tracking and a
+multi-network share bar — the code itself is never stored.
 
 ## Stack
 
@@ -74,6 +74,41 @@ idempotence via `webhook_event`, `past_due` → 3 jours de grâce puis downgrade
 `POST /render` `{config, format: png|jpg|pdf, scale: 1-4, quality, attachments?}`,
 `GET /render/:presetB64url` (stateless, free tier), `GET /fonts/:file`, `GET /healthz`.
 Le watermark/scale/uploads sont appliqués **dans le pipeline serveur**, jamais côté client.
+
+## Partage public (Phase 3) — `/i/[slug]`
+
+Un rendu unique (`@/lib/render`, mêmes entitlements que l'export) → image stockée sur
+le disque du host web, le code n'est **jamais** persisté (ni `images.config`, ni le hash
+du code : seul un hash de la config visuelle, code vidé).
+
+- `POST /api/share` `{config, format, scale, quality, expiry: "1d"|"7d"|"30d"|"never", utm?}`
+  → `{slug, url, path, expiresAt}` (session requise). Défaut : 7 jours.
+- `DELETE /api/share/[slug]` — propriétaire uniquement (soft delete + suppression des bytes).
+- `GET /i/[slug]/image` — image publique ; 404 dès que le lien est expiré ou supprimé.
+- Page `/i/[slug]` : Open Graph `summary_large_image`, Twitter Card, `fc:frame`
+  (Farcaster/Warpcast, version `next`) et barre de partage (X, LinkedIn, Facebook,
+  Mastodon avec instance mémorisée, Farcaster, Reddit, Bluesky, Threads, Hacker News,
+  Telegram, WhatsApp, email, copier, Web Share API). Chaque lien réseau ajoute
+  `utm_source=<réseau>&utm_medium=social[&utm_campaign=…]`.
+
+Stockage : `apps/web/src/lib/storage.ts` (3 fonctions `put/get/delete` sur
+`SHARE_IMAGES_DIR`, défaut `apps/web/data/share`) — forme objet, R2/S3 se branche là.
+Les URLs absolues (OG, image) viennent de `APP_URL`.
+
+### Tests
+
+```bash
+pnpm test                                  # unitaires (PGlite) — dont tests/share.test.ts
+E2E_DATABASE_URL=postgres://…/code2img_e2e pnpm --filter @code2img/web e2e
+```
+
+Les specs de page publique se **skippent** sans `E2E_DATABASE_URL` (l'éditeur, lui, n'a
+pas besoin de Postgres). Base de test, une fois :
+
+```bash
+sudo -u postgres createdb -O code2img code2img_e2e
+psql "postgres://code2img:***@127.0.0.1:5432/code2img_e2e" -f packages/db/drizzle/0000_*.sql
+```
 
 License note: inspired by ray.so (MIT © Raycast Technologies) — reimplementation, no ray.so
 assets or branding. Brand constants live only in `packages/shared/src/brand.ts`.

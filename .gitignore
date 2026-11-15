@@ -6,3 +6,4 @@ test-results/
 playwright-report/
 *.tsbuildinfo
 data/
+.e2e-data/

@@ -28,6 +28,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "postgres": "^3.4.5",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }

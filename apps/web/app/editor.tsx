@@ -46,6 +46,8 @@ export default function Editor() {
   const [quality, setQuality] = useState(90);
   const [widthMode, setWidthMode] = useState<"auto" | "fixed">(cfg.width ? "fixed" : "auto");
   const [plan, setPlan] = useState<string>("free");
+  const [expiry, setExpiry] = useState("7d");
+  const [campaign, setCampaign] = useState("");
   const [assets, setAssets] = useState<{ file: string; kind: string }[]>([]);
   const [previewAssets, setPreviewAssets] = useState<Record<string, string>>({}); // file -> data URL
   const codeRef = useRef<HTMLTextAreaElement>(null);
@@ -175,6 +177,27 @@ export default function Editor() {
     await navigator.clipboard.writeText(location.href);
     setStatus("Link copied");
   }, []);
+
+  // Public link: the server renders once and stores only the image (never the code).
+  const doShare = useCallback(async () => {
+    setBusy(true);
+    setError("");
+    setStatus("Creating public link…");
+    try {
+      const res = await fetch("/api/share", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ config: cfgRef.current, format: "png", scale, expiry, utm: { campaign } }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `share failed (${res.status})`);
+      window.location.assign(json.path);
+    } catch (e) {
+      setError((e as Error).message);
+      setStatus("");
+      setBusy(false);
+    }
+  }, [expiry, campaign, scale]);
 
   // Keyboard shortcuts: Ctrl/⌘+E export PNG, Ctrl/⌘+K copy link.
   useEffect(() => {
@@ -522,6 +545,22 @@ export default function Editor() {
           </button>
           <button className="ghost" onClick={() => void copyLink()}>
             Copy link
+          </button>
+          <label style={{ maxWidth: 110 }}>
+            Link expires
+            <select value={expiry} onChange={(e) => setExpiry(e.target.value)} aria-label="Public link expiry">
+              <option value="1d">24 hours</option>
+              <option value="7d">7 days</option>
+              <option value="30d">30 days</option>
+              <option value="never">Never</option>
+            </select>
+          </label>
+          <label style={{ maxWidth: 140 }}>
+            UTM campaign
+            <input type="text" value={campaign} onChange={(e) => setCampaign(e.target.value)} placeholder="launch" aria-label="UTM campaign" />
+          </label>
+          <button className="ghost" onClick={() => void doShare()} disabled={busy}>
+            Share link
           </button>
           <a href={plan === "free" ? "/login" : "/dashboard"} style={{ alignSelf: "center", fontSize: 13 }}>
             {plan === "free" ? "Sign in" : "Dashboard"}

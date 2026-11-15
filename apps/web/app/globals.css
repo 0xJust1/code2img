@@ -94,3 +94,14 @@ kbd {
   border-radius: 4px; padding: 1px 5px; font-size: 11px; font-family: inherit;
 }
 .error { color: #ff8f8f; font-size: 12px; }
+
+/* Public share page (/i/[slug]) */
+.share-page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 56px; }
+.share-page > img {
+  width: 100%; height: auto; display: block; border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--border); background: var(--panel);
+}
+.share-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 14px 0 0; color: var(--muted); font-size: 12px; }
+.share-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 16px; }
+.share-bar .mastodon { display: inline-flex; gap: 6px; align-items: center; }
+.share-bar .mastodon input { width: 160px; font-size: 12px; padding: 5px 7px; }
