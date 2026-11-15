@@ -47,8 +47,10 @@
   --fs-h3: clamp(18px, 1.6vw, 21px);
   --fs-lead: clamp(16px, 1.35vw, 19px);
   --fs-lg: 16px;
+  --fs-brand: 15px;         /* wordmark in the nav and footer */
+  --fs-price: 26px;         /* plan amount */
   --w-page: 1200px;
-  --gap-section: clamp(72px, 8vw, 128px);
+  --gap-section: clamp(48px, 5vw, 80px);
   --pad-page: clamp(20px, 4vw, 48px);
 
   /* space: 4px base */
@@ -69,6 +71,7 @@
   /* controls */
   --h-ctl: 34px;
   --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-shot: 0 0 0 1px var(--rule), 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
 :root[data-theme="light"] {

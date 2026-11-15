@@ -181,7 +181,7 @@ export function home(lang: Lang): string {
 <section class="mk-sec" id="examples"><div class="mk-wrap" data-reveal-group>
 <h2 data-reveal>${t.galH2(COUNTS.themes, COUNTS.fonts)}</h2>
 <p class="tight" data-reveal>${t.galP}</p>
-<div class="gal" style="margin-top:var(--s6)">${GALLERY.map(
+<div class="gal" style="margin-top:var(--s5)">${GALLERY.map(
     (g) =>
       `<figure data-reveal><img src="/examples/${g.file}.jpg" alt="${lang === "fr" ? "Carte de code générée dans le thème" : "Code card rendered in the"} ${g.theme}${lang === "fr" ? " : " : " theme: "}${g.title}" width="1200" height="675" loading="lazy" decoding="async"><figcaption>${g.theme} · ${g.title}</figcaption></figure>`,
   ).join("")}</div>
@@ -197,16 +197,16 @@ export function home(lang: Lang): string {
 <section class="mk-sec dev" id="developers"><div class="mk-wrap" data-reveal-group>
 <h2 data-reveal>${t.devH2}</h2>
 <p class="tight" data-reveal>${t.devP(COUNTS.languages)}</p>
-<div class="dev-grid" style="margin-top:var(--s6)">
+<div class="dev-grid" style="margin-top:var(--s5)">
 <div data-reveal><p class="cap">${t.devR}</p><pre><code>${esc(apiSnippet)}</code></pre></div>
 <div data-reveal><p class="cap">${t.devM}</p><pre><code>${esc(mcpSnippet)}</code></pre></div>
 </div>
-<p class="tight" data-reveal style="margin-top:var(--s5)">${t.devTail}</p>
+<p class="tight" data-reveal style="margin-top:var(--s4)">${t.devTail}</p>
 </div></section>
 
 <section class="mk-sec" id="pricing"><div class="mk-wrap" data-reveal-group>
 <div class="price-head"><h2 data-reveal style="margin:0">${t.priceH2(m)}</h2></div>
-<div data-reveal style="margin-top:var(--s6)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
+<div data-reveal style="margin-top:var(--s5)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
 <p class="tight" data-reveal style="margin-top:var(--s4)">${t.priceP}</p>
 </div></section>
 
@@ -217,7 +217,7 @@ export function home(lang: Lang): string {
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap" data-reveal-group>
 <h2 data-reveal>${t.closeH2}</h2>
 <p class="tight" data-reveal>${t.closeP}</p>
-<div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div>
+<div class="mk-actions" data-reveal style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div>
 </div></section>`;
 
   const meta: Meta = {
@@ -297,16 +297,16 @@ export function pricingPage(lang: Lang): string {
 
 <section class="mk-sec" aria-labelledby="strip" style="padding-top:0"><div class="mk-wrap" data-reveal-group>
 <h2 id="strip" data-reveal>${labels.h2Strip}</h2>
-<p class="tight" data-reveal style="margin-top:var(--s4)">${labels.pStrip}</p>
+<p class="tight" data-reveal style="margin-top:var(--s3)">${labels.pStrip}</p>
 
 </div></section>
 
 <section class="mk-sec"><div class="mk-wrap" data-reveal-group>
 <h2 data-reveal>${labels.h2Plans}</h2>
-<div data-reveal style="margin-top:var(--s5)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
+<div data-reveal style="margin-top:var(--s4)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
 <div data-reveal style="margin-top:var(--gap-section)">
 <h2>${labels.h2Table}</h2>
-<table class="cmp" style="margin-top:var(--s5)">
+<table class="cmp" style="margin-top:var(--s4)">
 <thead><tr><th> </th><th>${labels.free}</th><th>${labels.pro}</th></tr></thead>
 <tbody>${ROWS.map(
       (r) =>
@@ -583,13 +583,13 @@ export function languagePage(slug: string): string | null {
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${h1}</h1>
 <p class="mk-lead" data-reveal style="max-width:60ch">${description}</p>
-<div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
+<div class="mk-actions" data-reveal style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
 </div></section>
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`languages/${slug}`)}</div></div></section>
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
 <h2>Other languages</h2>
 <p class="tight">The same advice, for the languages people paste most.</p>
-<ul class="langs" style="margin-top:var(--s5)">${others
+<ul class="langs" style="margin-top:var(--s4)">${others
     .map((l) => `<li><a href="/code-screenshot/${l.slug}">${l.name}</a></li>`)
     .join("")}</ul>
 </div></section>`;
@@ -662,7 +662,7 @@ export function comparisonPage(slug: string): string | null {
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
 <h2>Try it on a snippet you have open.</h2>
 <p class="tight">The editor needs no account, and the API answers on a free key.</p>
-<div class="mk-actions" style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
+<div class="mk-actions" style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
 </div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }

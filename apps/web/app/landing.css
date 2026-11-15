@@ -3,63 +3,18 @@
 .mk {
   background: var(--ground);
 }
-.mk-wrap {
-  max-width: var(--w-page);
-  margin: 0 auto;
-  padding: 0 var(--pad-page);
-}
 .mk-sec { padding-block: var(--gap-section); }
-
-/* ——— nav ————————————————————————————————————————— */
-.mk-nav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--surface);
-  border-bottom: 1px solid var(--rule);
-}
-.mk-nav .mk-wrap {
-  display: flex;
-  align-items: center;
-  gap: var(--s6);
-  height: 64px;
-}
-.wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--s2);
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-}
-.wordmark-two { color: var(--accent); }
-.mk-links {
-  display: flex;
-  align-items: center;
-  gap: var(--s6);
-  margin-left: auto;
-}
-.mk-links a {
-  color: var(--ink-2);
-  text-decoration: none;
-  font-size: var(--fs-lg);
-}
-.mk-links a:hover { color: var(--ink); }
-.mk-links a.btn-primary,
-.mk-links a.btn-primary:hover { color: var(--primary-ink); }
 
 /* ——— controls ——————————————————————————————————— */
 .btn-lg { height: 44px; padding: 0 var(--s5); font-size: var(--fs-lg); border-radius: var(--r-panel); }
 .mk-actions { display: flex; flex-wrap: wrap; gap: var(--s3); }
 
 /* ——— hero: text + CTA left, the product's own output beside it on desktop ——— */
-.mk-hero { padding-block: clamp(56px, 7vw, 112px); }
-.mk-hero .mk-wrap { display: grid; gap: clamp(28px, 4vw, 56px); }
+.mk-hero { padding-block: clamp(40px, 5vw, 76px); }
+.mk-hero .mk-wrap { display: grid; gap: clamp(14px, 2vw, 28px); }
 .mk-hero-top {
   display: grid;
-  gap: clamp(20px, 3vw, 40px);
+  gap: clamp(14px, 2vw, 28px);
   justify-items: start;
   max-width: 880px;
 }
@@ -79,7 +34,7 @@
   max-width: 44ch;
 }
 .mk-aud {
-  margin: var(--s4) 0 var(--s5);
+  margin: var(--s3) 0 var(--s4);
   padding: 0;
   list-style: none;
   display: grid;
@@ -95,7 +50,7 @@
   height: auto;
   border-radius: var(--r-panel);
   background: var(--surface);
-  box-shadow: 0 0 0 1px var(--rule), 0 24px 64px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-shot);
 }
 .mk-shot figcaption {
   margin-top: var(--s2);
@@ -115,7 +70,7 @@
 
 /* ——— headings ——————————————————————————————————— */
 .mk h2 {
-  margin: 0 0 var(--s5);
+  margin: 0 0 var(--s3);
   font-size: var(--fs-h2);
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -133,7 +88,7 @@
 
 /* ——— demo ——————————————————————————————————————— */
 .mk-demo { background: var(--surface); }
-.mk-demo .mk-wrap { display: grid; gap: var(--s8); }
+.mk-demo .mk-wrap { display: grid; gap: var(--s6); }
 .demo-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--s6); align-items: start; }
 .demo-controls { display: grid; gap: var(--s3); }
 .demo-controls label { display: grid; gap: 6px; font-size: var(--fs-body); color: var(--ink-3); }
@@ -163,7 +118,7 @@
 .gal figcaption { margin-top: var(--s3); color: var(--ink-3); font-size: var(--fs-body); }
 
 /* ——— features: a list, not a card grid ————————————— */
-.feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+.feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 60px); align-items: start; }
 .feat-list { display: grid; gap: var(--s6); margin: 0; padding: 0; list-style: none; }
 .feat-list p { margin: 0; }
 
@@ -202,19 +157,19 @@
 .price-yearly { display: none; }
 .price-block:has(#billing-yearly:checked) .price-monthly { display: none; }
 .price-block:has(#billing-yearly:checked) .price-yearly { display: block; }
-.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6); margin-top: var(--s8); }
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6); margin-top: var(--s6); }
 .plan { background: var(--surface); border-radius: var(--r-panel); padding: var(--s6); display: grid; gap: var(--s4); align-content: start; }
 .plan.pro { background: var(--raised); }
 .plan-head { display: block; }
-.plan-head h3 { margin: 0 0 6px; font-size: 21px; letter-spacing: -0.02em; }
-.plan .amount { font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 600; }
+.plan-head h3 { margin: 0 0 6px; font-size: var(--fs-h3); letter-spacing: -0.02em; }
+.plan .amount { font-size: var(--fs-price); line-height: 1.1; letter-spacing: -0.02em; font-weight: 600; }
 .plan .amount span { font-size: var(--fs-body); color: var(--ink-3); font-weight: 400; letter-spacing: 0; }
 .plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s3); font-size: var(--fs-lg); color: var(--ink-2); }
 .plan li::before { content: "—"; color: var(--ink-3); margin-right: var(--s2); }
 .plan .btn { justify-content: center; }
 
 /* ——— faq ——————————————————————————————————————— */
-.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(24px, 5vw, 72px); align-items: start; }
+.faq-grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(16px, 3vw, 48px); align-items: start; }
 .faq { display: grid; gap: var(--s2); margin: 0; }
 .faq details { background: var(--surface); border-radius: var(--r-panel); padding: var(--s4) var(--s5); }
 .faq summary { cursor: pointer; font-size: var(--fs-lg); font-weight: 500; color: var(--ink); list-style: none; }
@@ -223,16 +178,16 @@
 .faq p { margin: 0; max-width: 58ch; }
 
 /* ——— footer ——————————————————————————————————— */
-.mk-foot { background: var(--surface); padding-block: var(--s10) var(--s6); }
+.mk-foot { background: var(--surface); padding-block: var(--s8) var(--s5); }
 .mk-foot .wordmark {
   font-size: var(--fs-h3);
   margin-bottom: var(--s8);
 }
-.mk-foot .cols { display: flex; flex-wrap: wrap; gap: var(--s8); justify-content: space-between; align-items: flex-start; }
+.mk-foot .cols { display: flex; flex-wrap: wrap; gap: var(--s6); justify-content: space-between; align-items: flex-start; }
 .mk-foot nav { display: grid; gap: var(--s2); font-size: var(--fs-lg); }
 .mk-foot nav a { color: var(--ink-2); text-decoration: none; }
 .mk-foot nav a:hover { color: var(--ink); }
-.mk-foot .legal { margin-top: var(--s8); color: var(--ink-3); font-size: var(--fs-body); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); }
+.mk-foot .legal { margin-top: var(--s6); color: var(--ink-3); font-size: var(--fs-body); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); }
 .mk-foot .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .mk-foot .legal a:hover { color: var(--ink); }
 .mk-foot .legal a.icon { display: inline-flex; align-items: center; text-decoration: none; }
@@ -267,22 +222,22 @@
 @media (max-width: 620px) {
   .gal { grid-template-columns: minmax(0, 1fr); }
 }
-.mk-links a.lang {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-left: var(--s4);
-  padding-left: var(--s5);
-  border-left: 1px solid var(--rule);
-  font-variant-numeric: tabular-nums;
-}
 
 /* ——— prose pages: /api, /blog, /changelog, /legal, /code-screenshot, /vs —————————————————
    Long-form content keeps the page's frame: one measure, one rhythm, no boxes. */
-.prose { max-width: 74ch; }
+/* The frame (.mk-wrap) is the page width; the measure lives on the children, so every prose
+   block shares the hero's left edge. Putting max-width on the frame itself pulled prose pages
+   off the grid (hero at x=31px, body at x=108px on a 765px viewport). */
+.prose > * { max-width: 74ch; }
+.prose > :first-child { margin-top: 0; }
 .prose > * + * { margin-top: var(--s5); }
-.prose h2 { margin-top: var(--s9); font-size: var(--fs-h3); letter-spacing: -0.02em; max-width: 34ch; }
-.prose h3 { margin-top: var(--s7); font-size: var(--fs-lg); font-weight: 620; }
+.prose h2 { margin-top: var(--s10); font-size: var(--fs-h3); letter-spacing: -0.02em; max-width: 34ch; }
+.prose h3 { margin-top: var(--s8); font-size: var(--fs-lg); font-weight: 620; }
+/* title → subtitle/body: one standard gap, not whatever the sibling rule happens to give */
+.mk h2 + *, .prose h2 + *, .prose h3 + * { margin-top: var(--s4); }
+/* copy-able code block: the button sits inside the card, the next heading gets air */
+.prose .code { position: relative; }
+.prose .code .btn { position: absolute; top: var(--s3); right: var(--s3); height: 26px; padding: 0 var(--s3); font-size: var(--fs-small); }
 .prose p, .prose li { color: var(--ink-2); font-size: var(--fs-lg); line-height: 1.65; overflow-wrap: break-word; }
 .prose p { max-width: 68ch; }
 .prose ul, .prose ol { padding-left: var(--s5); display: grid; gap: var(--s2); }
@@ -307,16 +262,16 @@
   line-height: 1.7;
 }
 .prose pre code { background: none; padding: 0; font-size: inherit; }
-.prose hr { border: 0; height: 1px; background: var(--line); margin-block: var(--s8); }
+.prose hr { border: 0; height: 1px; background: var(--rule); margin-block: var(--s8); }
 .prose .lede { font-size: var(--fs-lead); color: var(--ink-2); }
 
 .cmp { width: 100%; border-collapse: collapse; }
 .cmp th, .cmp td { text-align: left; padding: var(--s3) var(--s4); font-size: var(--fs-lg); color: var(--ink-2); }
 .cmp thead th { color: var(--ink); font-weight: 620; }
 .cmp tbody th { color: var(--ink); font-weight: 500; }
-.cmp tr + tr th, .cmp tr + tr td { border-top: 1px solid var(--line); }
+.cmp tr + tr th, .cmp tr + tr td { border-top: 1px solid var(--rule); }
 
-.posts { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s8); }
+.posts { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s6); }
 .posts h2 { margin: 0 0 var(--s2); max-width: 34ch; }
 .posts a { text-decoration: none; }
 .posts p { margin: 0; max-width: 62ch; }
