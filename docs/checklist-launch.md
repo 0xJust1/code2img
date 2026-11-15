@@ -43,6 +43,27 @@ Mode TEST uniquement dans le code déployé. Passage en live = go explicite de J
       crawler d'aperçu en IPv4 seulement ne verra pas le site. À corriger côté DNS quand
       l'hébergeur le permettra.
 
+## Délivrabilité mail (audit du 15/11/2026)
+
+Magic links (`From: Code2Img <hello@code2img.app>`, serveur mail.vaultkeepr.xyz)
+— état vérifié via mail-tester.com (test-2rtkg3tkj, 7.4/10) :
+
+- Authentification parfaite : SPF pass, DKIM valid (2048, `d=code2img.app`),
+  DMARC pass (`p=quarantine`), rDNS et MX corrects, IP 95.111.237.189 listée
+  sur aucune des 20 blocklists.
+- Score < 10 uniquement à cause de SpamAssassin `FROM_SUSPICIOUS_NTLD` (-2.5) :
+  le TLD `.app` est un NTLD flaggé par SA. Aucune action possible sans changer
+  de domaine — Gmail/Outlook n'utilisent pas cette règle.
+- **Les mails peuvent atterrir dans le dossier Junk de l'utilisateur** : le
+  filtre anti-junk côté client (Apple Mail en a été identifié le 15/11) déplace
+  les messages vers le dossier Junk du serveur via IMAP. Ce n'est pas un
+  problème serveur (aucun sieve, ni rspamd, ni cron sur mail.vaultkeepr.xyz).
+  L'utilisateur doit marquer le mail « Not Junk » une fois ; l'UX /login
+  affiche déjà l'erreur explicite si le lien a expiré (5 min).
+- Reste à vérifier manuellement (nécessite de vrais comptes Gmail/Outlook) :
+  la placement réel Inbox vs Junk chez Gmail et Outlook. Un test de placement
+  (ex. EasyDMARC inbox placement) peut le faire sans comptes.
+
 ## Observabilité (optionnel, non installé)
 
 Aucune télémétrie aujourd'hui : ni analytics, ni Sentry, ni Plausible (choix assumé, la
