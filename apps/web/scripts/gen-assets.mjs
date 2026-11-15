@@ -125,13 +125,16 @@ for (const ex of examples) {
   };
   // jpg: these cards end up on a full-bleed background, no transparency needed, and a PNG of a
   // dithered gradient costs 1 MB while the same picture as JPEG costs a tenth of it.
-  const res = await fetch("http://127.0.0.1:3002/render", {
-    method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ config, format: "jpg", scale: 2, quality: 88 }),
-  });
-  if (!res.ok) { console.error(ex.file, res.status, await res.text()); process.exitCode = 1; continue; }
-  writeFileSync(path.join(pub, "examples", `${ex.file}.jpg`), Buffer.from(await res.arrayBuffer()));
-  console.log("example", ex.file);
+  // Two widths: a phone gets the 1× file, a desktop the 2× one (srcset in the pages).
+  for (const [scale, suffix] of [[2, ""], [1, "-sm"]]) {
+    const res = await fetch("http://127.0.0.1:3002/render", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ config, format: "jpg", scale, quality: 88 }),
+    });
+    if (!res.ok) { console.error(ex.file, res.status, await res.text()); process.exitCode = 1; continue; }
+    writeFileSync(path.join(pub, "examples", `${ex.file}${suffix}.jpg`), Buffer.from(await res.arrayBuffer()));
+    console.log("example", ex.file + suffix);
+  }
 }
 
 await browser.close();

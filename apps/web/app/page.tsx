@@ -119,6 +119,8 @@ export default function Landing() {
             {/* a static JPEG, not a next/image candidate: no layout shift, no loader */}
             <img
               src="/examples/hero.jpg"
+              srcSet="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w"
+              sizes="(max-width: 760px) 92vw, 620px"
               alt="A rendered code card: the file cart.ts in the github-dark theme on a midnight gradient, with macOS window controls and a line-number gutter"
               width={1088}
               height={780}
