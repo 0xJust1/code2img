@@ -4,7 +4,7 @@
 // paid for all of it before the first paint.
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { APP_NAME, APP_URL, FONTS, LANGUAGES, THEMES } from "@code2img/shared";
+import { APP_NAME, APP_URL, DETECTED_LANGUAGES, FONTS, THEMES } from "@code2img/shared";
 import { REVEAL_JS } from "../reveal";
 
 export type Lang = "en" | "fr";
@@ -268,15 +268,15 @@ export function homeJsonLd(lang: Lang, monthly: number, faq: FaqItem[]): unknown
       url: lang === "fr" ? `${BASE}/fr` : BASE,
       description:
         lang === "fr"
-          ? "Transformez un extrait de code en image nette, en lien partageable, en API et en serveur MCP pour agents IA."
-          : "Turn code snippets into pixel-perfect images, shareable links, an API and an MCP server for AI agents.",
+          ? "Transformez un extrait de code en image (PNG, JPG ou PDF), en lien partageable, en API REST et en serveur MCP pour agents IA."
+          : "Turn a code snippet into an image (PNG, JPG or PDF), a shareable link, a REST API call or an MCP tool call for an AI agent.",
       inLanguage: lang,
       offers: [
         { "@type": "Offer", price: "0", priceCurrency: "EUR", name: "Free" },
         { "@type": "Offer", price: String(monthly), priceCurrency: "EUR", name: "Pro monthly" },
       ],
       featureList:
-        "PNG, JPG and PDF export up to 4x; 18 themes; 7 code fonts; public share links with OG images; REST API; MCP server; auto language detection.",
+        "PNG, JPG and PDF export at 2x on Free and 4x on Pro; 18 themes; 7 code fonts; public share links with OG images; REST API; MCP server; auto language detection.",
     },
     {
       "@context": "https://schema.org",
@@ -451,7 +451,7 @@ const PRICE_FR = {
   ],
 };
 
-export const COUNTS = { themes: THEMES.length, fonts: FONTS.length, languages: LANGUAGES.length };
+export const COUNTS = { themes: THEMES.length, fonts: FONTS.length, languages: DETECTED_LANGUAGES.length };
 export const PRICES = {
   monthly: Number(process.env.PRICE_PRO_MONTHLY_EUR ?? 7),
   yearly: Number(process.env.PRICE_PRO_YEARLY_EUR ?? 59),

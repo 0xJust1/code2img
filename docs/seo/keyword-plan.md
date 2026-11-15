@@ -5,6 +5,39 @@ Verified against the repo on 2026-11-15: `packages/shared/src/themes.ts` (18 the
 (limits: 50 KB code, font size 10–24 default 16, padding 0–128 default 48, width 240–2000,
 ratios 1:1 1200×1200 / 16:9 1280×720 / 4:5 1080×1350 / og 1200×630, scale 1–4).
 
+> **Measured on 2026-11-15 (DataForSEO).** The tables below were written from product capability
+> and carry no volume. They have now been measured: **25 of the 33 EN keywords and 25 of the 26 FR
+> keywords return zero Google Ads volume** in their market. Two queries carry the site —
+> `code to image` (2,400/mo US, KD 32) and `code image generator` (170/mo US) — and both belong to
+> `/`. Treat every `0` row as a long-tail bet to confirm in Search Console, not as a demand
+> forecast. Per-page targets and SERP evidence: `page-targets.md`. Copy alignment:
+> `copy-before-after.md`.
+
+## Measured demand (EN = US 2840, FR = France 2250, 2026-11-15)
+
+| Keyword | Vol/mo | KD | Note |
+|---|---|---|---|
+| code to image | 2,400 | 32 | the one real query; AI Overview on the SERP, no dominant brand |
+| code image generator | 170 | n/a | CPC $8.01 — high commercial value, same intent as above |
+| code screenshot generator | 40 | 0 | folded into `/` |
+| python code to image | 20 | 0 | only language phrase with a number |
+| java code screenshot | 10 | n/a | |
+| ray.so alternative | 10 | n/a | |
+| carbon.now.sh alternative | 10 | n/a | |
+| snappify alternative | 10 | n/a | |
+| code en image (FR) | 20 | n/a | the only FR phrase with a number |
+| all other EN rows (25) | 0 | n/a | zero volume, KD unavailable (`null` in Labs) |
+| all other FR rows (25) | 0 | n/a | zero volume, KD unavailable |
+
+Rejected after reading the SERP, not after reading a number:
+
+- **`code screenshot api`** — the SERP is website URL-to-image APIs, not snippet rendering. Wrong
+  intent for `/api`.
+- **`mcp server code screenshot`** — owned by browser-screenshot MCP servers; Code2Img targets the
+  narrower "render a code image from an agent" instead.
+- **`screenshot code`** — the SERP is "screenshot *to* code" (AI image-to-code). Exact opposite
+  intent; never target it.
+
 ## Page inventory — what exists vs what must be built
 
 | Target page | Status today |

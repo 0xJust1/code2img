@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const share = await findShare(slug);
   if (!share || share.state !== "active") return { title: `${APP_NAME} — image not found`, robots: { index: false } };
   const title = `Code image shared with ${APP_NAME}`;
-  const description = `${APP_NAME} — paste code, pick a theme, export a pixel-perfect image.`;
+  const description = `${APP_NAME} — paste code, pick a theme, export a PNG, JPG or PDF.`;
   const image = shareImageUrl(share.slug);
   return {
     title,

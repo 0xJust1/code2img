@@ -115,17 +115,17 @@ const COPY_JS = `(() => {
 
 export const MCP_PAGE = doc(
   {
-    title: "MCP server — Code2Img",
+    title: "MCP server — render code images from an agent | Code2Img",
     description:
-      "Connect Code2Img to Claude, Cursor, VS Code or Windsurf: seven MCP tools to render code screenshots, list themes and create share links.",
+      "Connect Code2Img to Claude, Cursor, VS Code or Windsurf: seven MCP tools to render a code image, browse themes and backgrounds, and create expiring share links.",
     path: "/mcp",
     lang: "en",
     jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: "MCP", path: "/mcp" }], "en")],
   },
   `${nav("en", "")}
 <section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>Render cards from your agent.</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code screenshot, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is not on npm yet: the snippets below install the tarball this instance serves.</p>
+<h1 data-reveal>Render code images from your agent.</h1>
+<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is not on npm yet: the snippets below install the tarball this instance serves.</p>
 <p class="tight" data-reveal style="margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
 </div></section>
 ${renderBand("What an agent gets back.")}

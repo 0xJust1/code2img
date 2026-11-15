@@ -5,6 +5,10 @@ import type { FaqItem } from "./shell";
 
 export const FAQ_EN: FaqItem[] = [
   {
+    q: "How do I turn code into an image?",
+    a: "Paste the snippet into the editor, choose a theme and a font, then export. You get a PNG, JPG or PDF that keeps the padding, radius, background and window chrome you set. The same three steps run over HTTP: POST the config to /api/v1/images and read the bytes back.",
+  },
+  {
     q: "What can I export?",
     a: "PNG, JPG and PDF. The Free plan exports up to 2× the layout size, Pro up to 4× — enough for a retina screen or a 4K slide. Every export keeps the exact padding, radius, background and window chrome you set in the editor.",
   },
@@ -35,6 +39,10 @@ export const FAQ_EN: FaqItem[] = [
 ];
 
 export const FAQ_FR: FaqItem[] = [
+  {
+    q: "Comment transformer du code en image ?",
+    a: "Collez l'extrait dans l'éditeur, choisissez un thème et une police, puis exportez. Vous obtenez un PNG, JPG ou PDF qui conserve le padding, le rayon, le fond et la barre de fenêtre réglés. Les trois mêmes étapes existent en HTTP : envoyez la configuration à /api/v1/images et récupérez les octets.",
+  },
   {
     q: "Que puis-je exporter ?",
     a: "PNG, JPG et PDF. Le plan gratuit exporte jusqu'à 2× la taille de mise en page, Pro jusqu'à 4× — de quoi tenir sur un écran retina ou une diapositive 4K. Chaque export conserve exactement le padding, le rayon, le fond et la barre de fenêtre réglés dans l'éditeur.",

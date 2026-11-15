@@ -6,7 +6,7 @@ export async function GET() {
   const site = siteUrl();
   const text = `# Code2Img
 
-> Code2Img renders source code into shareable images (PNG/JPG) or public pages with an
+> Code2Img renders source code into images (PNG, JPG, PDF) or public pages with an
 > OpenGraph preview. Same Playwright pipeline as the editor, one render service.
 
 ## MCP server (recommended for agents)
@@ -30,7 +30,7 @@ export async function GET() {
 
 - Themes (${THEMES.length}): ${THEMES.join(", ")}
 - Fonts (${FONTS.length}): ${FONTS.map((f) => f.id).join(", ")}
-- Languages (${LANGUAGES.length}): auto, ${LANGUAGES.join(", ")}
+- Languages (${LANGUAGES.length} ids, "auto" detects one): ${LANGUAGES.join(", ")}
 - Background gradients (${gradientPresets.length}): ${gradientPresets.map((g) => g.id).join(", ")}
 
 ## Privacy

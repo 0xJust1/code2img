@@ -56,11 +56,11 @@ const mcpSnippet = `{
 
 const HOME = {
   en: {
-    title: "Code2Img — turn code into an image",
+    title: "Code to image — paste a snippet, export a PNG | Code2Img",
     description:
-      "Paste a snippet, pick a theme, export a pixel-perfect PNG, JPG or PDF. Share a public link, or render it from the API and from your AI agent.",
-    h1: "Code in, image out.",
-    lead: "Paste a snippet, pick a theme, export a pixel-perfect PNG in seconds. Share a link, or render it from the API and from your AI agent.",
+      "Code to image in the browser: paste a snippet, pick a theme, export PNG, JPG or PDF at up to 4×, or render it from the REST API or an MCP server.",
+    h1: "Code to image.",
+    lead: "Paste a snippet, choose a theme, export PNG, JPG or PDF. There is no account to create: the same render is one POST away for a script and one tool call away for an agent.",
     cta: "Open the editor",
     cta2: "Read the API",
     shot: "cart.ts, github-dark, exported at 2× from the editor.",
@@ -81,7 +81,7 @@ const HOME = {
         p: "PNG, JPG and PDF up to 2× on Free and 4× on Pro, with the layout you set: padding, radius, window chrome, a fixed or automatic width, and 1:1, 16:9, 4:5 or an OG crop.",
       },
       {
-        h: "One render pipeline, three doors",
+        h: "One pipeline, three ways in",
         p: "The editor, the REST API and the MCP server all call the same service. What you see in the preview is what a client gets back — the same themes, the same limits.",
       },
       {
@@ -96,17 +96,17 @@ const HOME = {
     devM: "MCP — remote Streamable HTTP",
     devTail:
       'Keys carry scopes and quotas; signed URLs let a browser fetch a render without the key. The OpenAPI spec is at <a href="/api/v1/openapi.json">/api/v1/openapi.json</a>; setup notes are in the <a href="/docs">API reference</a> and on the <a href="/mcp">MCP page</a>.',
-    priceH2: (m: number) => `Free to use. ${m} € a month to make it yours.`,
+    priceH2: (m: number) => `Free to use. Pro is ${m} € a month.`,
     priceP: "Paid on Stripe and cancellable from the dashboard; the Free plan needs no card.",
     faqH2: "Questions people actually ask.",
     featAlt: "A code card for query.sql rendered in the rose-pine theme on a dark background",
   },
   fr: {
-    title: "Code2Img — transformez du code en image",
+    title: "Code en image : transformez un extrait en PNG | Code2Img",
     description:
-      "Collez un extrait, choisissez un thème, exportez un PNG, JPG ou PDF net. Partagez un lien public, ou générez-le depuis l'API et depuis votre agent IA.",
-    h1: "Du code, une image.",
-    lead: "Collez un extrait, choisissez un thème, exportez un PNG net en quelques secondes. Partagez un lien, ou passez par l'API et par votre agent IA.",
+      "Transformez du code en image dans le navigateur : collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF, ou passez par l'API REST et le serveur MCP.",
+    h1: "Du code à l'image.",
+    lead: "Collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF. Aucun compte à créer : le même rendu s'obtient par un POST depuis un script, ou par un appel d'outil depuis un agent.",
     cta: "Ouvrir l'éditeur",
     cta2: "Lire l'API",
     shot: "cart.ts, thème github-dark, exporté en 2× depuis l'éditeur.",
@@ -143,7 +143,7 @@ const HOME = {
     devM: "MCP — Streamable HTTP distant",
     devTail:
       `Les clés portent des scopes et des quotas ; les URLs signées permettent à un navigateur de récupérer un rendu sans la clé. La spécification OpenAPI est sur <a href="/api/v1/openapi.json">/api/v1/openapi.json</a> ; les notes d'installation sont dans la <a href="/docs">référence API</a> et sur la <a href="/mcp">page MCP</a>.`,
-    priceH2: (m: number) => `Gratuit, ou ${m} € par mois.`,
+    priceH2: (m: number) => `Gratuit. Pro à ${m} € par mois.`,
     priceP: "Paiement par Stripe, résiliable depuis le tableau de bord ; le plan gratuit ne demande aucune carte.",
     faqH2: "Les questions qui reviennent.",
     featAlt: "Une carte de code pour query.sql en thème rose-pine sur fond sombre",
@@ -222,17 +222,17 @@ export function home(lang: Lang): string {
 
 const PRICING = {
   en: {
-    title: "Pricing — Code2Img",
+    title: "Pricing — free to use, Pro removes the watermark | Code2Img",
     description:
-      "Code2Img is free to use. Pro removes the watermark, raises exports to 4×, unlocks your own logo and backgrounds and lifts the API quota.",
+      "The Code2Img editor is free. Pro removes the watermark, raises exports to 4×, adds your logo and your own background, and lifts the API quota.",
     h1: "One price, no tiers.",
     lead: (m: number, y: number) =>
       `The editor is free and stays free. Pro is ${m} € a month — or ${y} € a year — and changes four things: the watermark, the export scale, your own branding, and the API quota.`,
   },
   fr: {
-    title: "Tarifs — Code2Img",
+    title: "Tarifs — gratuit, Pro retire le filigrane | Code2Img",
     description:
-      "Code2Img est gratuit. Pro supprime le filigrane, monte les exports à 4×, débloque votre logo et vos fonds et relève le quota d'API.",
+      "L'éditeur Code2Img est gratuit. Pro retire le filigrane, monte les exports à 4×, ajoute votre logo et votre propre fond, et relève le quota d'API.",
     h1: "Un seul prix, pas de paliers.",
     lead: (m: number, y: number) =>
       `L'éditeur est gratuit et le reste. Pro coûte ${m} € par mois — ou ${y} € par an — et change quatre choses : le filigrane, l'échelle d'export, votre image de marque et le quota d'API.`,
@@ -477,10 +477,10 @@ ${p.pictures === false ? "" : renderBand(p.band ?? "Rendered by Code2Img, at 2×
 export function apiPage(): string {
   return docPage({
     slug: "api",
-    title: "API — Code2Img",
+    title: "API — render a code image over HTTP | Code2Img",
     h1: "Your code, over HTTP.",
     description:
-      "Code2Img's REST API: render an image from a JSON config, list themes, read usage, signed URLs. Keys, scopes, quotas, the OpenAPI spec and the TypeScript SDK.",
+      "Code2Img's REST API turns a JSON config into a code image: PNG, JPG or PDF at up to 4×. Keys, scopes, quotas, signed URLs, the OpenAPI spec and the TypeScript SDK.",
     path: "/api",
     file: "api",
     updated: "2026-11-15",

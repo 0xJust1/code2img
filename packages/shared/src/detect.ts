@@ -21,6 +21,10 @@ const RULES: [RegExp, string][] = [
   [/#!\s*\/(bin|usr)\/(ba)?sh|\becho\b\s+\$|^\s*(apt|curl|cd|mkdir|export)\s/m, "shell"],
 ];
 
+/** Every language a rule can return. "auto" and "text" are values of the API, not detected
+ *  languages, so the marketing count reads this and not LANGUAGES.length. */
+export const DETECTED_LANGUAGES = [...new Set(RULES.map(([, lang]) => lang))];
+
 export const LANGUAGES = [
   "auto", "typescript", "javascript", "python", "go", "rust", "java", "c", "cpp", "csharp",
   "php", "ruby", "html", "css", "sql", "json", "yaml", "shell", "text",
