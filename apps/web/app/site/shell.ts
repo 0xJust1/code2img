@@ -84,7 +84,7 @@ export function footer(lang: Lang): string {
   return `<footer class="mk-foot"><div class="mk-wrap">${wordmark(lang)}<div class="cols">
 <nav aria-label="${t.product}"><a href="/editor">${t.editor}</a><a href="${prefix}/pricing">${t.pricing}</a><a href="/dashboard">${t.dashboard}</a><a href="/blog">${t.blog}</a><a href="/changelog">${t.changelog}</a></nav>
 <nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a></nav>
-<nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="mailto:hello@code2img.app">hello@code2img.app</a><a href="mailto:support@code2img.app">support@code2img.app</a></nav>
+<nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="/legal/mentions">${t.mentions}</a><a href="${prefix}/contact">${t.contact}</a><a href="mailto:hello@code2img.app">hello@code2img.app</a><a href="mailto:support@code2img.app">support@code2img.app</a></nav>
 </div><p class="legal">© ${new Date().getFullYear()} ${APP_NAME}. ${t.independent}</p></div></footer>`;
 }
 
@@ -105,6 +105,8 @@ interface NavLabels {
   legalHeading: string;
   terms: string;
   privacy: string;
+  mentions: string;
+  contact: string;
   independent: string;
 }
 
@@ -126,6 +128,8 @@ const NAV: Record<Lang, NavLabels> = {
     legalHeading: "Contact and legal",
     terms: "Terms",
     privacy: "Privacy",
+    mentions: "Legal notice",
+    contact: "Contact",
     independent: "An independent product, not affiliated with any other screenshot tool.",
   },
   fr: {
@@ -145,6 +149,8 @@ const NAV: Record<Lang, NavLabels> = {
     legalHeading: "Contact et mentions",
     terms: "Conditions",
     privacy: "Confidentialité",
+    mentions: "Mentions légales",
+    contact: "Contact",
     independent: "Un produit indépendant, sans lien avec un autre outil de capture de code.",
   },
 };

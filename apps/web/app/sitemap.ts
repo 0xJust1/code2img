@@ -46,5 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     { url: en("/legal/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.2 },
     { url: en("/legal/privacy"), lastModified: now, changeFrequency: "yearly", priority: 0.2 },
+    { url: en("/legal/mentions"), lastModified: now, changeFrequency: "yearly", priority: 0.2 },
+    bilingual("/contact", 0.4, "monthly"),
   ];
 }

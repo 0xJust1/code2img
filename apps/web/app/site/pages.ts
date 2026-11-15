@@ -708,28 +708,80 @@ ${renderBand("What the latest phase renders.")}
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
 
-export function legalPage(kind: "terms" | "privacy"): string {
+export function legalPage(kind: "terms" | "privacy" | "mentions"): string {
   const titles = {
     terms: { title: "Terms of service — Code2Img", h1: "Terms of service" },
     privacy: { title: "Privacy — Code2Img", h1: "Privacy policy" },
+    mentions: { title: "Mentions légales — Code2Img", h1: "Mentions légales" },
   }[kind];
+  const isMentions = kind === "mentions";
   const meta: Meta = {
     title: titles.title,
     description:
       kind === "terms"
         ? "The terms that apply to the Code2Img editor, the paid Pro plan, the public API, the MCP server and the share pages."
-        : "What Code2Img stores, for how long, where it lives, and how to get it deleted. No advertising, no third-party analytics.",
+        : isMentions
+          ? "Éditeur, hébergement, données personnelles et médiation : les mentions légales de Code2Img."
+          : "What Code2Img stores, for how long, where it lives, and how to get it deleted. No advertising, no third-party analytics.",
     path: `/legal/${kind}`,
-    lang: "en",
-    jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: titles.h1, path: `/legal/${kind}` }], "en")],
+    lang: isMentions ? "fr" : "en",
+    jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: titles.h1, path: `/legal/${kind}` }], isMentions ? "fr" : "en")],
   };
+  const lead = isMentions
+    ? "Éditeur : Code2Img (entreprise individuelle). Contact : hello@code2img.app. Dernière mise à jour : 15 novembre 2026."
+    : "Last updated 15 November 2026. Operator: Code2Img. Contact: support@code2img.app.";
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${titles.h1}</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">Last updated 15 November 2026. Operator: Code2Img. Contact: support@code2img.app.</p>
+<p class="mk-lead" data-reveal style="max-width:60ch">${lead}</p>
 </div></section>
-${renderBand("The product this document covers.")}
+${renderBand(isMentions ? "Le cadre légal du service." : "The product this document covers.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`legal-${kind}`)}</div></div></section>`;
-  return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
+ return doc(meta, `${nav(meta.lang, "")}${body}${footer(meta.lang)}`);
+}
+
+/** Contact: two addresses, one question each. Sober, on the landing's frame. */
+export function contactPage(lang: Lang): string {
+ const prefix = lang === "fr" ? "/fr" : "";
+ const t =
+   lang === "fr"
+     ? {
+         title: "Contact — Code2Img",
+         h1: "Contact.",
+         lead: "Une question, un bug, un partenariat ? Deux adresses, une réponse en principe sous 48 h ouvrées.",
+         supportH2: "Support technique",
+         supportP: "Bug, question d'usage, clé API, facturation : écrivez à <a href=\"mailto:support@code2img.app\">support@code2img.app</a>.",
+         helloH2: "Partenariats et tout le reste",
+         helloP: "Presse, partenariats, offres d'intégration ou simplement dire bonjour : <a href=\"mailto:hello@code2img.app\">hello@code2img.app</a>.",
+         band: "Une question sur le produit avant d'écrire ?",
+       }
+     : {
+         title: "Contact — Code2Img",
+         h1: "Contact.",
+         lead: "A question, a bug, a partnership? Two addresses, an answer in principle within 48 business hours.",
+         supportH2: "Technical support",
+         supportP: "Bug, usage question, API key, billing: write to <a href=\"mailto:support@code2img.app\">support@code2img.app</a>.",
+         helloH2: "Partnerships and everything else",
+         helloP: "Press, partnerships, integration offers, or just to say hi: <a href=\"mailto:hello@code2img.app\">hello@code2img.app</a>.",
+         band: "A question about the product before writing?",
+       };
+ const meta: Meta = {
+   title: t.title,
+   description: t.lead,
+   path: `${prefix}/contact`,
+   lang,
+   alt: lang === "fr" ? "/contact" : "/fr/contact",
+ };
+ const body = `<section class="mk-hero"><div class="mk-wrap">
+<h1 data-reveal>${t.h1}</h1>
+<p class="mk-lead" data-reveal style="max-width:60ch">${t.lead}</p>
+</div></section>
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>
+<div data-reveal><h2>${t.supportH2}</h2><p>${t.supportP}</p></div>
+<div data-reveal><h2>${t.helloH2}</h2><p>${t.helloP}</p></div>
+</div></section>
+${renderBand(t.band)}
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><p data-reveal>${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>`;
+ return doc(meta, `${nav(lang, "")}${body}${footer(lang)}`);
 }
 
 export const API = { apiSnippet, mcpSnippet };

@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+
+const ERRORS: Record<string, string> = {
+  INVALID_TOKEN: "This sign-in link has expired or was already used. Request a new one below.",
+  USER_NOT_FOUND: "No account for this email — submitting the form below creates one.",
+};
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,11 +15,17 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // read once from the location: avoids useSearchParams' Suspense requirement
+  useEffect(() => {
+    const err = new URLSearchParams(window.location.search).get("error") ?? "";
+    setError(ERRORS[err] ?? (err ? "Sign-in failed — try again below." : ""));
+  }, []);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const { error } = await authClient.signIn.magicLink({ email, callbackURL: "/dashboard" });
+    const { error } = await authClient.signIn.magicLink({ email, callbackURL: "/dashboard", errorCallbackURL: "/login" });
     setBusy(false);
     if (error) setError(error.message ?? "failed to send link");
     else setSent(true);
