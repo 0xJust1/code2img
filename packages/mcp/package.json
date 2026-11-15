@@ -1,6 +1,6 @@
 {
   "name": "code2img-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Model Context Protocol server for Code2Img: render code screenshots from Claude Desktop, Cursor, VS Code or Windsurf (stdio), or call the hosted server at https://code2img.app/mcp.",
   "license": "MIT",
   "author": "Justin <hello@code2img.app> (https://github.com/0xJust1)",
