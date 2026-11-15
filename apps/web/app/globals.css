@@ -34,15 +34,8 @@ a { color: inherit; }
   border-bottom: 1px solid var(--rule);
 }
 .appbar-brand { display: flex; align-items: center; gap: var(--s3); min-width: 0; }
-.appbar-brand .wordmark { font-size: var(--fs-title); }
-.appbar-scope {
-  color: var(--ink-3);
-  font-size: var(--fs-small);
-  padding-left: var(--s3);
-  border-left: 1px solid var(--rule);
-  margin: 0;
-  font-weight: 400;
-}
+.appbar-brand .appbar-logo { display: flex; align-items: center; color: var(--ink); }
+.appbar-brand svg { display: block; }
 .appbar-actions { display: flex; align-items: center; gap: var(--s4); }
 .icons { display: flex; align-items: center; gap: var(--s3); }
 .icon { color: inherit; opacity: .7; display: inline-flex; }
@@ -270,7 +263,6 @@ input[type="checkbox"] {
   .toolbar .grow { margin-left: 0; }
   .appbar .hint { display: none; }
   /* the screen's one h1 stays on the phone; the wordmark gives up its room instead */
-  .appbar-scope { font-size: var(--fs-small); padding-left: var(--s2); }
   .sect .fields { gap: var(--s3) var(--s3); }
 }
 /* ——— dashboard: the same tokens as the editor, read as a page ——— */

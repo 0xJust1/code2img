@@ -15,7 +15,7 @@ import {
   type CardConfig,
   type Ratio,
 } from "@code2img/shared";
-import { Wordmark } from "../brand";
+import { Mark } from "../brand";
 
 const SAMPLE_CODE = `// Try it — edit me
 function greet(name: string): string {
@@ -264,8 +264,9 @@ export default function Editor() {
     <div className="app">
       <header className="appbar">
         <div className="appbar-brand">
-          <Wordmark href="/" />
-          <h1 className="appbar-scope">Editor</h1>
+          <a href="/" aria-label="Code2Img — code to image" className="appbar-logo">
+            <Mark size={28} />
+          </a>
         </div>
         <div className="appbar-actions">
           <span className="icons">
@@ -551,10 +552,6 @@ export default function Editor() {
               <label className="fld full">
                 <span className="lbl">Author name</span>
                 <input type="text" value={cfg.author.name} onChange={(e) => patch({ author: { ...cfg.author, name: e.target.value } })} placeholder="@you" />
-              </label>
-              <label className="fld full">
-                <span className="lbl">Author link</span>
-                <input type="url" value={cfg.author.link} onChange={(e) => patch({ author: { ...cfg.author, link: e.target.value } })} placeholder="https://…" />
               </label>
               {plan === "pro" ? (
                 <>

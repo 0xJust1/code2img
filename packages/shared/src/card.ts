@@ -83,15 +83,13 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
           ? `<div class="titlebar minimal"><span class="title">${escapeHtml(config.title)}</span></div>`
           : `<div class="titlebar mac"><span class="dots" aria-hidden="true"><i class="d1"></i><i class="d2"></i><i class="d3"></i></span><span class="title">${escapeHtml(config.title)}</span></div>`;
 
-  const showMeta = Boolean(config.author.name || config.author.link || config.watermark || logoSrc);
-  const authorLink = config.author.link
-    ? `<a href="${escapeHtml(config.author.link)}" rel="noopener">${escapeHtml(config.author.name || config.author.link)}</a>`
-    : escapeHtml(config.author.name);
+  const showMeta = Boolean(config.author.name || config.watermark || logoSrc);
+  const authorName = escapeHtml(config.author.name);
   const logoHtml = logoSrc ? `<img class="logo" src="${logoSrc}" alt="">` : "";
-  const hasAuthor = Boolean(config.author.name || config.author.link || logoSrc);
+  const hasAuthor = Boolean(config.author.name || logoSrc);
   const meta = showMeta
-    ? `<div class="meta${hasAuthor ? "" : " solo"}"><span class="author">${logoHtml}${authorLink}</span>${
-        config.watermark ? `<a class="watermark" href="${WATERMARK_URL}">${WATERMARK_TEXT}</a>` : ""
+    ? `<div class="meta${hasAuthor ? "" : " solo"}"><span class="author">${logoHtml}${authorName}</span>${
+        config.watermark ? `<span class="watermark">${WATERMARK_TEXT}</span>` : ""
       }</div>`
     : "";
 

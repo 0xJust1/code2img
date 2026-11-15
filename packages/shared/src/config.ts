@@ -35,7 +35,7 @@ export const cardConfigSchema = z.object({
   ratio: ratioSchema.default("auto"),
   background: backgroundSchema.default({ type: "gradient", preset: "sunset" }),
   author: z
-    .object({ name: z.string().max(80).default(""), link: z.string().max(200).default("") })
+    .object({ name: z.string().max(80).default("") })
     .default({}),
   watermark: z.boolean().default(true),
   // Pro-only: uploaded logo, referenced by storage filename (resolved to a data URL
