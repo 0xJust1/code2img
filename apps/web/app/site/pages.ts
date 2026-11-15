@@ -167,9 +167,6 @@ export function home(lang: Lang): string {
 <ul class="mk-aud">${t.aud.map((a) => `<li>${a}</li>`).join("")}</ul>
 <div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div></div>
 </div>
-</div></section>
-
-<section class="mk-sec" id="demo" style="padding-top:0"><div class="mk-wrap">
 <figure class="mk-shot">
 <img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 800px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async">
 <figcaption>${t.shot}</figcaption>

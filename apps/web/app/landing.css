@@ -54,7 +54,7 @@
 .btn-lg { height: 44px; padding: 0 var(--s5); font-size: var(--fs-lg); border-radius: var(--r-panel); }
 .mk-actions { display: flex; flex-wrap: wrap; gap: var(--s3); }
 
-/* ——— hero: the headline pair centred; the product's own output is the section after ——— */
+/* ——— hero: text + CTA left, the product's own output beside it on desktop ——— */
 .mk-hero { padding-block: clamp(56px, 7vw, 112px); }
 .mk-hero .mk-wrap { display: grid; gap: clamp(28px, 4vw, 56px); }
 .mk-hero-top {
@@ -102,9 +102,15 @@
   font-size: var(--fs-body);
   color: var(--ink-2);
 }
-#demo .mk-shot {
+.mk-hero .mk-shot {
   max-width: 800px;
-  margin: var(--s10) auto;
+  width: 100%;
+  margin: 0 auto;
+}
+@media (min-width: 900px) {
+  /* desktop: code card beside the copy/CTA, above the fold */
+  .mk-hero .mk-wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .mk-hero-top { max-width: none; }
 }
 
 /* ——— headings ——————————————————————————————————— */
