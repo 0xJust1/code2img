@@ -222,7 +222,9 @@
 .mk-foot nav { display: grid; gap: var(--s2); font-size: var(--fs-lg); }
 .mk-foot nav a { color: var(--ink-2); text-decoration: none; }
 .mk-foot nav a:hover { color: var(--ink); }
-.mk-foot .legal { margin-top: var(--s8); color: var(--ink-3); font-size: var(--fs-body); }
+.mk-foot .legal { margin-top: var(--s8); color: var(--ink-3); font-size: var(--fs-body); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); }
+.mk-foot .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.mk-foot .legal a:hover { color: var(--ink); }
 
 /* ——— entrance (the observer is the inline REVEAL_JS; no client component) —————
    The visible state is the default one: the animation only runs once JS marks the element. */

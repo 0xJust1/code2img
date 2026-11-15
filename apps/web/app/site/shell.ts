@@ -9,6 +9,9 @@ import { REVEAL_JS } from "../reveal";
 
 export type Lang = "en" | "fr";
 export const BASE = APP_URL;
+/** Public repo does not exist yet (github.com/0xjust1/code2img and VaultKeepR/code2img both 404,
+ *  verified 2026-11-15): the footer links the author profile until the repo transfer happens. */
+export const GITHUB_URL = "https://github.com/0xjust1";
 
 const ROOT = process.cwd();
 function readFile(rel: string): string {
@@ -83,9 +86,9 @@ export function footer(lang: Lang): string {
   const prefix = lang === "fr" ? "/fr" : "";
   return `<footer class="mk-foot"><div class="mk-wrap">${wordmark(lang)}<div class="cols">
 <nav aria-label="${t.product}"><a href="/editor">${t.editor}</a><a href="${prefix}/pricing">${t.pricing}</a><a href="/dashboard">${t.dashboard}</a><a href="/blog">${t.blog}</a><a href="/changelog">${t.changelog}</a></nav>
-<nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a></nav>
+<nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a><a href="${GITHUB_URL}" rel="noopener" target="_blank">GitHub</a></nav>
 <nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="/legal/mentions">${t.mentions}</a><a href="${prefix}/contact">${t.contact}</a><a href="mailto:hello@code2img.app">hello@code2img.app</a><a href="mailto:support@code2img.app">support@code2img.app</a></nav>
-</div><p class="legal">© ${new Date().getFullYear()} ${APP_NAME}. ${t.independent}</p></div></footer>`;
+</div><p class="legal"><span>© ${new Date().getFullYear()} ${APP_NAME}.</span><span>${t.independent}</span><a href="${GITHUB_URL}" rel="noopener" target="_blank">GitHub</a></p></div></footer>`;
 }
 
 interface NavLabels {
@@ -130,7 +133,7 @@ const NAV: Record<Lang, NavLabels> = {
     privacy: "Privacy",
     mentions: "Legal notice",
     contact: "Contact",
-    independent: "An independent product, not affiliated with any other screenshot tool.",
+    independent: "Independent product.",
   },
   fr: {
     main: "Navigation",
@@ -151,7 +154,7 @@ const NAV: Record<Lang, NavLabels> = {
     privacy: "Confidentialité",
     mentions: "Mentions légales",
     contact: "Contact",
-    independent: "Un produit indépendant, sans lien avec un autre outil de capture de code.",
+    independent: "Produit indépendant.",
   },
 };
 
