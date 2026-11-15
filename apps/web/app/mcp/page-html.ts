@@ -2,7 +2,6 @@
 // no client bundle; the only script is the copy button, and every snippet is a real code block.
 import { siteUrl } from "@/lib/share";
 import { breadcrumbs, doc, esc, footer, nav } from "../site/shell";
-import { renderBand } from "../site/pages";
 
 const ENDPOINT = `${siteUrl()}/mcp`;
 // npm publication is pending: this instance serves the tarball clients install from.
@@ -128,7 +127,6 @@ export const MCP_PAGE = doc(
 <p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is not on npm yet: the snippets below install the tarball this instance serves.</p>
 <p class="tight" data-reveal style="margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
 </div></section>
-${renderBand("What an agent gets back.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>
 ${SNIPPETS.map(block).join("\n")}
 <h2 data-reveal>Tools</h2>

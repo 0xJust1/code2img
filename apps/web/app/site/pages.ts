@@ -63,7 +63,7 @@ const HOME = {
     lead: "Paste a snippet, choose a theme, export PNG, JPG or PDF. No account required.",
     aud: ["From a script: one POST returns the PNG.", "From an agent: one MCP tool call renders it."],
     cta: "Open the editor",
-    cta2: "API docs",
+    cta2: "See pricing",
     shot: "cart.ts, github-dark, exported at 2× from the editor.",
     shotAlt: "A rendered code card: the file cart.ts in the github-dark theme on a midnight gradient, with macOS window controls and a line-number gutter",
     demoH2: "Render one right here.",
@@ -100,6 +100,8 @@ const HOME = {
     priceH2: (m: number) => `Free to use. Pro is ${m}\u00a0€\u00a0a\u00a0month.`,
     priceP: "Paid on Stripe and cancellable from the dashboard; the Free plan needs no card.",
     faqH2: "Questions people actually ask.",
+    closeH2: "One snippet away.",
+    closeP: "No account, no card: open the editor and export the first card in under a minute.",
     featAlt: "A code card for query.sql rendered in the rose-pine theme on a dark background",
   },
   fr: {
@@ -110,7 +112,7 @@ const HOME = {
     lead: "Collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF. Aucun compte requis.",
     aud: ["Depuis un script : un POST renvoie le PNG.", "Depuis un agent : un appel MCP le rend."],
     cta: "Ouvrir l'éditeur",
-    cta2: "Docs API",
+    cta2: "Voir les tarifs",
     shot: "cart.ts, thème github-dark, exporté en 2× depuis l'éditeur.",
     shotAlt:
       "Une carte de code générée : le fichier cart.ts en thème github-dark sur un dégradé nuit, avec les contrôles de fenêtre macOS et la gouttière de numéros de ligne",
@@ -148,6 +150,8 @@ const HOME = {
     priceH2: (m: number) => `Gratuit. Pro à ${m}\u00a0€\u00a0par\u00a0mois.`,
     priceP: "Paiement par Stripe, résiliable depuis le tableau de bord ; le plan gratuit ne demande aucune carte.",
     faqH2: "Les questions qui reviennent.",
+    closeH2: "Il ne manque qu'un extrait.",
+    closeP: "Ni compte ni carte : ouvrez l'éditeur et exportez la première carte en moins d'une minute.",
     featAlt: "Une carte de code pour query.sql en thème rose-pine sur fond sombre",
   },
 };
@@ -161,15 +165,18 @@ export function home(lang: Lang): string {
 <h1>${t.h1}</h1>
 <div><p class="mk-lead">${t.lead}</p>
 <ul class="mk-aud">${t.aud.map((a) => `<li>${a}</li>`).join("")}</ul>
-<div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/docs">${t.cta2}</a></div></div>
+<div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div></div>
 </div>
+</div></section>
+
+<section class="mk-sec" id="demo" style="padding-top:0"><div class="mk-wrap">
 <figure class="mk-shot">
-<img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 620px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async">
+<img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 800px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async">
 <figcaption>${t.shot}</figcaption>
 </figure>
 </div></section>
 
-<section class="mk-demo mk-sec" id="demo"><div class="mk-wrap" data-reveal-group>
+<section class="mk-demo mk-sec"><div class="mk-wrap" data-reveal-group>
 <div><h2 data-reveal>${t.demoH2}</h2><p class="tight" data-reveal>${t.demoP}</p></div>
 <div data-reveal>${demoBlock(lang)}</div>
 </div></section>
@@ -208,6 +215,12 @@ export function home(lang: Lang): string {
 
 <section class="mk-sec" id="faq"><div class="mk-wrap" data-reveal-group>
 <div class="faq-grid"><h2 data-reveal>${t.faqH2}</h2>${faqBlock(faq(lang))}</div>
+</div></section>
+
+<section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap" data-reveal-group>
+<h2 data-reveal>${t.closeH2}</h2>
+<p class="tight" data-reveal>${t.closeP}</p>
+<div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div>
 </div></section>`;
 
   const meta: Meta = {
@@ -270,8 +283,6 @@ export function pricingPage(lang: Lang): string {
         h2Faq: "Les questions sur le paiement.",
         free: "Gratuit",
         pro: "Pro",
-        shot: "La carte du hero, générée par le même service qu'un compte payant appelle.",
-        shotAlt: "Une carte de code générée par l'application : cart.ts en thème github-dark sur un dégradé nuit",
       }
     : {
         h2Strip: "The same card, three ways.",
@@ -282,28 +293,15 @@ export function pricingPage(lang: Lang): string {
         h2Faq: "Questions about paying.",
         free: "Free",
         pro: "Pro",
-        shot: "The card from the hero, rendered by the same service a paying account calls.",
-        shotAlt: "A code card rendered by the app: cart.ts in the github-dark theme on a midnight gradient",
       };
-  const strip = [
-    { file: "example-tokyo", cap: "tokyo-night · PNG 2×", capFr: "tokyo-night · PNG 2×" },
-    { file: "example-dracula", cap: "dracula · PNG 4× on Pro", capFr: "dracula · PNG 4× avec Pro" },
-    { file: "example-min", cap: "min-light · PDF on Pro", capFr: "min-light · PDF avec Pro" },
-  ];
   const body = `<section class="mk-hero"><div class="mk-wrap" data-reveal-group>
-<div><h1 data-reveal>${t.h1}</h1><p class="mk-lead" data-reveal>${t.lead(PRICES.monthly, PRICES.yearly)}</p></div>
-<figure class="mk-shot" data-reveal><img src="/examples/hero.jpg" alt="${labels.shotAlt}" width="1088" height="780"><figcaption>${labels.shot}</figcaption></figure>
+<div class="mk-hero-top"><h1 data-reveal>${t.h1}</h1><p class="mk-lead" data-reveal>${t.lead(PRICES.monthly, PRICES.yearly)}</p></div>
 </div></section>
 
-<section class="mk-sec" aria-labelledby="strip"><div class="mk-wrap" data-reveal-group>
+<section class="mk-sec" aria-labelledby="strip" style="padding-top:0"><div class="mk-wrap" data-reveal-group>
 <h2 id="strip" data-reveal>${labels.h2Strip}</h2>
 <p class="tight" data-reveal style="margin-top:var(--s4)">${labels.pStrip}</p>
-<div class="mk-strip" data-reveal>${strip
-    .map(
-      (s) =>
-        `<figure><img src="/examples/${s.file}.jpg" alt="${esc(fr ? s.capFr : s.cap)}" width="1280" height="720" loading="lazy" decoding="async"><figcaption>${fr ? s.capFr : s.cap}</figcaption></figure>`,
-    )
-    .join("")}</div>
+
 </div></section>
 
 <section class="mk-sec"><div class="mk-wrap" data-reveal-group>
@@ -330,7 +328,6 @@ export function pricingPage(lang: Lang): string {
     path,
     lang,
     alt: fr ? "/pricing" : "/fr/pricing",
-    preload: "/examples/hero.jpg",
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -472,7 +469,7 @@ export function docPage(p: DocPage, extraJsonLd?: unknown[]): string {
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${p.h1}</h1><p class="mk-lead" data-reveal style="max-width:60ch">${p.description}</p>
 </div></section>
-${p.pictures === false ? "" : renderBand(p.band ?? "Rendered by Code2Img, at 2×.")}
+${p.pictures === true ? renderBand(p.band ?? "Rendered by Code2Img, at 2×.") : ""}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(p.file)}</div></div></section>`;
   return doc(meta, `${nav(p.lang, "")}${body}${footer(p.lang)}`);
 }
@@ -543,7 +540,6 @@ export function blogIndex(): string {
 <h1 data-reveal>Notes from the build.</h1>
 <p class="mk-lead" data-reveal style="max-width:58ch">How the render pipeline works, what makes a code card readable, and how to get a picture out of an agent. Short pieces, each one grounded in the shipped code.</p>
 </div></section>
-${renderBand("What these posts are about.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap"><ul class="posts" data-reveal-group>${BLOG_POSTS.map(
     (p) =>
       `<li data-reveal><h2 data-reveal><a href="${p.path}">${p.h1}</a></h2><p data-reveal class="byline"><time datetime="${p.updated}">${longDate(p.updated)}</time> · ${readingMinutes(p.file)} min read</p><p data-reveal>${p.description}</p></li>`,
@@ -592,8 +588,7 @@ export function languagePage(slug: string): string | null {
 <p class="mk-lead" data-reveal style="max-width:60ch">${description}</p>
 <div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`languages/${slug}`)}${screenshot("languages/" + slug)}</div></div></section>
-${renderBand(`Other cards, from the same pipeline.`)}
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`languages/${slug}`)}</div></div></section>
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
 <h2>Other languages</h2>
 <p class="tight">The same advice, for the languages people paste most.</p>
@@ -602,21 +597,6 @@ ${renderBand(`Other cards, from the same pipeline.`)}
     .join("")}</ul>
 </div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
-}
-
-/** The example renders that belong to this language, when the repo ships one. */
-function screenshot(name: string): string {
-  const map: Record<string, { file: string; theme: string }> = {
-    "languages/typescript": { file: "example-latte", theme: "catppuccin-latte" },
-    "languages/python": { file: "example-dracula", theme: "dracula" },
-    "languages/go": { file: "example-nord", theme: "nord" },
-    "languages/rust": { file: "example-min", theme: "min-light" },
-    "languages/sql": { file: "example-rose", theme: "rose-pine" },
-    "languages/shell": { file: "example-tokyo", theme: "tokyo-night" },
-  };
-  const hit = map[name];
-  if (!hit) return "";
-  return `<figure class="mk-shot" style="margin-top:var(--s6)"><img src="/examples/${hit.file}.jpg" alt="A code card rendered in the ${hit.theme} theme" width="2560" height="1440" loading="lazy" decoding="async"><figcaption>Rendered by Code2Img in the ${hit.theme} theme, at 2×.</figcaption></figure>`;
 }
 
 export interface Comparison {
@@ -681,7 +661,6 @@ export function comparisonPage(slug: string): string | null {
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${c.h1}</h1><p class="mk-lead" data-reveal style="max-width:60ch">${c.description}</p>
 </div></section>
-${renderBand("The same card, three ways.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(c.file)}</div></div></section>
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
 <h2>Try it on a snippet you have open.</h2>
@@ -703,7 +682,6 @@ export function changelogPage(): string {
 <h1 data-reveal>What shipped.</h1>
 <p class="mk-lead" data-reveal style="max-width:58ch">Every entry below is a change that is live on ${BASE.replace("https://", "")} today.</p>
 </div></section>
-${renderBand("What the latest phase renders.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content("changelog")}</div></div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
@@ -734,7 +712,6 @@ export function legalPage(kind: "terms" | "privacy" | "mentions"): string {
 <h1 data-reveal>${titles.h1}</h1>
 <p class="mk-lead" data-reveal style="max-width:60ch">${lead}</p>
 </div></section>
-${renderBand(isMentions ? "Le cadre légal du service." : "The product this document covers.")}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`legal-${kind}`)}</div></div></section>`;
  return doc(meta, `${nav(meta.lang, "")}${body}${footer(meta.lang)}`);
 }
@@ -779,7 +756,6 @@ export function contactPage(lang: Lang): string {
 <div data-reveal><h2>${t.supportH2}</h2><p>${t.supportP}</p></div>
 <div data-reveal><h2>${t.helloH2}</h2><p>${t.helloP}</p></div>
 </div></section>
-${renderBand(t.band)}
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><p data-reveal>${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>`;
  return doc(meta, `${nav(lang, "")}${body}${footer(lang)}`);
 }
