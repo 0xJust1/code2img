@@ -10,6 +10,8 @@ export interface CardHtmlOptions {
   fontBaseUrl?: string;
   /** Data URLs for uploaded assets, keyed by storage filename. Trusted callers only. */
   attachments?: Record<string, string>;
+  /** Animation settings; when set, the card HTML includes CSS keyframes that reveal the code progressively. */
+  anim?: { type: "typewriter"; durationMs: number };
 }
 
 const escapeHtml = (s: string) =>
@@ -142,10 +144,11 @@ pre .line.hl{background:rgba(125,125,160,.22);box-shadow:inset 3px 0 0 rgba(125,
 .meta a:hover{opacity:1;text-decoration:underline}
 .meta .logo{height:20px;max-width:160px;object-fit:contain;vertical-align:middle;margin-right:8px}
 pre code{counter-reset:line;display:block}
+${opts.anim ? `.tw{overflow:hidden;width:0;animation:tw-reveal ${opts.anim.durationMs}ms steps(${Math.max(1, config.code.length)}) forwards}@keyframes tw-reveal{to{width:100%}}` : ""}
 </style></head>
 <body><div id="capture"><div class="card">
 ${titleBar}
-${codeHtml}
+${opts.anim ? `<div class="tw">${codeHtml}</div>` : codeHtml}
 ${meta}
 </div></div></body></html>`;
 }

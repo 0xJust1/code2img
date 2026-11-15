@@ -41,6 +41,10 @@ export const cardConfigSchema = z.object({
   // Pro-only: uploaded logo, referenced by storage filename (resolved to a data URL
   // via `attachments` for trusted requests — see backgrounds.ts).
   logo: z.string().max(80).regex(UPLOAD_FILE_RE).optional(),
+  anim: z.object({
+    type: z.literal("typewriter"),
+    durationMs: z.number().int().min(1000).max(15000).default(3000),
+  }).optional(),
 });
 
 export type CardConfig = z.infer<typeof cardConfigSchema>;

@@ -254,7 +254,7 @@ const PRICING = {
 };
 
 const ROWS = [
-  { label: "Export formats", labelFr: "Formats d'export", free: "PNG, JPG, PDF", pro: "PNG, JPG, PDF" },
+  { label: "Export formats", labelFr: "Formats d'export", free: "PNG, JPG, PDF, WebM", pro: "PNG, JPG, PDF, WebM, MP4" },
   { label: "Export scale", labelFr: "Échelle d'export", free: "up to 2×", pro: "up to 4×" },
   { label: "Watermark", labelFr: "Filigrane", free: "code2img.app", pro: "none" },
   { label: "Themes and fonts", labelFr: "Thèmes et polices", free: "all", pro: "all" },

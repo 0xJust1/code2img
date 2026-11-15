@@ -1,0 +1,175 @@
+/* Dashboard: the same tokens as the marketing pages (one frame, one rhythm) and the editor (surfaces, ink, accent for state only). */
+
+.dash {
+  max-width: var(--w-page);
+  margin: 0 auto;
+  padding: var(--s8) var(--pad-page) var(--gap-section);
+  display: grid;
+  gap: var(--s6);
+}
+
+/* page head: title left, identity and plan right, a rule closes the band */
+.dash-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  padding-bottom: var(--s5);
+  border-bottom: 1px solid var(--rule);
+}
+.dash-kicker {
+  margin: 0 0 var(--s1);
+  color: var(--ink-3);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.dash-title h1 {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: 620;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.dash-who {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+}
+.dash-email { overflow-wrap: anywhere; }
+.dash-plan {
+  padding: 2px var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  color: var(--ink-2);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.dash-plan--pro {
+  background: var(--raised);
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+
+/* sections: two columns on desktop, one on phone; full-width rows for keys and account */
+.dash-grid {
+  display: grid;
+  gap: var(--s4);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-card--wide { grid-column: 1 / -1; }
+}
+
+.dash-card {
+  min-width: 0;
+  background: var(--surface);
+  border-radius: var(--r-panel);
+  padding: var(--s5) var(--s6);
+  display: grid;
+  gap: var(--s4);
+  align-content: start;
+}
+.dash-card--narrow { max-width: 480px; }
+.dash-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.dash-card h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--fs-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.dash-meta {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+
+/* lists: rows separated by the rule colour, no bullets, actions pinned right */
+.dash-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+}
+.dash-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  min-width: 0;
+  padding: var(--s3) 0;
+  border-top: 1px solid var(--rule);
+}
+.dash-list li:first-child { border-top: 0; padding-top: 0; }
+.dash-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  flex-wrap: wrap;
+  min-width: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.dash-actions {
+  display: flex;
+  gap: var(--s2);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.dash-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+.dash-empty { color: var(--ink-3); }
+
+.dash-row {
+  display: flex;
+  gap: var(--s2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.dash-note {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+.dash-key {
+  margin: 0;
+  padding: var(--s3);
+  border-radius: var(--r-ctl);
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  word-break: break-all;
+}
+.dash-key code { font-family: var(--font-mono); }
+.dash-danger { color: var(--danger); }
+
+/* header links stay visible on phone (the landing hides them); the row scrolls sideways instead */
+@media (max-width: 720px) {
+  .mk-nav .mk-wrap { gap: var(--s4); }
+  .mk-nav .mk-links { gap: var(--s4); overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .mk-nav .mk-links a { white-space: nowrap; font-size: var(--fs-body); }
+}
+
+@media (max-width: 620px) {
+  .dash { padding-top: var(--s6); }
+  .dash-card { padding: var(--s5) var(--s4); }
+}

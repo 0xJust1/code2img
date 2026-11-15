@@ -7,6 +7,8 @@ export type Feature = "no-watermark" | "custom-logo" | "custom-background" | "sc
 export const FREE_MAX_SCALE = 2 as const;
 export const PRO_MAX_SCALE = 4 as const;
 export const FREE_MAX_PRESETS = 10 as const;
+export const FREE_MAX_ANIM_DURATION_MS = 5000 as const;
+export const PRO_MAX_ANIM_DURATION_MS = 15000 as const;
 
 export function can(plan: Plan, _feature: Feature): boolean {
   return plan === "pro";

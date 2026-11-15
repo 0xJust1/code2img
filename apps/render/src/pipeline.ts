@@ -25,6 +25,7 @@ export function parseRenderBody(body: unknown, trusted = false): RenderBody {
     scale?: number;
     quality?: number;
     attachments?: Record<string, string>;
+    anim?: { type?: string; durationMs?: number };
   };
   let config = normalizeConfig(raw.config);
   if (!trusted) {
@@ -32,20 +33,35 @@ export function parseRenderBody(body: unknown, trusted = false): RenderBody {
     config = { ...config, watermark: true };
     if (config.logo) delete config.logo;
     if (config.background.type === "image") config = { ...config, background: { type: "solid", color: "#1e1e2e" } };
+    // Free tier: animated formats capped to webm only, max 5 s
+    if (raw.anim) {
+      const dur = typeof raw.anim.durationMs === "number" ? raw.anim.durationMs : 3000;
+      raw.anim = { type: "typewriter", durationMs: Math.min(dur, 5000) };
+    }
+    // Reject mp4/apng for free tier
+    if (raw.format === "mp4") raw.format = "webm";
   }
-  const format = (["png", "jpg", "pdf"] as const).includes(raw.format as never) ? (raw.format as RenderRequest["format"]) : "png";
+  const format = (["png", "jpg", "pdf", "webm", "mp4"] as const).includes(raw.format as never)
+    ? (raw.format as RenderRequest["format"])
+    : "png";
   const scale = (["1", "2", "3", "4"] as const).includes(String(raw.scale) as never)
     ? (raw.scale as RenderRequest["scale"])
     : 2;
   const capped = (trusted ? scale : Math.min(scale, 2)) as RenderRequest["scale"];
   const quality = typeof raw.quality === "number" ? raw.quality : 90;
   const attachments = trusted && raw.attachments ? raw.attachments : undefined;
-  return { config, format, scale: capped, quality, attachments };
+  // Animation: only typewriter supported, duration capped at 15 s globally
+  let anim: RenderRequest["anim"] = undefined;
+  if (raw.anim && raw.anim.type === "typewriter" && typeof raw.anim.durationMs === "number") {
+    const dur = Math.max(1000, Math.min(15000, raw.anim.durationMs));
+    anim = { type: "typewriter", durationMs: dur };
+  }
+  return { config, format, scale: capped, quality, attachments, anim };
 }
 
 export function requestKey(req: RenderRequest & { attachments?: Record<string, string> }): string {
   return createHash("sha256")
-    .update(JSON.stringify([req.config, req.format, req.scale, req.format === "jpg" ? req.quality : 0, req.attachments ?? null]))
+    .update(JSON.stringify([req.config, req.format, req.scale, req.format === "jpg" ? req.quality : 0, req.anim ?? null, req.attachments ?? null]))
     .digest("hex");
 }
 

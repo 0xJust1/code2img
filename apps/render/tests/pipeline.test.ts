@@ -87,4 +87,35 @@ describe("cache", () => {
     expect(out.mime).toBe("image/png");
     expect(out.bytes).toBeGreaterThan(0);
   });
+
+  it("caps animation duration to 5 s for untrusted requests", () => {
+    const parsed = parseRenderBody({ config: { code: "x" }, format: "webm", anim: { type: "typewriter", durationMs: 8000 } });
+    expect(parsed.anim?.durationMs).toBe(5000);
+    expect(parsed.format).toBe("webm");
+  });
+
+  it("downgrades mp4 to webm for untrusted requests", () => {
+    const parsed = parseRenderBody({ config: { code: "x" }, format: "mp4", anim: { type: "typewriter", durationMs: 3000 } });
+    expect(parsed.format).toBe("webm");
+  });
+
+  it("forces watermark on animated exports for untrusted requests", () => {
+    const parsed = parseRenderBody({ config: { code: "x", watermark: false }, format: "webm", anim: { type: "typewriter", durationMs: 3000 } });
+    expect(parsed.config.watermark).toBe(true);
+  });
+
+  it("includes anim in cache key", () => {
+    const a = requestKey(req({ format: "webm", anim: { type: "typewriter", durationMs: 3000 } }));
+    const b = requestKey(req({ format: "webm", anim: { type: "typewriter", durationMs: 4000 } }));
+    expect(a).not.toBe(b);
+  });
+
+  it("renders a WebM video with typewriter animation", async () => {
+    const out = await doRender(req({ format: "webm", anim: { type: "typewriter", durationMs: 1000 } }), SELF);
+    expect(out.mime).toBe("video/webm");
+    expect(out.ext).toBe("webm");
+    expect(out.bytes).toBeGreaterThan(0);
+    // WebM magic bytes: 1A 45 DF A3
+    expect(out.buf.subarray(0, 4).toString("hex")).toBe("1a45dfa3");
+  });
 });

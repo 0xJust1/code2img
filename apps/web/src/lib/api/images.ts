@@ -8,16 +8,17 @@ import { deleteObject, getObject, putObject } from "../storage";
 export const API_IMAGE_TTL_MS = 30 * 24 * 3600 * 1000;
 export const ID_RE = /^[0-9a-f-]{36}$/i;
 
-const EXT: Record<string, string> = { png: "png", jpg: "jpg", pdf: "pdf" };
-const MIME: Record<string, string> = { png: "image/png", jpg: "image/jpeg", pdf: "application/pdf" };
+const EXT: Record<string, string> = { png: "png", jpg: "jpg", pdf: "pdf", webm: "webm", mp4: "mp4" };
+const MIME: Record<string, string> = { png: "image/png", jpg: "image/jpeg", pdf: "application/pdf", webm: "video/webm", mp4: "video/mp4" };
 
-export function formatOf(format: string | undefined): "png" | "jpg" | "pdf" {
-  return format === "jpg" || format === "pdf" ? format : "png";
+export function formatOf(format: string | undefined): "png" | "jpg" | "pdf" | "webm" | "mp4" {
+  if (format === "jpg" || format === "pdf" || format === "webm" || format === "mp4") return format;
+  return "png";
 }
 
 export async function saveImage(
   db: Database,
-  opts: { userId: string; bytes: Uint8Array; format: "png" | "jpg" | "pdf"; config: Record<string, unknown> },
+  opts: { userId: string; bytes: Uint8Array; format: "png" | "jpg" | "pdf" | "webm" | "mp4"; config: Record<string, unknown> },
 ): Promise<{ id: string; format: string; expiresAt: Date }> {
   const id = randomUUID();
   const storageKey = `${id}.${EXT[opts.format]}`;

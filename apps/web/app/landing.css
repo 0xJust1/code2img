@@ -3,7 +3,52 @@
 .mk {
   background: var(--ground);
 }
+.mk-wrap {
+  max-width: var(--w-page);
+  margin: 0 auto;
+  padding: 0 var(--pad-page);
+}
 .mk-sec { padding-block: var(--gap-section); }
+
+/* ——— nav ————————————————————————————————————————— */
+.mk-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+.mk-nav .mk-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--s6);
+  height: 64px;
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--fs-brand);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.wordmark-two { color: var(--accent); }
+.mk-links {
+  display: flex;
+  align-items: center;
+  gap: var(--s6);
+  margin-left: auto;
+}
+.mk-links a {
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: var(--fs-lg);
+}
+.mk-links a:hover { color: var(--ink); }
+.mk-links a.btn-primary,
+.mk-links a.btn-primary:hover { color: var(--primary-ink); }
 
 /* ——— controls ——————————————————————————————————— */
 .btn-lg { height: 44px; padding: 0 var(--s5); font-size: var(--fs-lg); border-radius: var(--r-panel); }

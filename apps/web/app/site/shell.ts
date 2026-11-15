@@ -25,7 +25,7 @@ function readFile(rel: string): string {
 let cssCache: string | null = null;
 /** tokens + the shared base + the marketing sheet, inlined: no render-blocking request. */
 export function siteCss(): string {
-  cssCache ??= ["app/tokens.css", "app/globals.css", "app/landing.css"].map(readFile).join("\n");
+  cssCache ??= ["app/tokens.css", "app/globals.css", "app/nav.css", "app/landing.css"].map(readFile).join("\n");
   return cssCache;
 }
 

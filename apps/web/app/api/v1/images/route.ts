@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   }
 
   const format = formatOf(typeof raw.format === "string" ? raw.format : undefined);
-  const res = await renderCard(req, { config, format, scale: raw.scale as number | undefined, quality: raw.quality as number | undefined }, { history: false, user: ctx.user });
+  const res = await renderCard(req, { config, format, scale: raw.scale as number | undefined, quality: raw.quality as number | undefined, anim: raw.anim as { type: "typewriter"; durationMs: number } | undefined }, { history: false, user: ctx.user });
   if (!res.ok) {
     const err = (await res.json().catch(() => ({}))) as { error?: string };
     return problem(res.status === 504 ? 504 : 400, "Render failed", err.error ?? `render service answered ${res.status}`);

@@ -42,7 +42,8 @@ export default function Editor() {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [format, setFormat] = useState<"png" | "jpg" | "pdf">("png");
+  const [format, setFormat] = useState<"png" | "jpg" | "pdf" | "webm" | "mp4">("png");
+  const [animDuration, setAnimDuration] = useState(3); // seconds
   const [scale, setScale] = useState(2);
   const [quality, setQuality] = useState(90);
   const [widthMode, setWidthMode] = useState<"auto" | "fixed">(cfg.width ? "fixed" : "auto");
@@ -140,7 +141,7 @@ export default function Editor() {
   const patch = useCallback((p: Partial<CardConfig>) => setCfg((c) => ({ ...c, ...p })), []);
 
   const doExport = useCallback(
-    async (fmt: "png" | "jpg" | "pdf" = format) => {
+    async (fmt: "png" | "jpg" | "pdf" | "webm" | "mp4" = format) => {
       const current = cfgRef.current;
       const check = cardConfigSchema.safeParse(current);
       if (!check.success) {
@@ -151,22 +152,27 @@ export default function Editor() {
       setError("");
       setStatus("Rendering…");
       try {
+        const body: Record<string, unknown> = {
+          config: current,
+          format: fmt,
+          scale: fmt === "png" || fmt === "jpg" || fmt === "webm" || fmt === "mp4" ? scale : 1,
+          quality,
+        };
+        if (fmt === "webm" || fmt === "mp4") {
+          body.anim = { type: "typewriter", durationMs: animDuration * 1000 };
+        }
         const res = await fetch("/api/render", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            config: current,
-            format: fmt,
-            scale: fmt === "png" || fmt === "jpg" ? scale : 1,
-            quality,
-          }),
+          body: JSON.stringify(body),
         });
         if (!res.ok) throw new Error(`${res.status} ${(await res.json().catch(() => ({}))).error ?? ""}`);
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `code2img-${Date.now().toString(36)}.${fmt === "jpg" ? "jpg" : fmt}`;
+        const ext = fmt === "jpg" ? "jpg" : fmt === "mp4" ? "mp4" : fmt === "webm" ? "webm" : fmt;
+        a.download = `code2img-${Date.now().toString(36)}.${ext}`;
         a.click();
         URL.revokeObjectURL(url);
         setStatus(`Exported ${fmt.toUpperCase()} (${Math.round(blob.size / 1024)} KB)`);
@@ -177,7 +183,7 @@ export default function Editor() {
         setBusy(false);
       }
     },
-    [format, scale, quality],
+    [format, scale, quality, animDuration],
   );
 
   const uploadAsset = useCallback(async (f: File) => {
@@ -620,9 +626,25 @@ export default function Editor() {
                 <option value="png">PNG</option>
                 <option value="jpg">JPG</option>
                 <option value="pdf">PDF</option>
+                <option value="webm">WebM</option>
+                {plan === "pro" && <option value="mp4">MP4</option>}
               </select>
             </label>
-            {format !== "pdf" && (
+            {(format === "webm" || format === "mp4") && (
+              <label className="cluster">
+                Duration
+                <input
+                  type="range"
+                  min={2}
+                  max={plan === "pro" ? 15 : 5}
+                  value={animDuration}
+                  onChange={(e) => setAnimDuration(+e.target.value)}
+                  aria-label="Animation duration"
+                />
+                <span className="status">{animDuration}s</span>
+              </label>
+            )}
+            {format !== "pdf" && format !== "webm" && format !== "mp4" && (
               <label className="cluster">
                 Scale
                 <select value={scale} onChange={(e) => setScale(+e.target.value)} aria-label="Export scale" disabled={format === "jpg" && scale > 4}>

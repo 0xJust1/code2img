@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import "../nav.css";
+import "./dashboard.css";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { createAuthClient } from "better-auth/react";
 
 const authClient = createAuthClient();
@@ -34,6 +36,61 @@ interface ApiKey {
   lastUsedAt: string | null;
   revokedAt: string | null;
   createdAt: string;
+}
+
+// Same markup as the landing header (site/shell.ts `nav`), minus the language switch:
+// the dashboard is English-only. Styles come from app/nav.css, shared with the landing.
+const NAV_LINKS = [
+  { href: "/editor", label: "Editor" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/docs", label: "Docs" },
+  { href: "/blog", label: "Blog" },
+  { href: "/dashboard", label: "Dashboard" },
+];
+
+function SiteHeader() {
+  return (
+    <header className="mk-nav">
+      <div className="mk-wrap">
+        <a href="/" className="wordmark" aria-label="code2img — code to image">
+          <svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10.6 8.6 4 16l6.6 7.4" />
+              <path d="M21.4 8.6 28 16l-6.6 7.4" />
+            </g>
+            <rect x="12.9" y="12.9" width="6.2" height="6.2" rx="1.6" fill="var(--accent)" />
+          </svg>
+          <span>
+            Code<span className="wordmark-two">2</span>Img
+          </span>
+        </a>
+        <nav className="mk-links" aria-label="Main">
+          {NAV_LINKS.map((l) => (
+            <a
+              key={l.href}
+              className="mk-navlink"
+              href={l.href}
+              aria-current={l.href === "/dashboard" ? "page" : undefined}
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function Card({ title, meta, wide, children }: { title: string; meta?: string; wide?: boolean; children: ReactNode }) {
+  return (
+    <section className={wide ? "dash-card dash-card--wide" : "dash-card"}>
+      <div className="dash-card-head">
+        <h2>{title}</h2>
+        {meta && <span className="dash-meta">{meta}</span>}
+      </div>
+      {children}
+    </section>
+  );
 }
 
 export default function Dashboard() {
@@ -124,147 +181,178 @@ export default function Dashboard() {
 
   if (me?.user === null) {
     return (
-      <main className="dash">
-        <div className="dash-card">
-          <h2>Not signed in</h2>
-          <p className="dash-note">The editor works without an account. An account keeps your presets, exports and API keys.</p>
-          <a className="btn btn-primary" href="/login" style={{ justifySelf: "start" }}>
-            Sign in
-          </a>
-        </div>
-      </main>
+      <>
+        <SiteHeader />
+        <main className="dash">
+          <section className="dash-card dash-card--narrow">
+            <h2>Not signed in</h2>
+            <p className="dash-note">The editor works without an account. An account keeps your presets, exports and API keys.</p>
+            <div className="dash-row">
+              <a className="btn btn-primary" href="/login">
+                Sign in
+              </a>
+            </div>
+          </section>
+        </main>
+      </>
     );
   }
   const plan = me?.entitlements?.plan ?? "…";
+  const isPro = plan === "pro";
 
   return (
-    <main className="dash">
-      <header className="dash-head">
-        <h1>Dashboard</h1>
-        <div className="dash-who">
-          <span>{me?.user?.email}</span>
-          <span style={{ color: "var(--ink)" }}>{plan}</span>
-          <button onClick={signOut} className="btn btn-sm">
-            Sign out
-          </button>
-        </div>
-      </header>
-
-      <section className="dash-card">
-        <h2>Billing</h2>
-        {notice && <p className="dash-danger">{notice}</p>}
-        {plan === "pro" ? (
-          <div className="dash-row">
-            <button onClick={portal} disabled={busy} className="btn">
-              Manage subscription
+    <>
+      <SiteHeader />
+      <main className="dash">
+        <header className="dash-top">
+          <div className="dash-title">
+            <p className="dash-kicker">Account</p>
+            <h1>Dashboard</h1>
+          </div>
+          <div className="dash-who">
+            <span className="dash-email">{me?.user?.email}</span>
+            <span className={isPro ? "dash-plan dash-plan--pro" : "dash-plan"}>{plan}</span>
+            <button onClick={signOut} className="btn btn-sm">
+              Sign out
             </button>
           </div>
-        ) : (
-          <div className="dash-row">
-            <button onClick={() => checkout("pro-monthly")} disabled={busy} className="btn btn-primary">
-              Go Pro — 3 €/mo
-            </button>
-            <button onClick={() => checkout("pro-yearly")} disabled={busy} className="btn">
-              Go Pro — 29 €/yr
-            </button>
-          </div>
-        )}
-        <p className="dash-note">Pro: no watermark, custom logo and background, 4× and PDF HD, unlimited presets.</p>
-      </section>
+        </header>
 
-      <section className="dash-card">
-        <h2>Presets ({presets.length})</h2>
-        <ul>
-          {presets.map((p) => (
-            <li key={p.id}>
-              <span>{p.name}</span>
-              <button onClick={() => removePreset(p.id)} className="btn btn-sm dash-danger" aria-label={`Delete preset ${p.name}`}>
-                Delete
+        <div className="dash-grid">
+          <Card title="Billing" meta={isPro ? "Pro" : "Free"}>
+            {notice && <p className="dash-danger" role="alert">{notice}</p>}
+            {isPro ? (
+              <div className="dash-row">
+                <button onClick={portal} disabled={busy} className="btn">
+                  Manage subscription
+                </button>
+              </div>
+            ) : (
+              <div className="dash-row">
+                <button onClick={() => checkout("pro-monthly")} disabled={busy} className="btn btn-primary">
+                  Go Pro — 3 €/mo
+                </button>
+                <button onClick={() => checkout("pro-yearly")} disabled={busy} className="btn">
+                  Go Pro — 29 €/yr
+                </button>
+              </div>
+            )}
+            <p className="dash-note">Pro: no watermark, custom logo and background, 4× and PDF HD, unlimited presets.</p>
+          </Card>
+
+          <Card title="Presets" meta={`${presets.length}`}>
+            <ul className="dash-list">
+              {presets.map((p) => (
+                <li key={p.id}>
+                  <span className="dash-item">{p.name}</span>
+                  <div className="dash-actions">
+                    <button onClick={() => removePreset(p.id)} className="btn btn-sm dash-danger" aria-label={`Delete preset ${p.name}`}>
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+              {presets.length === 0 && <li className="dash-empty">No presets yet.</li>}
+            </ul>
+          </Card>
+
+          <Card title="API keys" meta={`${keys.filter((k) => !k.revokedAt).length} active`} wide>
+            {newKey && (
+              <p className="dash-key" role="status">
+                Copy it now, it is shown only once: <code>{newKey}</code>
+              </p>
+            )}
+            <div className="dash-row">
+              <button onClick={() => createKey(["read", "write", "upload"])} className="btn btn-primary">
+                Create API key
               </button>
-            </li>
-          ))}
-          {presets.length === 0 && <li className="dash-empty">No presets yet.</li>}
-        </ul>
-      </section>
+              <a href="/docs" target="_blank" rel="noopener" className="btn">
+                API reference
+              </a>
+            </div>
+            <ul className="dash-list">
+              {keys.map((k) => (
+                <li key={k.id}>
+                  <span className="dash-item">
+                    <code className="dash-mono">{k.prefix}…</code>
+                    <span className="dash-meta">{k.scopes.join(", ")}</span>
+                  </span>
+                  <span className="dash-meta">
+                    {k.revokedAt ? "revoked" : k.lastUsedAt ? `last used ${new Date(k.lastUsedAt).toLocaleString()}` : "never used"}
+                  </span>
+                  {!k.revokedAt && (
+                    <div className="dash-actions">
+                      <button onClick={() => rotateKey(k.id)} className="btn btn-sm">
+                        Rotate
+                      </button>
+                      <button onClick={() => revokeKey(k.id)} className="btn btn-sm dash-danger">
+                        Revoke
+                      </button>
+                    </div>
+                  )}
+                </li>
+              ))}
+              {keys.length === 0 && <li className="dash-empty">No API keys yet.</li>}
+            </ul>
+          </Card>
 
-      <section className="dash-card">
-        <h2>Assets</h2>
-        <ul>
-          {assets.map((a) => (
-            <li key={a.id}>
-              <span>
-                {a.kind}: {a.storageKey} ({Math.round(a.bytes / 1024)} KB)
-              </span>
-            </li>
-          ))}
-          {assets.length === 0 && <li className="dash-empty">No uploads (Pro feature).</li>}
-        </ul>
-      </section>
+          <Card title="Assets" meta={isPro ? `${assets.length}` : "Pro"}>
+            <ul className="dash-list">
+              {assets.map((a) => (
+                <li key={a.id}>
+                  <span className="dash-item">
+                    {a.kind}: {a.storageKey}
+                  </span>
+                  <span className="dash-meta">{Math.round(a.bytes / 1024)} KB</span>
+                </li>
+              ))}
+              {assets.length === 0 && <li className="dash-empty">{isPro ? "No uploads yet." : "Uploads are a Pro feature."}</li>}
+            </ul>
+          </Card>
 
-      <section className="dash-card">
-        <h2>Recent renders</h2>
-        <ul>
-          {history.map((h) => (
-            <li key={h.id}>
-              <span>
-                {h.format} · {h.configHash.slice(0, 10)} · {new Date(h.createdAt).toLocaleString()}
-              </span>
-            </li>
-          ))}
-          {history.length === 0 && <li className="dash-empty">No renders yet.</li>}
-        </ul>
-      </section>
+          <Card title="Recent renders" meta={`${history.length}`}>
+            <ul className="dash-list">
+              {history.map((h) => (
+                <li key={h.id}>
+                  <span className="dash-item">
+                    <span className="dash-mono">{h.format}</span>
+                    <code className="dash-mono dash-meta">{h.configHash.slice(0, 10)}</code>
+                  </span>
+                  <span className="dash-meta">{new Date(h.createdAt).toLocaleString()}</span>
+                </li>
+              ))}
+              {history.length === 0 && <li className="dash-empty">No renders yet.</li>}
+            </ul>
+          </Card>
 
-      <section className="dash-card">
-        <h2>API keys</h2>
-        {newKey && (
-          <p className="dash-key">
-            Copy it now, it is shown only once: <code>{newKey}</code>
-          </p>
-        )}
-        <div className="dash-row">
-          <button onClick={() => createKey(["read", "write", "upload"])} className="btn btn-primary">
-            Create API key
-          </button>
-          <a href="/docs" target="_blank" className="btn">
-            API reference
-          </a>
-        </div>
-        <ul>
-          {keys.map((k) => (
-            <li key={k.id}>
-              <code>{k.prefix}…</code>
-              <span>{k.scopes.join(", ")}</span>
-              <span className="dash-note">
-                {k.revokedAt ? "revoked" : k.lastUsedAt ? `last used ${new Date(k.lastUsedAt).toLocaleString()}` : "never used"}
-              </span>
-              {!k.revokedAt && (
-                <>
-                  <button onClick={() => rotateKey(k.id)} className="btn btn-sm">
-                    Rotate
+          <Card title="Account" wide>
+            <ul className="dash-list">
+              <li>
+                <span className="dash-item">
+                  <span>Export my data</span>
+                  <span className="dash-meta">Presets, renders and key metadata as JSON.</span>
+                </span>
+                <div className="dash-actions">
+                  <a href="/api/me/export" download className="btn btn-sm">
+                    Download JSON
+                  </a>
+                </div>
+              </li>
+              <li>
+                <span className="dash-item">
+                  <span>Delete account</span>
+                  <span className="dash-meta">Removes the account and all data. This cannot be undone.</span>
+                </span>
+                <div className="dash-actions">
+                  <button onClick={deleteAccount} className="btn btn-sm dash-danger">
+                    Delete account
                   </button>
-                  <button onClick={() => revokeKey(k.id)} className="btn btn-sm dash-danger">
-                    Revoke
-                  </button>
-                </>
-              )}
-            </li>
-          ))}
-          {keys.length === 0 && <li className="dash-empty">No API keys yet.</li>}
-        </ul>
-      </section>
-
-      <section className="dash-card">
-        <h2>Account</h2>
-        <div className="dash-row">
-          <a href="/api/me/export" download className="btn">
-            Export my data (JSON)
-          </a>
-          <button onClick={deleteAccount} className="btn dash-danger">
-            Delete account
-          </button>
+                </div>
+              </li>
+            </ul>
+          </Card>
         </div>
-      </section>
-    </main>
+      </main>
+    </>
   );
 }

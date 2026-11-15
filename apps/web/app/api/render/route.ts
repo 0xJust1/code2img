@@ -2,7 +2,7 @@
 import { renderCard } from "@/lib/render";
 
 export async function POST(req: Request) {
-  let body: { config?: unknown; format?: string; scale?: number; quality?: number };
+  let body: { config?: unknown; format?: string; scale?: number; quality?: number; anim?: { type: "typewriter"; durationMs: number } };
   try {
     body = await req.json();
   } catch {
