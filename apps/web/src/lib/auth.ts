@@ -2,29 +2,14 @@ import { betterAuth } from "better-auth";
 import { magicLink } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { getDb, tables } from "@code2img/db";
+import { sendEmail } from "@/lib/email";
 
 
 
+// EN default: the site has no per-user locale (EN/FR is a URL prefix); upgrade
+// when a stored user preference exists.
 async function sendMagicLinkEmail(email: string, url: string): Promise<void> {
-  const host = process.env.SMTP_HOST;
-  if (!host) {
-    // Dev/test mode: no SMTP configured — the link lands in the service logs.
-    console.log(`[auth] magic link for ${email}: ${url}`);
-    return;
-  }
-  const nodemailer = await import("nodemailer");
-  const transport = nodemailer.createTransport({
-    host,
-    port: Number(process.env.SMTP_PORT ?? 587),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined,
-  });
-  await transport.sendMail({
-    from: process.env.SMTP_FROM ?? "Code2Img <no-reply@code2img.app>",
-    to: email,
-    subject: "Your Code2Img sign-in link",
-    text: `Sign in: ${url}\nThis link expires in 5 minutes.`,
-  });
+  await sendEmail(email, { kind: "magic-link", url });
 }
 
 // Only available once DATABASE_URL is set; without it the web app stays in
