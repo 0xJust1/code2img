@@ -8,3 +8,4 @@ playwright-report/
 data/
 .e2e-data/
 packages/mcp/*.tgz
+.taste-skill/

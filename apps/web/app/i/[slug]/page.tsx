@@ -75,7 +75,7 @@ export default async function SharePage({ params }: { params: Promise<{ slug: st
         <a className="ghost" href={`/i/${share.slug}/image`} download={`code2img-${share.slug}.${share.format}`}>
           Download {share.format.toUpperCase()}
         </a>
-        <a className="ghost" href="/">
+        <a className="ghost" href="/editor">
           Create your own
         </a>
         {isOwner && <OwnerDelete slug={share.slug} />}

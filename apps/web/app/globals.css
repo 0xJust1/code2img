@@ -34,19 +34,14 @@ a { color: inherit; }
   border-bottom: 1px solid var(--rule);
 }
 .appbar-brand { display: flex; align-items: center; gap: var(--s3); min-width: 0; }
-.appbar-brand .brand {
-  font-size: var(--fs-title);
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-}
-/* brand asset: the "2" is the only place the accent is allowed on chrome */
-.brand span { color: var(--accent); }
+.appbar-brand .wordmark { font-size: var(--fs-title); }
 .appbar-scope {
   color: var(--ink-3);
   font-size: var(--fs-small);
   padding-left: var(--s3);
   border-left: 1px solid var(--rule);
+  margin: 0;
+  font-weight: 400;
 }
 .appbar-actions { display: flex; align-items: center; gap: var(--s4); }
 .appbar .hint { color: var(--ink-3); font-size: var(--fs-small); display: flex; align-items: center; gap: var(--s2); }
@@ -270,6 +265,22 @@ input[type="checkbox"] {
   .toolbar { padding: var(--s3) var(--s4); border-bottom: 1px solid var(--rule); }
   .toolbar .grow { margin-left: 0; }
   .appbar .hint { display: none; }
-  .appbar-scope { display: none; }
+  /* the screen's one h1 stays on the phone; the wordmark gives up its room instead */
+  .appbar-scope { font-size: var(--fs-small); padding-left: var(--s2); }
   .sect .fields { gap: var(--s3) var(--s3); }
 }
+/* ——— dashboard: the same tokens as the editor, read as a page ——— */
+.dash { max-width: 880px; margin: 0 auto; padding: var(--s8) var(--s4) 72px; display: grid; gap: var(--s5); }
+.dash-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; }
+.dash-head h1 { margin: 0; font-size: var(--fs-h3); letter-spacing: -0.02em; }
+.dash-who { display: flex; align-items: center; gap: var(--s3); color: var(--ink-2); font-size: var(--fs-body); }
+.dash-card { background: var(--surface); border-radius: var(--r-panel); padding: var(--s5); display: grid; gap: var(--s3); }
+.dash-card h2 { margin: 0; font-size: var(--fs-lg); font-weight: 600; color: var(--ink); }
+.dash-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s2); font-size: var(--fs-body); color: var(--ink-2); }
+.dash-card li { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
+.dash-row { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+.dash-empty { color: var(--ink-3); }
+.dash-note { margin: 0; color: var(--ink-3); font-size: var(--fs-body); }
+.dash-key { background: var(--accent-soft); border-radius: var(--r-ctl); padding: var(--s3); color: var(--ink); font-size: var(--fs-body); word-break: break-all; }
+.dash-danger { color: var(--danger); }
+.btn-sm { height: 26px; padding: 0 var(--s3); font-size: var(--fs-small); }

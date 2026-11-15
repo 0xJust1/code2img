@@ -38,7 +38,7 @@ export default function LoginPage() {
         </button>
         {sent && <p style={{ color: "#0a7d32", margin: 0 }}>Link sent — check your inbox (dev: server logs).</p>}
         {error && <p style={{ color: "#c22", margin: 0 }}>{error}</p>}
-        <Link href="/" style={{ color: "#666" }}>← Back to editor</Link>
+        <Link href="/editor" style={{ color: "#666" }}>← Back to editor</Link>
       </form>
     </main>
   );

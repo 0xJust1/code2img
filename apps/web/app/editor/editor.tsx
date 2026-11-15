@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  APP_NAME,
   cardConfigSchema,
   decodePreset,
   encodePreset,
@@ -16,6 +15,7 @@ import {
   type CardConfig,
   type Ratio,
 } from "@code2img/shared";
+import { Wordmark } from "../brand";
 
 const SAMPLE_CODE = `// Try it — edit me
 function greet(name: string): string {
@@ -264,10 +264,8 @@ export default function Editor() {
     <div className="app">
       <header className="appbar">
         <div className="appbar-brand">
-          <a href="/" className="brand" aria-label={`${APP_NAME} — code to image`}>
-            Code<span>2</span>Img
-          </a>
-          <span className="appbar-scope">Editor</span>
+          <Wordmark href="/" />
+          <h1 className="appbar-scope">Editor</h1>
         </div>
         <div className="appbar-actions">
           <span className="hint">

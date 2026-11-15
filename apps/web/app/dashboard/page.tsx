@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { createAuthClient } from "better-auth/react";
 
 const authClient = createAuthClient();
@@ -36,8 +35,6 @@ interface ApiKey {
   revokedAt: string | null;
   createdAt: string;
 }
-
-const btn = { padding: "8px 12px", borderRadius: 8, border: "1px solid #ccc", background: "#fff", cursor: "pointer" } as const;
 
 export default function Dashboard() {
   const [me, setMe] = useState<Me | null>(null);
@@ -127,107 +124,146 @@ export default function Dashboard() {
 
   if (me?.user === null) {
     return (
-      <main style={{ padding: 40, fontFamily: "ui-sans-serif, system-ui" }}>
-        <p>Not signed in.</p>
-        <Link href="/login">Sign in</Link>
+      <main className="dash">
+        <div className="dash-card">
+          <h2>Not signed in</h2>
+          <p className="dash-note">The editor works without an account. An account keeps your presets, exports and API keys.</p>
+          <a className="btn btn-primary" href="/login" style={{ justifySelf: "start" }}>
+            Sign in
+          </a>
+        </div>
       </main>
     );
   }
   const plan = me?.entitlements?.plan ?? "…";
 
   return (
-    <main style={{ maxWidth: 760, margin: "0 auto", padding: 32, fontFamily: "ui-sans-serif, system-ui", display: "grid", gap: 28 }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: 22, margin: 0 }}>Dashboard</h1>
-        <span>
-          {me?.user?.email} · <strong>{plan}</strong> <button onClick={signOut} style={btn}>Sign out</button>
-        </span>
+    <main className="dash">
+      <header className="dash-head">
+        <h1>Dashboard</h1>
+        <div className="dash-who">
+          <span>{me?.user?.email}</span>
+          <span style={{ color: "var(--ink)" }}>{plan}</span>
+          <button onClick={signOut} className="btn btn-sm">
+            Sign out
+          </button>
+        </div>
       </header>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>Billing</h2>
-        {notice && <p style={{ color: "#c22" }}>{notice}</p>}
+      <section className="dash-card">
+        <h2>Billing</h2>
+        {notice && <p className="dash-danger">{notice}</p>}
         {plan === "pro" ? (
-          <button onClick={portal} disabled={busy} style={btn}>Manage subscription (Stripe Portal)</button>
+          <div className="dash-row">
+            <button onClick={portal} disabled={busy} className="btn">
+              Manage subscription
+            </button>
+          </div>
         ) : (
-          <p style={{ display: "flex", gap: 12 }}>
-            <button onClick={() => checkout("pro-monthly")} disabled={busy} style={btn}>Go Pro — 7 €/mo</button>
-            <button onClick={() => checkout("pro-yearly")} disabled={busy} style={btn}>Go Pro — 59 €/yr</button>
-          </p>
+          <div className="dash-row">
+            <button onClick={() => checkout("pro-monthly")} disabled={busy} className="btn btn-primary">
+              Go Pro — 7 €/mo
+            </button>
+            <button onClick={() => checkout("pro-yearly")} disabled={busy} className="btn">
+              Go Pro — 59 €/yr
+            </button>
+          </div>
         )}
-        <p style={{ color: "#666" }}>Pro: no watermark, custom logo & background, 4x/PDF HD, unlimited presets.</p>
+        <p className="dash-note">Pro: no watermark, custom logo and background, 4× and PDF HD, unlimited presets.</p>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>Presets ({presets.length})</h2>
-        <ul style={{ paddingLeft: 18 }}>
+      <section className="dash-card">
+        <h2>Presets ({presets.length})</h2>
+        <ul>
           {presets.map((p) => (
             <li key={p.id}>
-              {p.name} <button onClick={() => removePreset(p.id)} style={{ ...btn, border: 0, color: "#c22", cursor: "pointer" }}>×</button>
+              <span>{p.name}</span>
+              <button onClick={() => removePreset(p.id)} className="btn btn-sm dash-danger" aria-label={`Delete preset ${p.name}`}>
+                Delete
+              </button>
             </li>
           ))}
-          {presets.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No presets yet.</li>}
+          {presets.length === 0 && <li className="dash-empty">No presets yet.</li>}
         </ul>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>Assets</h2>
-        <ul style={{ paddingLeft: 18 }}>
+      <section className="dash-card">
+        <h2>Assets</h2>
+        <ul>
           {assets.map((a) => (
             <li key={a.id}>
-              {a.kind}: {a.storageKey} ({Math.round(a.bytes / 1024)} KB)
+              <span>
+                {a.kind}: {a.storageKey} ({Math.round(a.bytes / 1024)} KB)
+              </span>
             </li>
           ))}
-          {assets.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No uploads (Pro feature).</li>}
+          {assets.length === 0 && <li className="dash-empty">No uploads (Pro feature).</li>}
         </ul>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>Recent renders</h2>
-        <ul style={{ paddingLeft: 18 }}>
+      <section className="dash-card">
+        <h2>Recent renders</h2>
+        <ul>
           {history.map((h) => (
             <li key={h.id}>
-              {h.format} · {h.configHash.slice(0, 10)} · {new Date(h.createdAt).toLocaleString()}
+              <span>
+                {h.format} · {h.configHash.slice(0, 10)} · {new Date(h.createdAt).toLocaleString()}
+              </span>
             </li>
           ))}
-          {history.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No renders yet.</li>}
+          {history.length === 0 && <li className="dash-empty">No renders yet.</li>}
         </ul>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>API keys</h2>
+      <section className="dash-card">
+        <h2>API keys</h2>
         {newKey && (
-          <p style={{ background: "#fff8e1", padding: 10, borderRadius: 8, wordBreak: "break-all" }}>
+          <p className="dash-key">
             Copy it now, it is shown only once: <code>{newKey}</code>
           </p>
         )}
-        <p style={{ display: "flex", gap: 12 }}>
-          <button onClick={() => createKey(["read", "write", "upload"])} style={btn}>Create API key</button>
-          <a href="/docs" target="_blank" style={btn}>API reference</a>
-        </p>
-        <ul style={{ paddingLeft: 18 }}>
+        <div className="dash-row">
+          <button onClick={() => createKey(["read", "write", "upload"])} className="btn btn-primary">
+            Create API key
+          </button>
+          <a href="/docs" target="_blank" className="btn">
+            API reference
+          </a>
+        </div>
+        <ul>
           {keys.map((k) => (
             <li key={k.id}>
-              <code>{k.prefix}…</code> · {k.scopes.join(", ")} ·{" "}
-              {k.revokedAt ? "revoked" : k.lastUsedAt ? `last used ${new Date(k.lastUsedAt).toLocaleString()}` : "never used"}{" "}
+              <code>{k.prefix}…</code>
+              <span>{k.scopes.join(", ")}</span>
+              <span className="dash-note">
+                {k.revokedAt ? "revoked" : k.lastUsedAt ? `last used ${new Date(k.lastUsedAt).toLocaleString()}` : "never used"}
+              </span>
               {!k.revokedAt && (
                 <>
-                  <button onClick={() => rotateKey(k.id)} style={{ ...btn, padding: "2px 8px" }}>Rotate</button>{" "}
-                  <button onClick={() => revokeKey(k.id)} style={{ ...btn, padding: "2px 8px", color: "#c22" }}>Revoke</button>
+                  <button onClick={() => rotateKey(k.id)} className="btn btn-sm">
+                    Rotate
+                  </button>
+                  <button onClick={() => revokeKey(k.id)} className="btn btn-sm dash-danger">
+                    Revoke
+                  </button>
                 </>
               )}
             </li>
           ))}
-          {keys.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No API keys yet.</li>}
+          {keys.length === 0 && <li className="dash-empty">No API keys yet.</li>}
         </ul>
       </section>
 
-      <section>
-        <h2 style={{ fontSize: 16 }}>Account</h2>
-        <p style={{ display: "flex", gap: 12 }}>
-          <a href="/api/me/export" download style={btn}>Export my data (JSON)</a>
-          <button onClick={deleteAccount} style={{ ...btn, color: "#c22" }}>Delete account</button>
-        </p>
+      <section className="dash-card">
+        <h2>Account</h2>
+        <div className="dash-row">
+          <a href="/api/me/export" download className="btn">
+            Export my data (JSON)
+          </a>
+          <button onClick={deleteAccount} className="btn dash-danger">
+            Delete account
+          </button>
+        </div>
       </section>
     </main>
   );

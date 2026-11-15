@@ -41,6 +41,16 @@
   --fs-title: 14px;
   --fs-h1: 22px;
 
+  /* marketing: the page scale, dealt once (display / section / lead / body) */
+  --fs-display: clamp(38px, 5.2vw, 68px);
+  --fs-h2: clamp(26px, 3vw, 38px);
+  --fs-h3: clamp(18px, 1.6vw, 21px);
+  --fs-lead: clamp(16px, 1.35vw, 19px);
+  --fs-lg: 16px;
+  --w-page: 1180px;
+  --gap-section: clamp(72px, 8vw, 128px);
+  --pad-page: clamp(20px, 4vw, 48px);
+
   /* space: 4px base */
   --s1: 4px;
   --s2: 8px;
