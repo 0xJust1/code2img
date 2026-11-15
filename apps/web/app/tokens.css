@@ -47,7 +47,7 @@
   --fs-h3: clamp(18px, 1.6vw, 21px);
   --fs-lead: clamp(16px, 1.35vw, 19px);
   --fs-lg: 16px;
-  --w-page: 1180px;
+  --w-page: 1200px;
   --gap-section: clamp(72px, 8vw, 128px);
   --pad-page: clamp(20px, 4vw, 48px);
 
