@@ -1,0 +1,21 @@
+<p class="lede">ray.so and Code2Img both answer the same first question — how do I turn this snippet into a picture that does not look like a terminal screenshot — and then diverge on what happens next. This page says where, from each product's own published description, as of 15 November 2026. If something here is out of date, tell us and it gets fixed.</p>
+
+<h2>What ray.so is</h2>
+<p>ray.so describes itself, in one line, as a way to "create beautiful images of your code": an editor, a small set of themes, a few toggles (padding, background, dark or light), and an export button that hands you an image. It is fast, it is pleasant, and it does exactly one thing. There is no account in the way of the first export, and there does not need to be.</p>
+
+<h2>Where the two agree</h2>
+<p>The whole first thirty seconds. Paste code, pick a theme, set the padding and the background, export a PNG. Both give you a card with rounded corners, a window chrome if you want one, and syntax colours that came from a real grammar rather than a hand-rolled regex. If all you want is one nice image for a slide, either tool finishes the job.</p>
+
+<h2>Where they part</h2>
+<ul>
+  <li><strong>A second door.</strong> Code2Img exposes the same renderer over HTTP at <code>/api/v1</code> and over MCP to an agent, so the image can be produced by a script, a CI job or a docs generator without a browser. A one-off tool does not need this; a pipeline does.</li>
+  <li><strong>The link, not the file.</strong> A Code2Img export can become a public page at <code>/i/&lt;slug&gt;</code> with its own Open Graph card, so pasting the link into Slack, X or LinkedIn shows the image itself. Links expire on your terms and can be deleted.</li>
+  <li><strong>Scale on purpose.</strong> Exports go up to 4× on Pro through the render context's device pixel ratio — laid out at that ratio, not upscaled — which is what makes a card survive a 4K slide or a retina screenshot of a screenshot.</li>
+  <li><strong>Branding.</strong> Your own background image and a logo in the card corner, on Pro, instead of a fixed set of backgrounds.</li>
+</ul>
+
+<h2>What Code2Img is not trying to do</h2>
+<p>It is not a design tool: there is no drag-and-drop canvas, no annotation layer, no free positioning of elements. The card is a card. If your work is a poster with arrows and labels, Code2Img is the wrong instrument and will stay the wrong instrument.</p>
+
+<h2>Which to pick</h2>
+<p>For a single image, on a desktop, right now: whichever tab you already have open — the results are comparable and the difference is taste. For images that come out of a process, need a shareable URL with a preview, or need to be 4× and unbranded, that is the gap Code2Img exists to fill. <a href="/editor">Try it on a snippet</a> and judge the output rather than this page.</p>

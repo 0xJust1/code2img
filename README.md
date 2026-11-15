@@ -214,5 +214,32 @@ Paquet stdio : `npm run pack:mcp` (build + `npm pack`) régénère `apps/web/pub
 que sert l'instance. Publication npm reportée (décision 15/11/2026) : procédure dans
 `docs/checklist-launch.md`.
 
+## Site marketing (Phase 6) — design system et pages publiques
+
+Toutes les pages publiques (`/`, `/fr`, `/pricing`, `/fr/pricing`, `/api`, `/blog`,
+`/blog/[slug]`, `/changelog`, `/legal/*`, `/code-screenshot/[language]`, `/vs/[tool]`,
+`/docs`, `/mcp`) sont servies comme **HTML statique sans runtime React** : un `route.ts` par
+chemin, un shell commun (`app/site/shell.ts`), le contenu de page dans `app/site/pages.ts` et
+les textes longs en HTML dans `apps/web/content/` (les mêmes fichiers servent le blog). Aucun
+JavaScript n'est nécessaire pour lire la landing ; la seule chose hydratée dans `/` est la
+démo live, montée à l'approche du viewport. C'est ce qui fait tenir le LCP mobile : ~1,5–6 Ko
+de script au lieu du bundle Next complet.
+
+- **Tokens** : `app/tokens.css` (couleurs, typo, espacements, dark/light) est la seule source
+  des valeurs ; `landing.css` ne fait que composer. L'éditeur et le dashboard lisent les
+  mêmes tokens.
+- **Marque** : `packages/shared/src/brand.ts` + `apps/web/scripts/gen-assets.mjs`, qui génère
+  favicons, apple-touch, `og.png` et le logo en passant par le service de rendu du produit.
+- **OG dynamiques** : `/api/og?title=…&sub=…` rend une carte 1200×630 avec le moteur du
+  produit ; toutes les pages l'utilisent par défaut, avec repli 302 sur `/og.png`.
+- **SEO** : `sitemap.ts` (pages réelles, hreflang EN/FR sur la landing et la tarification),
+  `robots.txt`, `llms.txt`, JSON-LD SoftwareApplication / Organization / FAQPage /
+  BreadcrumbList.
+- **Contenu SEO** : plan de mots-clés EN+FR, dix idées d'articles et les pages comparatives
+  sont dans `docs/seo/` (les articles publiés correspondent à deux de ces idées).
+
+Le déploiement reste natif (tar + scp + build + restart, sans Docker) ; procédure dans
+`docs/checklist-launch.md`.
+
 License note: inspired by ray.so (MIT © Raycast Technologies) — reimplementation, no ray.so
 assets or branding. Brand constants live only in `packages/shared/src/brand.ts`.

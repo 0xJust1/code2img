@@ -76,7 +76,7 @@ const examples = [
   { file: "example-dracula", theme: "dracula", bg: { type: "gradient", preset: "forest" }, title: "train.py", lang: "python",
     code: `def train(model, loader, epochs=3):\n    for epoch in range(epochs):\n        for batch in loader:\n            loss = model.step(batch)\n        print(f"epoch {epoch} loss {loss:.3f}")` },
   { file: "example-min", theme: "min-light", bg: { type: "solid", color: "#f4f1ea" }, title: "notes.rs", lang: "rust",
-    code: `#[derive(Debug)]\npub struct Note {\n    pub id: Uuid,\n    pub body: String,\n}\n\nimpl Note {\n    pub fn new(body: impl Into<String>) -> Self {\n        Self { id: Uuid::new_v4(), body: body.into() }\n    }\n}` },
+    code: `#[derive(Debug)]\npub struct Note {\n    pub id: Uuid,\n    pub body: String,\n}` },
 ];
 
 const browser = await chromium.launch();
@@ -121,7 +121,7 @@ for (const ex of examples) {
   const config = {
     code: ex.code, language: ex.lang, theme: ex.theme, font: "jetbrains-mono", fontSize: 15,
     lineHeight: 1.6, padding: 48, radius: 12, shadow: true, windowStyle: "mac", title: ex.title,
-    lineNumbers: true, ratio: ex.file === "hero" ? "auto" : "16:9", background: ex.bg, watermark: true,
+    lineNumbers: true, ratio: "auto", background: ex.bg, watermark: true,
   };
   // jpg: these cards end up on a full-bleed background, no transparency needed, and a PNG of a
   // dithered gradient costs 1 MB while the same picture as JPEG costs a tenth of it.

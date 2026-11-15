@@ -1,0 +1,32 @@
+<p class="lede">The editor, the API and the MCP server all call the same render service. Whatever you can build in the editor, you can ask for over HTTP — the same themes, the same limits, the same bytes.</p>
+
+<h2>Base URL and authentication</h2>
+<p>Every endpoint lives under <code>https://code2img.app/api/v1</code> and takes a key in the <code>Authorization</code> header:</p>
+<pre><code>Authorization: Bearer c2i_sk_…</code></pre>
+<p>Create keys in the <a href="/dashboard">dashboard</a>. A key carries scopes (<code>read</code>, <code>write</code>, <code>upload</code>) and is stored hashed, with a readable prefix so you can tell two keys apart. Rotation and revocation are immediate; requests are idempotent when you send an <code>Idempotency-Key</code>. Errors come back as RFC 9457 problem documents with a stable <code>type</code>, so a client can branch on the error rather than on prose.</p>
+
+<h2>Endpoints</h2>
+<ul>
+  <li><code>POST /images</code> — render a card. Send a <code>config</code> (code, language, theme, font, title, background, scale) plus <code>format</code> (<code>png</code>, <code>jpg</code>, <code>pdf</code>) and <code>scale</code> up to 4×. Default response is the image bytes; <code>response_type: "url"</code> stores it and returns <code>{ id, url, expires_at }</code>.</li>
+  <li><code>POST /share</code> — create a public page for a snippet and get back its slug, URL and expiry.</li>
+  <li><code>POST /signed-url</code> — sign a render URL, so a browser or an <code>&lt;img&gt;</code> tag can fetch it without carrying your key.</li>
+  <li><code>POST /uploads</code> — upload a background image or a logo (Pro).</li>
+  <li><code>GET /usage</code> — the calls left in the current minute and day, per key.</li>
+  <li><code>GET /themes</code>, <code>/languages</code>, <code>/fonts</code>, <code>/backgrounds</code> — the catalogs, public, no key needed.</li>
+  <li><code>GET /openapi.json</code> — the OpenAPI 3.1 specification for all of the above.</li>
+</ul>
+
+<h2>Render a card</h2>
+<pre><code>curl -X POST https://code2img.app/api/v1/images \
+  -H "Authorization: Bearer $CODE2IMG_API_KEY" \
+  -H "content-type: application/json" \
+  -d '{"config":{"code":"print(\"hi\")","language":"python","theme":"tokyo-night"},"format":"png","scale":2}' \
+  --output card.png</code></pre>
+<p>Drop <code>language</code> and the service guesses from the snippet with the same ordered rules the editor uses.</p>
+
+<h2>Quotas</h2>
+<p>Free keys get 30 requests a minute and 500 a day; Pro keys get 300 a minute and 5.000 a day. Both limits are enforced in Redis, per key and per IP, and the response headers tell you where you stand — <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code> and <code>X-RateLimit-Reset</code>. Exceeding a limit returns <code>429</code> with <code>Retry-After</code>; a burst of identical retries is absorbed by the idempotency key, not billed twice.</p>
+
+<h2>Three ways in</h2>
+<p>Paste in the <a href="/editor">editor</a> when you want to see it. Call the API from a build script, a CI job or a docs generator. Or let an agent do it: the <a href="/mcp">MCP server</a> exposes <code>render_code_image</code>, <code>list_themes</code>, <code>list_languages</code>, <code>list_backgrounds</code>, <code>create_share_link</code>, <code>get_share_urls</code> and <code>get_usage</code> to any MCP client, over the same API and the same quotas.</p>
+<p>The interactive reference — every endpoint, every field, try-it-out — is at <a href="/docs">/docs</a>.</p>

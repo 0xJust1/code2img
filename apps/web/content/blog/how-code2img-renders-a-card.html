@@ -1,0 +1,24 @@
+<p class="lede">Every Code2Img export — the editor's download button, a <code>POST /api/v1/images</code> call, an MCP tool call from an agent — becomes a number of pixels through one small pipeline. This is what it does, in order, and why the preview you see and the file you get cannot drift apart.</p>
+
+<h2>One document, two consumers</h2>
+<p>A card is an HTML document: a wrapper with the padding and the rounded frame, a header bar, and a <code>&lt;pre&gt;</code> holding the highlighted code. The editor shows that document in an iframe and measures it — the card's real width and height — then scales it to fit the canvas. The render service loads the same document in headless Chromium and screenshots it. There is no second layout path, which is why a change to the card's CSS shows up in the export and the preview at the same moment.</p>
+
+<h2>Highlighting</h2>
+<p>Shiki does the colouring, with the theme you picked and the grammar for the language you picked (or the one auto-detection guessed). Shiki returns tokens with inline styles, so the highlighted markup carries its own colours and needs no stylesheet at export time. That also settles a small argument the codebase had with itself: a themed card must not keep the <code>&lt;pre&gt;</code>'s own background from the grammar's default theme, or the card shows two surfaces. The export forces that background transparent, so the only background is the one you chose.</p>
+
+<h2>Scale is deviceScaleFactor, not a resize</h2>
+<p>The service creates a browser context with <code>deviceScaleFactor</code> set to your scale — 2 on Free, up to 4 on Pro — over a 1600×1200 viewport:</p>
+<pre><code>const context = await browser.newContext({
+  deviceScaleFactor: req.scale,
+  viewport: { width: 1600, height: 1200 },
+});</code></pre>
+<p>Nothing is rendered small and then stretched. The card is laid out once, at the device pixel ratio you asked for, so hairlines stay hairlines and the text is genuinely sharper rather than interpolated. That is also why the exported PNG of a 2× card is roughly twice the dimensions of the preview at fit-to-canvas zoom, not the same size with more pixels.</p>
+
+<h2>Where the frame lives</h2>
+<p>The padding, the radius and the shadow belong to the wrapper element, not to the code window inside it. It is tempting to put the padding on the inner card because that is where it looks right in a stylesheet — and then the export has no frame at all in an automatic ratio, because the wrapper is exactly as large as its child. The rule now: pad the capture element, so the background is inside the picture and the window floats in it. The same bug wore a second hat for the watermark, which is positioned relative to the capture; centring it belongs to the wrapper too.</p>
+
+<h2>Formats</h2>
+<p>PNG is <code>page.screenshot()</code>; with a transparent background the context is told to omit the background, so the corners outside the radius are genuinely transparent rather than white. JPG takes a quality value and is worth its smaller file when the card is a photograph of code rather than a diagram. PDF is <code>page.pdf({ printBackground: true, pageRanges: "1" })</code> — one page, background included, which keeps the gradients that a naive print path drops.</p>
+
+<h2>What the pipeline refuses to do</h2>
+<p>It does not fetch anything from the network to render a card: fonts and themes are bundled, so a render cannot fail because a font CDN is slow, and it cannot leak the snippet in a URL. It does not keep the snippet on a plain export; storage happens only when you ask for a share link or a saved history entry. And it does not let the API and the editor disagree about limits: the plan is resolved in one place, and the scale, the watermark and the quota all come from that decision.</p>

@@ -1,0 +1,27 @@
+<p class="lede">"Auto" on Code2Img is not a model and not a guess about intent. It is an ordered list of eighteen regular expressions, most specific first, and a fixed fallback. Knowing the order is the difference between a correctly highlighted card and one where every type annotation is the same colour as every identifier.</p>
+
+<h2>The list, in order</h2>
+<p>The rules are tried from top to bottom and the first match wins. The head of the list is the specific stuff — Python's <code>def … :</code>, Ruby's <code>end</code> and <code>attr_accessor</code>, Go's <code>package main</code> and <code>:=</code>, Rust's <code>fn</code>, <code>let mut</code> and <code>println!</code> — and the tail is the generic JavaScript, TypeScript, YAML, JSON and shell rules. If nothing matches at all, the answer is <code>typescript</code>, deliberately: it is the most common case for a snippet that nobody labelled.</p>
+
+<h2>Collision one: TypeScript usually lands on JavaScript</h2>
+<p>The JavaScript rule sits above the TypeScript rule. It fires on a leading brace, <code>async function</code>, <code>=&gt;{</code>, <code>const</code>, <code>let</code>, or <code>console.</code>. Almost every TypeScript snippet on earth contains a <code>const</code>, so the ordinary case is a snippet of TypeScript that is detected as JavaScript:</p>
+<pre><code>// detected as javascript
+const timings = [1, 2, 3];
+export function total(xs: number[]): number {
+  return xs.reduce((a, b) => a + b, 0);
+}</code></pre>
+<p>The TypeScript rule only gets its turn when JavaScript did not match — an <code>interface</code> or <code>type</code> declaration at the start of a line, an annotation that is exactly <code>: string</code>, <code>: number</code> or <code>: boolean</code>, or an <code>import type</code>. Paste the interface and detection is right; paste the implementation and the annotations lose their distinct colour, because the JavaScript grammar has no concept of a type position.</p>
+
+<h2>Collision two: <code>function</code> is the PHP rule too</h2>
+<p>The PHP rule matches <code>&lt;?php</code> and, as a second alternative, <code>function name(</code> at the start of a line. That second alternative catches a great deal of other languages:</p>
+<pre><code>// detected as php
+function load(x: string) {
+  return x.trim();
+}</code></pre>
+<p>PHP sits well above JavaScript in the list, so a snippet that opens with an ordinary function signature is claimed before JavaScript or TypeScript ever sees it. Java's <code>public static void</code> and C's <code>int main(</code> are separate rules near the same height for the same reason — the language's own signature is the strongest signal available, and it is worth being wrong for a bare function than wrong for a bare C program.</p>
+
+<h2>The other useful ones</h2>
+<p>Three rules do more work than their size suggests. The HTML rule fires on <code>&lt;div</code>, <code>&lt;span</code> or <code>&lt;!DOCTYPE</code>, so a JSX fragment about a div becomes HTML. The CSS rule fires on <code>@media</code>, on any <code>property: value;</code> and on a selector line starting with a dot — a YAML file with a dotted key can look like CSS. And shell fires on <code>#!/bin/sh</code>, on <code>echo $…</code> or on a line starting with <code>apt</code>, <code>curl</code>, <code>cd</code>, <code>mkdir</code> or <code>export</code>.</p>
+
+<h2>What to do about it</h2>
+<p>Rule of thumb for anything you publish: set the language explicitly. Auto is a convenience for a quick paste, and the honest description of its behaviour is "eighteen ordered guesses, most specific first" — good at telling Python from Go, structurally unable to tell TypeScript from JavaScript at the top level, and quick to call a function PHP. On the <a href="/api">API</a>, that is the <code>config.language</code> field; in the <a href="/editor">editor</a>, it is the language select. Leave it on auto for the snippet you are about to throw away, and set it for the one that goes in a README.</p>

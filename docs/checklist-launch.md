@@ -21,6 +21,39 @@ régénéré par `npm run pack:mcp`).
 Mode TEST uniquement dans le code déployé. Passage en live = go explicite de Justin
 (clés live + `STRIPE_WEBHOOK_SECRET` via `stripe listen`).
 
-## Légal / SEO
+## Légal / SEO — fait en Phase 6 (à relire avant le lancement public)
 
-À traiter en Phase 6 (mentions légales, CGU/CGV, robots.txt, sitemap, JSON-LD).
+- [x] `/legal/terms` et `/legal/privacy` en ligne (rédigées depuis le code réellement déployé :
+      export, partage, quotas, Stripe, sous-traitants). Chaque affirmation a été vérifiée contre
+      le code : clés d'API stockées en sha256 (`src/lib/api/keys.ts`), aucun analytics ni
+      publicité dans l'app, service de rendu non exposé (3002 en local seulement), export non
+      connecté non conservé (`app/api/render/route.ts` n'écrit rien).
+- [ ] **Compléter l'identité de l'éditeur avant le lancement public** : nom, adresse et SIREN/SIRET
+      de l'EI (mentions légales obligatoires en France, art. 6 LCEN). Rien n'est inventé : les
+      pages disent « Operator: Code2Img » et attendent ces trois valeurs de Justin.
+- [x] `robots.txt`, `sitemap.xml` (25 URLs : pages réelles uniquement, hreflang EN/FR sur la
+      landing et la tarification), `llms.txt`, JSON-LD (SoftwareApplication, Organization,
+      FAQPage, BreadcrumbList) sur toutes les pages publiques.
+- [x] OG dynamiques : `/api/og?title=…&sub=…` (rendu par le service du produit, 1200×630,
+      fallback 302 vers `og.png` si le rendu échoue), branchés en `openGraph`/`twitter` sur
+      les pages de contenu.
+- [ ] **Vérifier les OG dans les crawlers réels** (X, LinkedIn, Slack) après le premier
+      partage : les outils de prévisualisation ne lisent pas le même chemin que le navigateur.
+- [ ] Pas d'enregistrement A IPv4 sur le domaine (Let's Encrypt est passé en IPv6) : un
+      crawler d'aperçu en IPv4 seulement ne verra pas le site. À corriger côté DNS quand
+      l'hébergeur le permettra.
+
+## Observabilité (optionnel, non installé)
+
+Aucune télémétrie aujourd'hui : ni analytics, ni Sentry, ni Plausible (choix assumé, la
+politique de confidentialité le dit). Si un jour : Plausible (sans cookie) pour le trafic,
+Sentry pour les erreurs du service web et du rendu. Rien à préparer dans le code.
+
+## Roadmap post-MVP
+
+1. Publier `code2img-mcp` sur npm (section en haut) et basculer les snippets.
+2. Les 8 idées d'articles restantes (`seo-content/article-ideas.md`) + les pages par langage
+   déjà créées : c'est la croissance organique, pas de fonctionnalité à écrire.
+3. Comptes OAuth (Google/GitHub) : le code est branché, il ne manque que les clés.
+4. R2/S3 à la place du disque pour `SHARE_IMAGES_DIR` (un fichier `src/lib/storage.ts`).
+5. Stripe live + webhook pointé dans le dashboard (go humain).

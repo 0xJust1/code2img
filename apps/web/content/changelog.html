@@ -1,0 +1,22 @@
+<p class="lede">Code2Img is built in public phases, each one deployed to the same instance. This is what is live today, newest first.</p>
+
+<h2>15 November 2026 — Phase 6: the design system, and this site</h2>
+<p>One set of tokens (colour, type, spacing, dark and light) now drives the editor, the dashboard and every marketing page. The editor's action bar sits on a single control height with labels on one baseline, the preview card is measured and centred in its stage, and the exported frame matches the preview exactly. Code2Img got a mark of its own: an SVG logo, a favicon set (SVG, ICO, 32, 192, 512, apple-touch), a web manifest and a default Open Graph image, all generated from the product's own render service. The landing, <a href="/pricing">pricing</a>, <a href="/api">API</a>, <a href="/blog">blog</a>, <a href="/changelog">changelog</a> and legal pages are here, in English and French where they need to be.</p>
+
+<h2>15 November 2026 — Phase 5.5: code2img.app, with HTTPS</h2>
+<p>The domain is served by the same box that runs the render service, behind a reverse proxy with Let's Encrypt certificates for <code>code2img.app</code>, <code>www</code> and <code>api</code>. The render port itself stays closed to the internet, reachable only by the web app with an internal token.</p>
+
+<h2>15 November 2026 — Phase 5: the MCP server</h2>
+<p>Code2Img speaks to agents now. There is a remote Streamable HTTP server at <code>/mcp</code>, authenticated with an API key, and a stdio package for local clients such as Claude Code and Cursor. Both call the public API, so quotas and the watermark are applied in one place. Setup snippets per client are on the <a href="/mcp">MCP page</a>; <code>llms.txt</code> is the short map an agent reads first.</p>
+
+<h2>15 November 2026 — Phase 4: the public API</h2>
+<p><code>/api/v1</code> went live: hashed API keys with scopes, rotation and revocation, quotas per key and per IP in Redis, idempotency keys, RFC 9457 problem responses, signed render URLs, the background and logo upload endpoints, an OpenAPI 3.1 specification with an interactive reference, and a typed TypeScript SDK.</p>
+
+<h2>15 November 2026 — Phase 3: share pages</h2>
+<p>Every export can become a public page at <code>/i/&lt;slug&gt;</code> with its own Open Graph, Twitter and Farcaster preview, a share bar for eleven networks, and links that expire and can be deleted by their owner.</p>
+
+<h2>15 November 2026 — Phase 2: accounts, plans and billing</h2>
+<p>Sign-in by magic link, entitlements, Stripe in test mode, and the Pro features behind them: no watermark, 4× exports, uploads, more presets. A dashboard for keys, presets, exports and plan state.</p>
+
+<h2>15 November 2026 — Phase 1: the editor and the pipeline</h2>
+<p>The monorepo, the editor, and the single render service both the preview and the download use: Shiki highlighting, a headless browser, and one definition of what a card looks like.</p>

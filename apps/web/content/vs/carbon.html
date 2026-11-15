@@ -1,0 +1,18 @@
+<p class="lede">Carbon established the genre: "create and share beautiful images of your source code", as its own home page puts it, with an editor you start typing into or drop a file onto. Code2Img is that idea carried into places Carbon was never designed to go — a script, an agent, a link that has to unfurl. Checked against Carbon's own published description on 15 November 2026.</p>
+
+<h2>What Carbon is</h2>
+<p>A well-known, widely used editor for code screenshots: paste or drop a file, choose a theme and a language, adjust the window and background, export. Its reach is part of its value — a Carbon image is instantly recognisable, and it has been the default visual for code on the web for years. Carbon also publishes its own integrations, bundling Carbon into editors such as VS Code and IntelliJ.</p>
+
+<h2>What Code2Img adds, and why</h2>
+<ul>
+  <li><strong>An HTTP API with a real quota model.</strong> <code>POST /api/v1/images</code> takes a JSON config and returns bytes, or a stored URL. Keys are scoped and hashed, quotas are per key and per IP, retries can carry an idempotency key, and errors are RFC 9457 problem documents.</li>
+  <li><strong>An MCP server.</strong> An agent can render a card, list themes and languages, create a share link and read its own quota — the tools are on the <a href="/mcp">MCP page</a>.</li>
+  <li><strong>Share pages that unfurl.</strong> Public pages at <code>/i/&lt;slug&gt;</code>, each with an Open Graph image, an expiry you set and a delete button you own.</li>
+  <li><strong>Sharp exports.</strong> PNG, JPG or PDF up to 4× on Pro, rendered at the target device pixel ratio rather than resized afterwards.</li>
+</ul>
+
+<h2>Where Carbon is ahead</h2>
+<p>Editor breadth and ecosystem: the integrations inside other editors, and the sheer number of themes and window presets people have published for it over the years. If you want Carbon's exact look, or you want a Carbon button inside your IDE, Code2Img is not a substitute — and it is not trying to clone someone else's visual identity.</p>
+
+<h2>The honest summary</h2>
+<p>Both tools make a good-looking image of code. Carbon is the reference implementation of the genre and has the integrations; Code2Img is built so the same renderer can be called by a machine, at a higher scale, and can hand back a URL that previews properly in a chat window. If your last five screenshots were made by hand, either is fine. If your next five hundred have to be made by a script, that is the case Code2Img was written for. <a href="/editor">Compare the output yourself</a>.</p>

@@ -1,0 +1,21 @@
+<p class="lede">Short version: Code2Img renders the code you paste, stores an account if you want one, keeps the renders you ask it to keep, and does not run advertising or third-party analytics.</p>
+
+<h2>What is stored, and why</h2>
+<ul>
+  <li><strong>Your snippets and renders.</strong> A render is produced from what you send. When you export without signing in, the request is processed and the image is returned to your browser; it is not kept as a gallery entry. Renders stored deliberately — a share link, or an export kept in the dashboard — stay until you delete them, and a share link also expires on the date you chose.</li>
+  <li><strong>Account data.</strong> If you sign in: your email address, the plan state, your API key hashes (never the keys themselves), your presets, your API call counters, and the identifiers Stripe sends back for a subscription. Sign-in is by magic link, so there is no password to store.</li>
+  <li><strong>Technical logs.</strong> The web server logs requests (path, status, timing, IP) for a short period, to keep the service up and to enforce quotas. Quota counters live in Redis and expire on their own.</li>
+</ul>
+
+<h2>What is not done</h2>
+<p>No advertising. No third-party analytics or session recording, and no tracker that follows you to other sites. No selling or renting of personal data. No profiling, and no training of models on your snippets.</p>
+
+<h2>Who else touches it</h2>
+<p>Two processors, and only for what they do: <strong>Stripe</strong> for payments and subscription state when you subscribe to Pro, and the hosting of the service itself on infrastructure operated for Code2Img. Uploaded backgrounds and logos are stored on that same infrastructure. Nothing else receives your snippets.</p>
+
+<h2>Legal bases, retention and your rights</h2>
+<p>Account and billing data are processed to perform the contract with you; quota counters and technical logs, to keep the service available and prevent abuse. Account data lives as long as the account does — delete the account and it goes, apart from invoices that tax law requires us to keep. Share pages and stored renders go when you delete them or when they expire.</p>
+<p>You can ask for a copy of your data, its correction, its deletion, or a portable export, by writing to <a href="mailto:support@code2img.app">support@code2img.app</a>; we answer within 30 days. Depending on where you live you may also have the right to object to processing or to complain to a supervisory authority — in France, the CNIL.</p>
+
+<h2>Security and contact</h2>
+<p>API keys are stored hashed, the render service is not exposed to the internet, and traffic is served over HTTPS. Report a vulnerability or a data question to <a href="mailto:support@code2img.app">support@code2img.app</a> and it will be looked at quickly. This policy may be updated; the date at the top of the page changes when it is.</p>

@@ -1,6 +1,8 @@
-// GET /mcp (Accept: text/html) — setup page. Plain HTML like /docs: no build step, no
-// client bundle; the only script is the copy button.
+// GET /mcp (Accept: text/html) — setup page. Same shell as the rest of the site: plain HTML,
+// no client bundle; the only script is the copy button, and every snippet is a real code block.
 import { siteUrl } from "@/lib/share";
+import { breadcrumbs, doc, esc, footer, nav } from "../site/shell";
+import { renderBand } from "../site/pages";
 
 const ENDPOINT = `${siteUrl()}/mcp`;
 // npm publication is pending: this instance serves the tarball clients install from.
@@ -59,7 +61,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   {
     id: "vscode",
     title: "VS Code (stdio, npx)",
-    note: "File: .vscode/mcp.json (workspace) — VS Code uses \"servers\" instead of \"mcpServers\".",
+    note: 'File: .vscode/mcp.json (workspace) — VS Code uses "servers" instead of "mcpServers".',
     code: `{
   "servers": {
     "code2img": {
@@ -86,7 +88,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   },
 ];
 
-const TOOLS = [
+const TOOLS: [string, string][] = [
   ["render_code_image", "Render a snippet → image + 30-day public URL"],
   ["list_themes", "Valid Shiki theme ids"],
   ["list_languages", "Valid language ids"],
@@ -96,72 +98,47 @@ const TOOLS = [
   ["get_share_urls", "Your recent share pages"],
 ];
 
-const block = (s: (typeof SNIPPETS)[number]) => `
-  <section>
-    <h2>${s.title}</h2>
-    <p class="note">${s.note}</p>
-    <div class="code"><pre id="${s.id}">${s.code.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</pre><button data-copy="${s.id}">Copy</button></div>
-  </section>`;
+// One copy button per snippet: the markup is a real <pre><code>, so the gate treats it as code.
+const block = (s: (typeof SNIPPETS)[number]) => `<h2 data-reveal>${esc(s.title)}</h2>
+<p data-reveal>${esc(s.note)}</p>
+<div class="code" data-reveal><pre><code id="${s.id}">${esc(s.code)}</code></pre><button class="btn" data-copy="${s.id}">Copy</button></div>`;
 
-export const MCP_PAGE = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Code2Img MCP server — render code images from your AI client</title>
-<meta name="description" content="Connect Code2Img to Claude, Cursor, VS Code or Windsurf: seven MCP tools to render code screenshots, list themes and create share links.">
-<style>
-  :root { --bg:#0e0e13; --panel:#17171f; --border:#2b2b38; --text:#e9e9f0; --muted:#a0a0b2; --accent:#7c6cff; }
-  * { box-sizing:border-box }
-  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif }
-  main { max-width:860px; margin:0 auto; padding:40px 20px 80px }
-  h1 { font-size:28px; margin:0 0 6px }
-  h2 { font-size:15px; margin:0 0 4px }
-  a { color:var(--accent) }
-  .lead { color:var(--muted); margin:0 0 24px }
-  .endpoint { display:flex; gap:10px; align-items:center; flex-wrap:wrap; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin-bottom:28px }
-  .endpoint code { font:13px ui-monospace,monospace }
-  .endpoint span { color:var(--muted); font-size:12px }
-  section { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:14px }
-  .note { color:var(--muted); font-size:12px; margin:0 0 10px }
-  .code { position:relative }
-  pre { margin:0; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; overflow-x:auto; font:12.5px/1.5 ui-monospace,"JetBrains Mono",monospace }
-  button { position:absolute; top:8px; right:8px; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:12px; cursor:pointer }
-  button:hover { border-color:var(--accent) }
-  table { width:100%; border-collapse:collapse; margin-top:8px }
-  td { padding:6px 0; border-top:1px solid var(--border); vertical-align:top }
-  td:first-child { width:200px; font:12.5px ui-monospace,monospace; color:var(--accent) }
-  .foot { color:var(--muted); font-size:12px; margin-top:24px }
-</style>
-</head>
-<body><main>
-  <h1>Code2Img MCP server</h1>
-  <p class="lead">Seven tools that let an AI client render code screenshots, browse themes and backgrounds, create expiring share
-  pages and read the remaining quota. Same API, same limits, same watermark as the REST API.
-  The stdio package is not on npm yet: the snippets install the tarball <code>${PKG}</code>.</p>
-
-  <div class="endpoint">
-      <code>${ENDPOINT}</code>
-      <span>Streamable HTTP · auth header: <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></span>
-    </div>
-
-  ${SNIPPETS.map(block).join("\n")}
-
-  <section>
-    <h2>Tools</h2>
-    <table>${TOOLS.map(([name, desc]) => `<tr><td>${name}</td><td>${desc}</td></tr>`).join("")}</table>
-  </section>
-
-  <p class="foot">OAuth is planned for the remote endpoint; today it authenticates with API keys, which is what every MCP client
-  supports. Full REST reference: <a href="/docs">/docs</a> · machine-readable: <a href="/api/v1/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a></p>
-</main>
-<script>
+const COPY_JS = `(() => {
   document.querySelectorAll("button[data-copy]").forEach((b) => b.addEventListener("click", async () => {
-    const el = document.getElementById(b.dataset.copy);
+    var el = document.getElementById(b.dataset.copy);
     await navigator.clipboard.writeText(el.textContent);
-    const old = b.textContent;
+    var old = b.textContent;
     b.textContent = "Copied";
-    setTimeout(() => { b.textContent = old; }, 1200);
+    setTimeout(function () { b.textContent = old; }, 1200);
   }));
-</script>
-</body></html>`;
+})();`;
+
+export const MCP_PAGE = doc(
+  {
+    title: "MCP server — Code2Img",
+    description:
+      "Connect Code2Img to Claude, Cursor, VS Code or Windsurf: seven MCP tools to render code screenshots, list themes and create share links.",
+    path: "/mcp",
+    lang: "en",
+    jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: "MCP", path: "/mcp" }], "en")],
+  },
+  `${nav("en", "")}
+<section class="mk-hero"><div class="mk-wrap">
+<h1 data-reveal>Render cards from your agent.</h1>
+<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code screenshot, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is not on npm yet: the snippets below install the tarball this instance serves.</p>
+<p class="tight" data-reveal style="margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
+</div></section>
+${renderBand("What an agent gets back.")}
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>
+${SNIPPETS.map(block).join("\n")}
+<h2 data-reveal>Tools</h2>
+<table class="cmp" data-reveal><tbody>${TOOLS.map(
+    ([name, desc]) => `<tr><th scope="row"><code>${esc(name)}</code></th><td>${esc(desc)}</td></tr>`,
+  ).join("")}</tbody></table>
+<h2 data-reveal>Notes</h2>
+<p data-reveal>OAuth is planned for the remote endpoint; today it authenticates with API keys, which is what every MCP client supports. Every tool call consumes the key's quota exactly once: the server is a client of the public <a href="/api">API</a>, so there is no second rule book to keep in sync. Themes, languages and backgrounds are the same catalogs the editor uses.</p>
+<p>Full REST reference: <a href="/docs">/docs</a> · machine-readable: <a href="/api/v1/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a></p>
+</div></section>
+${footer("en")}
+<script>${COPY_JS}</script>`,
+);
