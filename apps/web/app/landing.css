@@ -276,13 +276,15 @@
 .prose > * { max-width: 74ch; }
 .prose > :first-child { margin-top: 0; }
 .prose > * + * { margin-top: var(--s5); }
-.prose h2 { margin-top: var(--s10); font-size: var(--fs-h3); letter-spacing: -0.02em; max-width: 34ch; }
+.prose h2 { margin-top: var(--s10); font-size: var(--fs-h3); line-height: 1.3; letter-spacing: -0.02em; max-width: 40ch; }
 .prose h3 { margin-top: var(--s8); font-size: var(--fs-lg); font-weight: 620; }
 /* title → subtitle/body: one standard gap, not whatever the sibling rule happens to give */
 .mk h2 + *, .prose h2 + *, .prose h3 + * { margin-top: var(--s4); }
 /* copy-able code block: the button sits inside the card, the next heading gets air */
 .prose .code { position: relative; }
 .prose .code .btn { position: absolute; top: var(--s3); right: var(--s3); height: 26px; padding: 0 var(--s3); font-size: var(--fs-small); }
+/* the button owns its own row: long command lines never run under it */
+.prose .code pre { padding-top: calc(var(--s3) * 2 + 26px); }
 .prose p, .prose li { color: var(--ink-2); font-size: var(--fs-lg); line-height: 1.65; overflow-wrap: break-word; }
 .prose p { max-width: 68ch; }
 .prose ul, .prose ol { padding-left: var(--s5); display: grid; gap: var(--s2); }
