@@ -202,12 +202,9 @@
 
 /* ——— footer ——————————————————————————————————— */
 .mk-foot { background: var(--surface); padding-block: var(--s10) var(--s6); }
-.mk-foot .big {
-  font-size: clamp(44px, 9vw, 128px);
-  line-height: 0.9;
-  letter-spacing: -0.045em;
-  font-weight: 650;
-  margin: 0 0 var(--s8);
+.mk-foot .wordmark {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--s8);
 }
 .mk-foot .cols { display: flex; flex-wrap: wrap; gap: var(--s8); justify-content: space-between; align-items: flex-start; }
 .mk-foot nav { display: grid; gap: var(--s2); font-size: var(--fs-lg); }

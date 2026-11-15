@@ -76,7 +76,7 @@ export function nav(lang: Lang, active = ""): string {
 export function footer(lang: Lang): string {
   const t = NAV[lang];
   const prefix = lang === "fr" ? "/fr" : "";
-  return `<footer class="mk-foot"><div class="mk-wrap"><p class="big">Code2Img</p><div class="cols">
+  return `<footer class="mk-foot"><div class="mk-wrap">${wordmark(lang)}<div class="cols">
 <nav aria-label="${t.product}"><a href="/editor">${t.editor}</a><a href="${prefix}/pricing">${t.pricing}</a><a href="/dashboard">${t.dashboard}</a><a href="/blog">${t.blog}</a><a href="/changelog">${t.changelog}</a></nav>
 <nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a></nav>
 <nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="mailto:hello@code2img.app">hello@code2img.app</a><a href="mailto:support@code2img.app">support@code2img.app</a></nav>
