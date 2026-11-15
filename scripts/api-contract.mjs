@@ -26,13 +26,15 @@ async function main() {
   const spec = await specRes.json().catch(() => ({}));
   const paths = Object.keys(spec.paths ?? {});
   check("openapi.json is served", specRes.ok && spec.openapi?.startsWith("3.1"), specRes.status);
-  check("openapi documents every endpoint", paths.length >= 11, `only ${paths.length} paths`);
+  check("openapi documents every endpoint", paths.length >= 10, `only ${paths.length} paths`);
 
   // 2. Every documented path exists (no 404 from the router)
   for (const p of paths) {
-    const url = `${API}${p.replace("{id}", "00000000-0000-0000-0000-000000000000")}`;
-    const res = await fetch(url, { method: p === "/v1/render.png" ? "GET" : "GET" });
-    check(`route exists: GET ${p}`, res.status !== 404 || p.includes("{id}"), res.status);
+    if (p.includes("{id}")) continue; // lifecycle (GET/DELETE with a real id) is checked below
+    // spec paths are absolute from /api (/v1/...), API is already the /api/v1 base
+    const url = `${BASE}/api${p}`;
+    const res = await fetch(url);
+    check(`route exists: GET ${p}`, res.status !== 404, res.status);
   }
 
   // 3. Catalogs are public

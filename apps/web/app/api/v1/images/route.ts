@@ -71,17 +71,22 @@ export async function POST(req: Request) {
   }
 
   const saved = await saveImage(ctx.db, { userId: ctx.user.id, bytes, format, config: parsed.data as unknown as Record<string, unknown> });
-  if (idemKey) await remember(ctx.db, ctx.user.id, idemKey, "POST /v1/images", hash, { status: 200, body: { imageId: saved.id } });
+  const wantUrl = responseType === "url";
+  const url = `${process.env.APP_URL ?? "https://code2img.app"}/api/v1/images/${saved.id}`;
+  const payload = { id: saved.id, url, format: saved.format, bytes: bytes.length, expires_at: saved.expiresAt.toISOString() };
+  // Store exactly what the caller receives, so a replay is indistinguishable from the first call.
+  if (idemKey) {
+    await remember(ctx.db, ctx.user.id, idemKey, "POST /v1/images", hash, {
+      status: wantUrl ? 201 : 200,
+      body: wantUrl ? payload : { imageId: saved.id },
+    });
+  }
 
-  if (responseType === "binary") {
+  if (!wantUrl) {
     return new Response(bytes, {
       status: 200,
       headers: { ...ctx.headers, "content-type": res.headers.get("content-type") ?? "image/png", "cache-control": "private, max-age=0" },
     });
   }
-  const url = `${process.env.APP_URL ?? "https://code2img.app"}/api/v1/images/${saved.id}`;
-  return Response.json(
-    { id: saved.id, url, format: saved.format, bytes: bytes.length, expires_at: saved.expiresAt.toISOString() },
-    { status: 201, headers: ctx.headers },
-  );
+  return Response.json(payload, { status: 201, headers: ctx.headers });
 }

@@ -1,7 +1,7 @@
 // @code2img/sdk — typed client for the Code2Img API (see /api/v1/openapi.json).
 // Zero dependencies: fetch + Blob, works in Node 18+, Bun, Deno, browsers and workers.
 
-export const DEFAULT_BASE_URL = "https://code2img.app/api/v1";
+export const DEFAULT_BASE_URL = "https://code2img.app/api";
 
 /** Documented paths — checked against the published OpenAPI document in tests. */
 export const PATHS = {
