@@ -54,14 +54,14 @@
 .btn-lg { height: 44px; padding: 0 var(--s5); font-size: var(--fs-lg); border-radius: var(--r-panel); }
 .mk-actions { display: flex; flex-wrap: wrap; gap: var(--s3); }
 
-/* ——— hero: the headline pair on top, the product's own output across the page ——— */
-.mk-hero { padding-block: clamp(40px, 5vw, 80px) 0; }
+/* ——— hero: the headline pair centred; the product's own output is the section after ——— */
+.mk-hero { padding-block: clamp(56px, 7vw, 112px); }
 .mk-hero .mk-wrap { display: grid; gap: clamp(28px, 4vw, 56px); }
 .mk-hero-top {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: clamp(20px, 4vw, 64px);
-  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  justify-items: start;
+  max-width: 880px;
 }
 .mk-hero h1 {
   margin: 0;
@@ -101,6 +101,10 @@
   margin-top: var(--s2);
   font-size: var(--fs-body);
   color: var(--ink-2);
+}
+#demo .mk-shot {
+  max-width: 800px;
+  margin: var(--s10) auto;
 }
 
 /* ——— headings ——————————————————————————————————— */
@@ -239,7 +243,6 @@
 
 /* ——— phone ————————————————————————————————————— */
 @media (max-width: 899px) {
-  .mk-hero-top { grid-template-columns: minmax(0, 1fr); }
   .mk-lead { max-width: 60ch; }
   .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .feat, .dev-grid { grid-template-columns: minmax(0, 1fr); }
