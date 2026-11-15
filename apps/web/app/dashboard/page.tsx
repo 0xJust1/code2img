@@ -28,6 +28,14 @@ interface HistoryItem {
   configHash: string;
   createdAt: string;
 }
+interface ApiKey {
+  id: string;
+  prefix: string;
+  scopes: string[];
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  createdAt: string;
+}
 
 const btn = { padding: "8px 12px", borderRadius: 8, border: "1px solid #ccc", background: "#fff", cursor: "pointer" } as const;
 
@@ -36,18 +44,22 @@ export default function Dashboard() {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [assets, setAssets] = useState<Upload[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [keys, setKeys] = useState<ApiKey[]>([]);
+  const [newKey, setNewKey] = useState("");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
 
   const loadAll = useCallback(async () => {
-    const [me, presets, history] = await Promise.all([
+    const [me, presets, history, keys] = await Promise.all([
       fetch("/api/me").then((r) => r.json()),
       fetch("/api/presets").then((r) => (r.ok ? r.json() : { presets: [] })),
       fetch("/api/history").then((r) => (r.ok ? r.json() : { history: [] })),
+      fetch("/api/me/keys").then((r) => (r.ok ? r.json() : { keys: [] })),
     ]);
     setMe(me);
     setPresets(presets.presets ?? []);
     setHistory(history.history ?? []);
+    setKeys(keys.keys ?? []);
     if (me.entitlements?.plan === "pro") {
       // Assets endpoint: reuse presets list pattern — uploads listed via history of uploads table.
       const ups = await fetch("/api/me/assets").then((r) => (r.ok ? r.json() : { uploads: [] }));
@@ -79,6 +91,26 @@ export default function Dashboard() {
 
   const removePreset = async (id: string) => {
     await fetch(`/api/presets/${id}`, { method: "DELETE" });
+    void loadAll();
+  };
+
+  const createKey = async (scopes: string[]) => {
+    const r = await fetch("/api/me/keys", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ scopes }) });
+    const j = await r.json();
+    if (j.raw) setNewKey(j.raw);
+    void loadAll();
+  };
+
+  const rotateKey = async (id: string) => {
+    const r = await fetch(`/api/me/keys/${id}/rotate`, { method: "POST" });
+    const j = await r.json();
+    if (j.raw) setNewKey(j.raw);
+    void loadAll();
+  };
+
+  const revokeKey = async (id: string) => {
+    if (!confirm("Revoke this API key? Requests using it will start failing immediately.")) return;
+    await fetch(`/api/me/keys/${id}`, { method: "DELETE" });
     void loadAll();
   };
 
@@ -159,6 +191,34 @@ export default function Dashboard() {
             </li>
           ))}
           {history.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No renders yet.</li>}
+        </ul>
+      </section>
+
+      <section>
+        <h2 style={{ fontSize: 16 }}>API keys</h2>
+        {newKey && (
+          <p style={{ background: "#fff8e1", padding: 10, borderRadius: 8, wordBreak: "break-all" }}>
+            Copy it now, it is shown only once: <code>{newKey}</code>
+          </p>
+        )}
+        <p style={{ display: "flex", gap: 12 }}>
+          <button onClick={() => createKey(["read", "write", "upload"])} style={btn}>Create API key</button>
+          <a href="/docs" target="_blank" style={btn}>API reference</a>
+        </p>
+        <ul style={{ paddingLeft: 18 }}>
+          {keys.map((k) => (
+            <li key={k.id}>
+              <code>{k.prefix}…</code> · {k.scopes.join(", ")} ·{" "}
+              {k.revokedAt ? "revoked" : k.lastUsedAt ? `last used ${new Date(k.lastUsedAt).toLocaleString()}` : "never used"}{" "}
+              {!k.revokedAt && (
+                <>
+                  <button onClick={() => rotateKey(k.id)} style={{ ...btn, padding: "2px 8px" }}>Rotate</button>{" "}
+                  <button onClick={() => revokeKey(k.id)} style={{ ...btn, padding: "2px 8px", color: "#c22" }}>Revoke</button>
+                </>
+              )}
+            </li>
+          ))}
+          {keys.length === 0 && <li style={{ color: "#888", listStyle: "none" }}>No API keys yet.</li>}
         </ul>
       </section>
 

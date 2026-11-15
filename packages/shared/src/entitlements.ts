@@ -20,6 +20,16 @@ export function maxPresets(plan: Plan): number {
   return plan === "pro" ? Number.POSITIVE_INFINITY : FREE_MAX_PRESETS;
 }
 
+// Public API quotas (Phase 4), per API key and per IP.
+export const API_LIMITS: Record<Plan, { perMinute: number; perDay: number }> = {
+  free: { perMinute: 30, perDay: 500 },
+  pro: { perMinute: 300, perDay: 5000 },
+};
+
+export function apiLimits(plan: Plan) {
+  return API_LIMITS[plan];
+}
+
 // Effective plan for entitlement checks: pro stays active during the grace window,
 // downgrades to free once grace_until has passed (webhook drives the stored fields).
 export interface PlanState {

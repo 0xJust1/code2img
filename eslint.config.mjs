@@ -8,4 +8,11 @@ export default tseslint.config(
   {
     rules: { "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }] },
   },
+  {
+    // Node scripts (contract checks): Node globals + fetch, no framework.
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      globals: { process: "readonly", console: "readonly", fetch: "readonly", FormData: "readonly", Buffer: "readonly" },
+    },
+  },
 );

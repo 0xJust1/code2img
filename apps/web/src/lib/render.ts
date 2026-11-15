@@ -5,7 +5,7 @@ import { cardConfigSchema, maxScale, type Plan } from "@code2img/shared";
 import { getDb, tables } from "@code2img/db";
 import { and, eq } from "drizzle-orm";
 import { createHash } from "node:crypto";
-import { currentUserFor, planOf } from "./session";
+import { currentUserFor, planOf, type User } from "./session";
 import { readUpload } from "./uploads";
 
 const RENDER_URL = process.env.RENDER_URL ?? "http://localhost:3002";
@@ -18,9 +18,14 @@ export interface RenderInput {
 }
 
 /** Returns the render response, or an error response ready to be returned as-is. */
-export async function renderCard(req: Request, body: RenderInput, opts: { history: boolean }): Promise<Response> {
+export async function renderCard(
+  req: Request,
+  body: RenderInput,
+  opts: { history: boolean; user?: User | null },
+): Promise<Response> {
   const db = getDb();
-  const user = db ? await currentUserFor(req) : null;
+  // API-key callers pass their user explicitly (no session cookie on /api/v1).
+  const user = opts.user !== undefined ? opts.user : db ? await currentUserFor(req) : null;
   const plan: Plan = user ? planOf(user) : "free";
   const trusted = plan === "pro";
 
@@ -34,7 +39,9 @@ export async function renderCard(req: Request, body: RenderInput, opts: { histor
   if (typeof body.scale === "number" && body.scale > max) body.scale = max;
 
   // Free tier: strip Pro-only references before anything leaves this process.
+  // The render service trusts this app's internal token, so the watermark is enforced HERE.
   if (!trusted) {
+    config.watermark = true;
     if (config.logo) delete config.logo;
     if (config.background.type === "image") config = { ...config, background: { type: "solid", color: "#1e1e2e" } };
   }

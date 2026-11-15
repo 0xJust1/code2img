@@ -8,6 +8,13 @@
       "when": 1794699182727,
       "tag": "0000_typical_quentin_quire",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794709570997,
+      "tag": "0001_strong_reaper",
+      "breakpoints": true
     }
   ]
 }

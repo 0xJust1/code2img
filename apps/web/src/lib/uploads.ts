@@ -3,6 +3,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { tables, type Database } from "@code2img/db";
 
 export const MAX_UPLOAD_BYTES = 2 * 1024 * 1024; // 2 MB
 
@@ -53,4 +54,25 @@ function mimeFor(name: string): string {
   if (name.endsWith(".png")) return "image/png";
   if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
   return "image/webp";
+}
+
+// Shared by /api/uploads (dashboard session) and /api/v1/uploads (API key).
+// Callers do the entitlement check; this does the validation and the two writes.
+export async function saveUpload(
+  db: Database,
+  userId: string,
+  form: FormData | null,
+): Promise<{ ok: true; id: string; file: string; kind: string } | { ok: false; status: number; detail: string }> {
+  const file = form?.get("file");
+  const kind = form?.get("kind");
+  if (!(file instanceof File) || (kind !== "logo" && kind !== "background")) {
+    return { ok: false, status: 400, detail: "file and kind (logo|background) required" };
+  }
+  if (file.size > MAX_UPLOAD_BYTES) return { ok: false, status: 413, detail: "file too large (max 2 MB)" };
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const storageKey = await storeUpload(buf, kind);
+  if (!storageKey) return { ok: false, status: 415, detail: "invalid image (png/jpeg/webp only)" };
+  const id = randomUUID();
+  await db.insert(tables.uploads).values({ id, userId, kind, storageKey, mime: file.type || "image/png", bytes: buf.length });
+  return { ok: true, id, file: storageKey, kind };
 }

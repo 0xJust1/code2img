@@ -159,6 +159,25 @@ export const usageCounters = pgTable(
   (t) => [primaryKey({ columns: [t.userId, t.day] })],
 );
 
+// Idempotency-Key replay store for POST /api/v1/*: same key + same body replays the
+// stored response instead of rendering (or uploading) twice.
+export const idempotencyKeys = pgTable(
+  "idempotency_key",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    endpoint: text("endpoint").notNull(),
+    requestHash: text("request_hash").notNull(),
+    status: integer("status").notNull(),
+    body: jsonb("body").$type<Record<string, unknown> | null>(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("idempotency_user_key_idx").on(t.userId, t.key)],
+);
+
 export const webhookEvents = pgTable("webhook_event", {
   id: text("id").primaryKey(),
   stripeEventId: text("stripe_event_id").notNull().unique(),
