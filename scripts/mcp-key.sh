@@ -16,5 +16,5 @@ hash=$(printf '%s' "$key" | openssl dgst -sha256 -hex | awk '{print $2}')
 printf '%s' "$key" > /tmp/c2i-smoke-key
 chmod 600 /tmp/c2i-smoke-key
 
-psql -q "$DATABASE_URL" -c "insert into api_key (id,user_id,prefix,key_hash,scopes) values ('smoke_mcp_key','$user_id','$prefix','$hash','[\"read\",\"write\"]'::jsonb) on conflict (id) do update set prefix=excluded.prefix, key_hash=excluded.key_hash, revoked_at=null"
+psql -q "$DATABASE_URL" -c "insert into api_key (id,user_id,prefix,key_hash,scopes) values ('smoke_mcp_key','$user_id','$prefix','$hash','[\"read\",\"write\",\"upload\"]'::jsonb) on conflict (id) do update set prefix=excluded.prefix, key_hash=excluded.key_hash, scopes=excluded.scopes, revoked_at=null"
 echo "key ready (prefix $prefix) for user $user_id"
