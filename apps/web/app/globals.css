@@ -44,6 +44,9 @@ a { color: inherit; }
   font-weight: 400;
 }
 .appbar-actions { display: flex; align-items: center; gap: var(--s4); }
+.icons { display: flex; align-items: center; gap: var(--s3); }
+.icon { color: inherit; opacity: .7; display: inline-flex; }
+.icon:hover { opacity: 1; }
 .appbar .hint { color: var(--ink-3); font-size: var(--fs-small); display: flex; align-items: center; gap: var(--s2); }
 kbd {
   font-family: var(--font-ui);
