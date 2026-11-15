@@ -88,8 +88,9 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
     ? `<a href="${escapeHtml(config.author.link)}" rel="noopener">${escapeHtml(config.author.name || config.author.link)}</a>`
     : escapeHtml(config.author.name);
   const logoHtml = logoSrc ? `<img class="logo" src="${logoSrc}" alt="">` : "";
+  const hasAuthor = Boolean(config.author.name || config.author.link || logoSrc);
   const meta = showMeta
-    ? `<div class="meta"><span class="author">${logoHtml}${authorLink}</span>${
+    ? `<div class="meta${hasAuthor ? "" : " solo"}"><span class="author">${logoHtml}${authorLink}</span>${
         config.watermark ? `<a class="watermark" href="${WATERMARK_URL}">${WATERMARK_TEXT}</a>` : ""
       }</div>`
     : "";
@@ -101,17 +102,19 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
     )
     .join("\n");
 
+  // The configured padding is the frame between the card and the image edge, in every
+  // ratio: an auto-ratio export is then the same picture as a fixed one, minus the frame size.
   const captureStyle =
-    ratioW && ratioH
+    `padding:${config.padding}px;` +
+    (ratioW && ratioH
       ? `width:${ratioW}px;height:${ratioH}px;display:flex;align-items:center;justify-content:center;overflow:hidden`
-      : "display:inline-block";
+      : "display:inline-block");
 
   const cardStyle = [
-    `padding:${config.padding}px`,
     `border-radius:${config.radius}px`,
     config.shadow ? "box-shadow:0 20px 60px rgba(0,0,0,.35)" : "",
     config.width ? `width:${config.width}px` : "",
-    ratioW ? "max-width:92%;max-height:92%;overflow:hidden" : "",
+    ratioW ? "max-width:100%;max-height:100%;overflow:hidden" : "",
   ]
     .filter(Boolean)
     .join(";");
@@ -122,19 +125,21 @@ export async function buildCardHtml(config: CardConfig, opts: CardHtmlOptions = 
 <title>${APP_NAME}</title>
 <style>
 ${fontFaces}
-*{box-sizing:border-box}body{margin:0;background:${config.background.type === "transparent" ? "transparent" : bgCss}}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;display:grid;place-items:center;background:${config.background.type === "transparent" ? "transparent" : bgCss}}
 #capture{background:${bgCss};${captureStyle}}
-.card{background:${themeBg};${cardStyle};color:${metaColor};font-family:'${font.family}',ui-monospace,monospace}
+.card{background:${themeBg};${cardStyle};overflow:hidden;color:${metaColor};font-family:'${font.family}',ui-monospace,monospace}
 .titlebar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid rgba(128,128,140,.25);font-size:12px;color:${metaColor};opacity:.9}
 .titlebar .title{flex:1;text-align:center;font-family:ui-sans-serif,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titlebar.mac::after{content:"";flex:0 0 52px}
 .dots{display:inline-flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;display:inline-block}
 .d1{background:#ff5f57}.d2{background:#febc2e}.d3{background:#28c840}
 .win-btns{display:inline-flex;gap:14px;opacity:.7}
-pre{margin:0;padding:20px 0 4px;overflow:hidden;white-space:pre;font-size:${config.fontSize}px;line-height:${config.lineHeight};font-variant-ligatures:${config.ligatures ? "contextual" : "no-common-ligatures"};font-feature-settings:${config.ligatures ? '"liga","calt"' : '"liga" 0,"calt" 0'}}
+pre{margin:0;padding:20px 0 4px;overflow:hidden;white-space:pre;background:transparent!important;font-size:${config.fontSize}px;line-height:${config.lineHeight};font-variant-ligatures:${config.ligatures ? "contextual" : "no-common-ligatures"};font-feature-settings:${config.ligatures ? '"liga","calt"' : '"liga" 0,"calt" 0'}}
 pre .line{display:inline-block;min-width:100%;padding-inline:20px;counter-increment:line}
 ${config.lineNumbers ? `pre .line::before{content:counter(line);display:inline-block;width:2.2em;margin-right:1.4em;text-align:right;opacity:.4}` : ""}
 pre .line.hl{background:rgba(125,125,160,.22);box-shadow:inset 3px 0 0 rgba(125,125,160,.6)}
 .meta{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:10px 20px 14px;font-family:ui-sans-serif,system-ui,sans-serif;font-size:12px}
+.meta.solo{justify-content:center}
 .meta a{color:inherit;text-decoration:none;opacity:.75}
 .meta a:hover{opacity:1;text-decoration:underline}
 .meta .logo{height:20px;max-width:160px;object-fit:contain;vertical-align:middle;margin-right:8px}

@@ -1,0 +1,83 @@
+/*
+ * code2img design system — the single source of colour, type, space and radius roles.
+ * Nothing downstream hard-codes a colour or a size; every surface reads these tokens.
+ * Dark is the product's default (the editor is used at night, on code).
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* ground and surfaces: a 3-step lightness ramp, never a border + a shadow */
+  --ground: #08090a;
+  --surface: #0e0f11;
+  --raised: #141518;
+  --overlay: #1b1c20;
+  --rule: #1c1d21;          /* 1px separation between bands */
+  --border: #26282e;        /* control outline */
+  --border-strong: #363942; /* focused / hovered outline */
+
+  /* ink: three tiers, each ≥ 4.5:1 on --ground and --surface */
+  --ink: #f2f3f5;
+  --ink-2: #a9aeb8;
+  --ink-3: #8a8f9a;
+
+  /* action: an inverted fill, not a brand hue on chrome */
+  --primary: #f4f5f7;
+  --primary-ink: #0a0a0c;
+  --primary-hover: #ffffff;
+
+  /* accent: state only (focus, selected, slider), ≤ 3% of pixels */
+  --accent: #5b9dff;
+  --accent-soft: rgba(91, 157, 255, 0.16);
+  --danger: #ff8f8f;
+
+  /* type */
+  --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;
+  --fs-meta: 11px;
+  --fs-small: 12px;
+  --fs-body: 13px;
+  --fs-input: 13px;
+  --fs-title: 14px;
+  --fs-h1: 22px;
+
+  /* space: 4px base */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+
+  /* radii: tight, chosen once */
+  --r-ctl: 7px;
+  --r-panel: 12px;
+  --r-pill: 999px;
+
+  /* controls */
+  --h-ctl: 34px;
+  --shadow-float: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ground: #f7f7f8;
+  --surface: #ffffff;
+  --raised: #fbfbfc;
+  --overlay: #ffffff;
+  --rule: #ebebee;
+  --border: #dcdde1;
+  --border-strong: #b9bbc2;
+  --ink: #16171a;
+  --ink-2: #55585f;
+  --ink-3: #6b6e76;
+  --primary: #16171a;
+  --primary-ink: #ffffff;
+  --primary-hover: #000000;
+  --accent: #1f6feb;
+  --accent-soft: rgba(31, 111, 235, 0.1);
+  --danger: #c0392b;
+  --shadow-float: 0 10px 30px rgba(16, 18, 22, 0.12);
+}
