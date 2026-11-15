@@ -3,6 +3,8 @@
 import { siteUrl } from "@/lib/share";
 
 const ENDPOINT = `${siteUrl()}/mcp`;
+// npm publication is pending: this instance serves the tarball clients install from.
+const PKG = `${siteUrl()}/downloads/code2img-mcp.tgz`;
 
 const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   {
@@ -34,7 +36,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "code2img-mcp"],
+      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -48,7 +50,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "code2img-mcp"],
+      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -62,7 +64,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "servers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "code2img-mcp"],
+      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -76,7 +78,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "code2img-mcp"],
+      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -135,7 +137,8 @@ export const MCP_PAGE = `<!doctype html>
 <body><main>
   <h1>Code2Img MCP server</h1>
   <p class="lead">Seven tools that let an AI client render code screenshots, browse themes and backgrounds, create expiring share
-  pages and read the remaining quota. Same API, same limits, same watermark as the REST API.</p>
+  pages and read the remaining quota. Same API, same limits, same watermark as the REST API.
+  The stdio package is not on npm yet: the snippets install the tarball <code>${PKG}</code>.</p>
 
   <div class="endpoint">
       <code>${ENDPOINT}</code>

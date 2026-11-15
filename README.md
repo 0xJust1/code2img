@@ -177,8 +177,10 @@ Un seul serveur, deux transports, même code (`packages/mcp`) :
 - **Remote** : `https://code2img.app/mcp` (Streamable HTTP, stateless), auth par clé API
   (`Authorization: Bearer …`). Route `apps/web/app/mcp/route.ts` ; un `GET` avec
   `Accept: text/html` sert la page de configuration `/mcp`.
-- **stdio** : `npx -y code2img-mcp` avec `CODE2IMG_API_KEY` (Claude Desktop, Cursor, VS Code,
-  Windsurf). `CODE2IMG_API_URL` pour viser une instance auto-hébergée.
+- **stdio** : `npx -y --package <site>/downloads/code2img-mcp.tgz code2img-mcp` avec
+  `CODE2IMG_API_KEY` (Claude Desktop, Cursor, VS Code, Windsurf). `CODE2IMG_API_URL` pour
+  viser une instance auto-hébergée. Le paquet n'est pas encore publié sur npm : le tarball
+  est servi par l'instance (`npm run pack:mcp` le régénère dans `apps/web/public/downloads/`).
 
 | Outil | Rôle |
 |---|---|
@@ -208,8 +210,9 @@ API simulée) et `packages/mcp/scripts/mcp-smoke.mjs` (client MCP réel sur l'in
 BASE_URL=http://192.168.1.45:3335 API_KEY=c2i_live_… node packages/mcp/scripts/mcp-smoke.mjs
 ```
 
-Build/publish du paquet : `pnpm --filter code2img-mcp build` (génère `dist/`), puis
-`pnpm --filter code2img-mcp publish` depuis un compte npm propriétaire du nom.
+Paquet stdio : `npm run pack:mcp` (build + `npm pack`) régénère `apps/web/public/downloads/code2img-mcp.tgz`,
+que sert l'instance. Publication npm reportée (décision 15/11/2026) : procédure dans
+`docs/checklist-launch.md`.
 
 License note: inspired by ray.so (MIT © Raycast Technologies) — reimplementation, no ray.so
 assets or branding. Brand constants live only in `packages/shared/src/brand.ts`.

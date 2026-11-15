@@ -9,7 +9,8 @@
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
     "test": "pnpm -r test",
-    "e2e": "pnpm --filter @code2img/web e2e"
+    "e2e": "pnpm --filter @code2img/web e2e",
+    "pack:mcp": "pnpm --filter code2img-mcp build && cd packages/mcp && npm pack --silent && cp code2img-mcp-*.tgz ../../apps/web/public/downloads/code2img-mcp.tgz"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

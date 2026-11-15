@@ -7,3 +7,4 @@ playwright-report/
 *.tsbuildinfo
 data/
 .e2e-data/
+packages/mcp/*.tgz
