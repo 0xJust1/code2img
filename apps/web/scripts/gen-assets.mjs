@@ -64,7 +64,7 @@ const ogHtml = `<!doctype html><html><head><meta charset="utf-8"><style>
 // Examples rendered by the product itself (the render service on :3002).
 const examples = [
   { file: "hero", theme: "github-dark", bg: { type: "gradient", preset: "midnight" }, title: "cart.ts", lang: "typescript",
-    code: `// cart.ts\nimport { price } from "./pricing";\n\nexport const total = (items: Item[]) =>\n  items.reduce(\n    (sum, i) => sum + price(i) * i.qty,\n    0,\n  );` },
+    code: `import { price } from "./pricing";\nexport const total = (items: Item[]) =>\n  items.reduce(\n    (sum, i) => sum + price(i) * i.qty,\n    0,\n  );` },
   { file: "example-tokyo", theme: "tokyo-night", bg: { type: "gradient", preset: "steel" }, title: "deploy.sh", lang: "bash",
     code: `#!/usr/bin/env bash\nset -euo pipefail\n\nfor host in web-1 web-2; do\n  echo "deploying to $host"\n  rsync -az ./dist/ "$host:/srv/app"\ndone` },
   { file: "example-latte", theme: "catppuccin-latte", bg: { type: "solid", color: "#e8e6e1" }, title: "App.tsx", lang: "tsx",

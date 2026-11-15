@@ -60,9 +60,10 @@ const HOME = {
     description:
       "Code to image in the browser: paste a snippet, pick a theme, export PNG, JPG or PDF at up to 4×, or render it from the REST API or an MCP server.",
     h1: "Code to image.",
-    lead: "Paste a snippet, choose a theme, export PNG, JPG or PDF. There is no account to create: the same render is one POST away for a script and one tool call away for an agent.",
+    lead: "Paste a snippet, choose a theme, export PNG, JPG or PDF. No account required.",
+    aud: ["From a script: one POST returns the PNG.", "From an agent: one MCP tool call renders it."],
     cta: "Open the editor",
-    cta2: "Read the API",
+    cta2: "API docs",
     shot: "cart.ts, github-dark, exported at 2× from the editor.",
     shotAlt: "A rendered code card: the file cart.ts in the github-dark theme on a midnight gradient, with macOS window controls and a line-number gutter",
     demoH2: "Render one right here.",
@@ -96,7 +97,7 @@ const HOME = {
     devM: "MCP — remote Streamable HTTP",
     devTail:
       'Keys carry scopes and quotas; signed URLs let a browser fetch a render without the key. The OpenAPI spec is at <a href="/api/v1/openapi.json">/api/v1/openapi.json</a>; setup notes are in the <a href="/docs">API reference</a> and on the <a href="/mcp">MCP page</a>.',
-    priceH2: (m: number) => `Free to use. Pro is ${m} € a month.`,
+    priceH2: (m: number) => `Free to use. Pro is ${m}\u00a0€\u00a0a\u00a0month.`,
     priceP: "Paid on Stripe and cancellable from the dashboard; the Free plan needs no card.",
     faqH2: "Questions people actually ask.",
     featAlt: "A code card for query.sql rendered in the rose-pine theme on a dark background",
@@ -106,9 +107,10 @@ const HOME = {
     description:
       "Transformez du code en image dans le navigateur : collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF, ou passez par l'API REST et le serveur MCP.",
     h1: "Du code à l'image.",
-    lead: "Collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF. Aucun compte à créer : le même rendu s'obtient par un POST depuis un script, ou par un appel d'outil depuis un agent.",
+    lead: "Collez un extrait, choisissez un thème, exportez en PNG, JPG ou PDF. Aucun compte requis.",
+    aud: ["Depuis un script : un POST renvoie le PNG.", "Depuis un agent : un appel MCP le rend."],
     cta: "Ouvrir l'éditeur",
-    cta2: "Lire l'API",
+    cta2: "Docs API",
     shot: "cart.ts, thème github-dark, exporté en 2× depuis l'éditeur.",
     shotAlt:
       "Une carte de code générée : le fichier cart.ts en thème github-dark sur un dégradé nuit, avec les contrôles de fenêtre macOS et la gouttière de numéros de ligne",
@@ -143,7 +145,7 @@ const HOME = {
     devM: "MCP — Streamable HTTP distant",
     devTail:
       `Les clés portent des scopes et des quotas ; les URLs signées permettent à un navigateur de récupérer un rendu sans la clé. La spécification OpenAPI est sur <a href="/api/v1/openapi.json">/api/v1/openapi.json</a> ; les notes d'installation sont dans la <a href="/docs">référence API</a> et sur la <a href="/mcp">page MCP</a>.`,
-    priceH2: (m: number) => `Gratuit. Pro à ${m} € par mois.`,
+    priceH2: (m: number) => `Gratuit. Pro à ${m}\u00a0€\u00a0par\u00a0mois.`,
     priceP: "Paiement par Stripe, résiliable depuis le tableau de bord ; le plan gratuit ne demande aucune carte.",
     faqH2: "Les questions qui reviennent.",
     featAlt: "Une carte de code pour query.sql en thème rose-pine sur fond sombre",
@@ -157,7 +159,9 @@ export function home(lang: Lang): string {
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <div class="mk-hero-top">
 <h1>${t.h1}</h1>
-<div><p class="mk-lead">${t.lead}</p><div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/docs">${t.cta2}</a></div></div>
+<div><p class="mk-lead">${t.lead}</p>
+<ul class="mk-aud">${t.aud.map((a) => `<li>${a}</li>`).join("")}</ul>
+<div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/docs">${t.cta2}</a></div></div>
 </div>
 <figure class="mk-shot">
 <img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 620px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async">
@@ -586,7 +590,7 @@ export function languagePage(slug: string): string | null {
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${h1}</h1>
 <p class="mk-lead" data-reveal style="max-width:60ch">${description}</p>
-<div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">Read the API</a></div>
+<div class="mk-actions" data-reveal style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
 </div></section>
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`languages/${slug}`)}${screenshot("languages/" + slug)}</div></div></section>
 ${renderBand(`Other cards, from the same pipeline.`)}
@@ -682,7 +686,7 @@ ${renderBand("The same card, three ways.")}
 <section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
 <h2>Try it on a snippet you have open.</h2>
 <p class="tight">The editor needs no account, and the API answers on a free key.</p>
-<div class="mk-actions" style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">Read the API</a></div>
+<div class="mk-actions" style="margin-top:var(--s5)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
 </div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }

@@ -16,6 +16,7 @@
   top: 0;
   z-index: 20;
   background: var(--surface);
+  border-bottom: 1px solid var(--rule);
 }
 .mk-nav .mk-wrap {
   display: flex;
@@ -60,7 +61,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: clamp(20px, 4vw, 64px);
-  align-items: end;
+  align-items: center;
 }
 .mk-hero h1 {
   margin: 0;
@@ -71,12 +72,22 @@
   max-width: 16ch;
 }
 .mk-lead {
-  margin: 0 0 var(--s5);
+  margin: 0;
   font-size: var(--fs-lead);
   line-height: 1.5;
   color: var(--ink-2);
   max-width: 44ch;
 }
+.mk-aud {
+  margin: var(--s4) 0 var(--s5);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s2);
+  font-size: var(--fs-lead);
+  color: var(--ink);
+}
+.mk-aud li::before { content: "—"; color: var(--accent); margin-right: var(--s2); }
 .mk-shot { margin: 0; }
 .mk-shot img {
   display: block;
@@ -84,6 +95,7 @@
   height: auto;
   border-radius: var(--r-panel);
   background: var(--surface);
+  box-shadow: 0 0 0 1px var(--rule), 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 .mk-shot figcaption {
   margin-top: var(--s2);
@@ -234,13 +246,22 @@
   /* the French nav labels and the CTA stop fitting together well before the phone width */
   .plans { grid-template-columns: minmax(0, 1fr); }
   .mk-links { gap: var(--s4); }
-  .mk-links a:not(.btn) { display: none; }
+  .mk-links a.mk-navlink { display: none; }
+  .mk-links a.lang { margin-left: 0; padding-left: 0; border-left: 0; }
   .demo-out { min-height: 180px; }
 }
 @media (max-width: 620px) {
   .gal { grid-template-columns: minmax(0, 1fr); }
 }
-.mk-links a.lang { display: inline-flex; font-variant-numeric: tabular-nums; }
+.mk-links a.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: var(--s4);
+  padding-left: var(--s5);
+  border-left: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums;
+}
 
 /* ——— prose pages: /api, /blog, /changelog, /legal, /code-screenshot, /vs —————————————————
    Long-form content keeps the page's frame: one measure, one rhythm, no boxes. */

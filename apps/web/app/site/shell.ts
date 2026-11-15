@@ -61,16 +61,21 @@ export function wordmark(lang: Lang): string {
   return `<a href="${lang === "fr" ? "/fr" : "/"}" class="wordmark" aria-label="${APP_NAME} — code to image">${MARK}<span>Code<span class="wordmark-two">2</span>Img</span></a>`;
 }
 
+const GLOBE = `<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.4"/><ellipse cx="8" cy="8" rx="2.9" ry="6.4"/><path d="M1.8 8h12.4"/></svg>`;
+
 export function nav(lang: Lang, active = ""): string {
   const t = NAV[lang];
-  const p = (href: string, label: string) =>
-    `<a href="${href}"${active === href ? ' aria-current="page"' : ""}>${label}</a>`;
+  const p = (href: string, label: string, cls = "mk-navlink") =>
+    `<a class="${cls}" href="${href}"${active === href ? ' aria-current="page"' : ""}>${label}</a>`;
   const other = lang === "fr" ? { href: "/", label: "EN" } : { href: "/fr", label: "FR" };
   const prefix = lang === "fr" ? "/fr" : "";
   return `<header class="mk-nav"><div class="mk-wrap">${wordmark(lang)}<nav class="mk-links" aria-label="${t.main}">${p(
-    `${prefix}/#features`,
-    t.features,
-  )}${p(`${prefix}/pricing`, t.pricing)}${p("/docs", t.api)}${p("/mcp", t.mcp)}${p("/blog", t.blog)}<a class="lang" href="${other.href}" hreflang="${other.label.toLowerCase()}" lang="${other.label.toLowerCase()}">${other.label}</a><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a></nav></div></header>`;
+    `${prefix}/editor`,
+    t.editor,
+  )}${p(
+    `${prefix}/pricing`,
+    t.pricing,
+  )}${p("/docs", t.api)}${p("/mcp", t.mcp)}${p("/blog", t.blog)}<a class="lang" href="${other.href}" hreflang="${other.label.toLowerCase()}" lang="${other.label.toLowerCase()}" aria-label="Switch to ${other.label.toLowerCase()}">${GLOBE}${other.label}</a></nav></div></header>`;
 }
 
 export function footer(lang: Lang): string {
