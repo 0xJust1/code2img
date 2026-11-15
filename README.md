@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://code2img.app/brand/mark.svg" width="64" height="64" alt="Code2Img mark">
+  <img src="docs/assets/mark.svg" width="64" height="64" alt="Code2Img mark">
 </p>
 
 <h1 align="center">&lt; &gt; Code2Img</h1>
@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <img src="https://code2img.app/og.png" width="820" alt="A Code2Img card rendered from a source snippet">
+  <img src="docs/assets/og.png" width="820" alt="A Code2Img card rendered from a source snippet">
 </p>
 
 ## Quickstart (editor)
