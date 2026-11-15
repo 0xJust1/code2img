@@ -30,9 +30,15 @@ type RedisClient = {
 
 let client: RedisClient | null | undefined;
 
+// Native single-host deploy: Redis lives on 127.0.0.1 (redis-server is installed on 1.45).
+// Production defaults to it; dev/test stay in memory unless REDIS_URL says otherwise.
+function redisUrl(): string | undefined {
+  return process.env.REDIS_URL || (process.env.NODE_ENV === "production" ? "redis://127.0.0.1:6379" : undefined);
+}
+
 async function redis(): Promise<RedisClient | null> {
   if (client !== undefined) return client;
-  const url = process.env.REDIS_URL;
+  const url = redisUrl();
   if (!url) return (client = null);
   try {
     const mod = (await import("ioredis")) as unknown as { default: new (u: string, o?: unknown) => RedisClient };

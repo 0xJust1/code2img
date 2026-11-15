@@ -4,7 +4,7 @@
 import { cardConfigSchema, gradientPresets } from "@code2img/shared";
 import { publicGuard } from "@/lib/api/guard";
 import { problem } from "@/lib/api/problem";
-import { SIGNED_PARAMS, type SignedParams, verify } from "@/lib/api/sign";
+import { SIGNED_PARAMS, type SignedParams, signSecret, verify } from "@/lib/api/sign";
 import { renderCard } from "@/lib/render";
 
 const PRESETS = new Set<string>(gradientPresets.map((g) => g.id));
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   if (q.get("b64") === "1" && params.code) {
     params.code = Buffer.from(params.code, "base64url").toString("utf8");
   }
-  if (!verify(params, q.get("sig") ?? "", process.env.RENDER_SIGN_SECRET)) {
+  if (!verify(params, q.get("sig") ?? "", signSecret())) {
     return problem(403, "Invalid signature", "Signed URL required: create one with POST /api/v1/signed-url.");
   }
 

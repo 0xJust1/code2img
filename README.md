@@ -146,14 +146,15 @@ Décisions et garde-fous :
   l'affichage ; rotation = nouvelle clé + ancienne révoquée immédiatement ; scopes `read`/`write`/`upload`.
 - **Quotas** : par clé et par IP, fenêtres fixes 60 s / 24 h — Free 30/min · 500/j,
   Pro 300/min · 5000/j (`API_LIMITS` dans `@code2img/shared/entitlements`). Redis natif sur
-  1.45 (`REDIS_URL`, compteurs persistants) ; sans Redis : compteurs en mémoire du process.
-  Réponses 429 en problem+json + `X-RateLimit-*` + `Retry-After`.
+  1.45 (`REDIS_URL`, défaut prod `redis://127.0.0.1:6379`, compteurs persistants ; sans Redis
+  joignable : compteurs en mémoire). Réponses 429 en problem+json + `X-RateLimit-*` + `Retry-After`.
 - **Erreurs** : RFC 9457 `application/problem+json` (`type|title|status|detail`) partout.
 - **Idempotence** : table `idempotency_key` (unique par compte+clé, TTL 24 h) ; même clé + même
   corps → réponse rejouée, même clé + corps différent → 422.
 - **Confidentialité** : le code n'est jamais persisté (ni `images.config`, ni hash du code —
   hash de la config visuelle, code vidé), comme pour les liens publics.
-- **Signature `render.png`** : HMAC-SHA256 (`RENDER_SIGN_SECRET`) sur les paramètres allowlistés,
+- **Signature `render.png`** : HMAC-SHA256 sur les paramètres allowlistés (clé =
+  `RENDER_SIGN_SECRET`, à défaut `AUTH_SECRET` — aucun secret en plus à provisionner),
   **sans expiration** (un badge README doit rester valide) — la signature fige un snippet précis,
   c'est ce qui borne l'abus ; le reste est limité par IP.
 - **Sécurité** : code ≤ 50 Ko (schéma zod partagé), timeout du rendu 15 s côté service,

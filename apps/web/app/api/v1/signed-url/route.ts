@@ -1,13 +1,13 @@
 // POST /api/v1/signed-url — mint a signed /api/v1/render.png URL for a fixed snippet.
 import { guard } from "@/lib/api/guard";
 import { problem } from "@/lib/api/problem";
-import { SIGNED_PARAMS, canonical, sign, type SignedParams } from "@/lib/api/sign";
+import { SIGNED_PARAMS, canonical, sign, signSecret, type SignedParams } from "@/lib/api/sign";
 
 export async function POST(req: Request) {
   const g = await guard(req, { scope: "write" });
   if (!g.ok) return g.response;
-  const secret = process.env.RENDER_SIGN_SECRET;
-  if (!secret) return problem(503, "Signed URLs unavailable", "RENDER_SIGN_SECRET is not configured.");
+  const secret = signSecret();
+  if (!secret) return problem(503, "Signed URLs unavailable", "No signing secret configured (RENDER_SIGN_SECRET or AUTH_SECRET).");
 
   let body: Record<string, unknown> & { b64?: boolean };
   try {

@@ -28,3 +28,9 @@ export function verify(params: SignedParams, sig: string, secret: string | undef
   const given = Buffer.from(sig);
   return expected.length === given.length && timingSafeEqual(expected, given);
 }
+
+// The HMAC key: RENDER_SIGN_SECRET when set, otherwise the app secret (already required
+// and never exposed). No extra secret to provision; rotating AUTH_SECRET rotates signatures.
+export function signSecret(): string | undefined {
+  return process.env.RENDER_SIGN_SECRET || process.env.AUTH_SECRET;
+}
