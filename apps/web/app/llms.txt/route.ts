@@ -12,7 +12,7 @@ export async function GET() {
 ## MCP server (recommended for agents)
 
 - Remote, Streamable HTTP: ${site}/mcp — auth: \`Authorization: Bearer <api key>\`
-- stdio package (not on npm yet): \`npx -y --package ${site}/downloads/code2img-mcp.tgz code2img-mcp\` with \`CODE2IMG_API_KEY\` in the environment
+- stdio package: \`npx -y code2img-mcp\` (or \`npm i -g code2img-mcp\`) with \`CODE2IMG_API_KEY\` in the environment — the tarball at ${site}/downloads/code2img-mcp.tgz remains available as a fallback
 - Setup snippets per client: ${site}/mcp
 - Tools: render_code_image, list_themes, list_languages, list_backgrounds, create_share_link, get_usage, get_share_urls
 

@@ -1,20 +1,20 @@
 # Checklist de lancement
 
-## MCP — publier `code2img-mcp` sur npm (2 min, compte personnel)
+## MCP — publier `code2img-mcp` sur npm (fait le 15/11/2026, v0.1.0)
 
-Reporté au 15/11/2026 : aucun token npm valide sur la box. En attendant, le paquet est
-installé depuis le tarball servi par l'instance (`/downloads/code2img-mcp.tgz`,
-régénéré par `npm run pack:mcp`).
+- [x] Créer un token **Automation** sur npmjs.com → Access Tokens, scope `code2img-mcp` (ou
+  Full access si le paquet n'existe pas encore : le nom doit être réservé au premier publish).
+- [x] `echo '//registry.npmjs.org/:_authToken=<TOKEN>' > ~/.npmrc` puis `npm whoami`.
+- [x] `cd ~/projects/code2img && npm run pack:mcp && cd packages/mcp && npm publish --access public`.
+- [x] Vérifier le paquet réellement publié : `npx -y --package code2img-mcp@0.1.0 code2img-mcp`
+  + `node packages/mcp/scripts/stdio-smoke.mjs code2img-mcp` (6 checks).
+- [x] Basculer les snippets sur le nom npm : `apps/web/app/mcp/page-html.ts`
+  (`PKG` → `code2img-mcp`), `apps/web/app/llms.txt/route.ts`, `README.md`,
+  `packages/mcp/README.md`, puis rebuild + restart du service web.
 
-1. Créer un token **Automation** sur npmjs.com → Access Tokens, scope `code2img-mcp` (ou
-   Full access si le paquet n'existe pas encore : le nom doit être réservé au premier publish).
-2. `echo '//registry.npmjs.org/:_authToken=<TOKEN>' > ~/.npmrc` puis `npm whoami`.
-3. `cd ~/projects/code2img && npm run pack:mcp && cd packages/mcp && npm publish --access public`.
-4. Vérifier le paquet réellement publié : `npx -y --package code2img-mcp@0.1.0 code2img-mcp`
-   + `node packages/mcp/scripts/stdio-smoke.mjs code2img-mcp` (6 checks).
-5. Basculer les snippets sur le nom npm une fois publié : `apps/web/app/mcp/page-html.ts`
-   (`PKG` → `code2img-mcp`), `apps/web/app/llms.txt/route.ts`, `README.md`,
-   `packages/mcp/README.md`, puis rebuild + restart du service web.
+Notes :
+- `0.0.0-stage` existe dans le registry mais n'est pas latest — ne pas unpublish, refusé aux tokens Automation.
+- Le tarball `/downloads/code2img-mcp.tgz` reste servi comme alternative (auto-hébergement, air-gapped).
 
 ## Stripe live
 
@@ -72,7 +72,7 @@ Sentry pour les erreurs du service web et du rendu. Rien à préparer dans le co
 
 ## Roadmap post-MVP
 
-1. Publier `code2img-mcp` sur npm (section en haut) et basculer les snippets.
+1. ~~Publier `code2img-mcp` sur npm~~ (fait le 15/11/2026, v0.1.0) — bascule des snippets en cours.
 2. Les 8 idées d'articles restantes (`seo-content/article-ideas.md`) + les pages par langage
    déjà créées : c'est la croissance organique, pas de fonctionnalité à écrire.
 3. Comptes OAuth (Google/GitHub) : le code est branché, il ne manque que les clés.

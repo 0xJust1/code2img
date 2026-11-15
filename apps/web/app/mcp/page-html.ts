@@ -4,8 +4,8 @@ import { siteUrl } from "@/lib/share";
 import { breadcrumbs, doc, esc, footer, nav } from "../site/shell";
 
 const ENDPOINT = `${siteUrl()}/mcp`;
-// npm publication is pending: this instance serves the tarball clients install from.
-const PKG = `${siteUrl()}/downloads/code2img-mcp.tgz`;
+// npm package name — the tarball at /downloads/code2img-mcp.tgz remains available as fallback.
+const PKG = "code2img-mcp";
 
 const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   {
@@ -37,7 +37,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
+      "args": ["-y", "${PKG}"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -51,7 +51,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
+      "args": ["-y", "${PKG}"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -65,7 +65,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "servers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
+      "args": ["-y", "${PKG}"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -79,7 +79,7 @@ const SNIPPETS: { id: string; title: string; note: string; code: string }[] = [
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "--package", "${PKG}", "code2img-mcp"],
+      "args": ["-y", "${PKG}"],
       "env": { "CODE2IMG_API_KEY": "YOUR_API_KEY" }
     }
   }
@@ -124,7 +124,7 @@ export const MCP_PAGE = doc(
   `${nav("en", "")}
 <section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>Render code images from your agent.</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is not on npm yet: the snippets below install the tarball this instance serves.</p>
+<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is <code>code2img-mcp</code> on npm — the snippets below install it directly; the tarball at <code>/downloads/code2img-mcp.tgz</code> remains available as a fallback.</p>
 <p class="tight" data-reveal style="margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
 </div></section>
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>

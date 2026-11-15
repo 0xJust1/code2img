@@ -8,10 +8,10 @@ Seven tools: `render_code_image`, `list_themes`, `list_languages`, `list_backgro
 
 ## stdio (local install)
 
-Not published on npm yet: `npx` installs the tarball served by the Code2Img instance.
+Install from npm (`code2img-mcp@0.1.0`), or use the tarball served by the Code2Img instance as fallback.
 
 ```bash
-CODE2IMG_API_KEY=c2i_live_… npx -y --package https://code2img.app/downloads/code2img-mcp.tgz code2img-mcp
+CODE2IMG_API_KEY=c2i_live_… npx -y code2img-mcp
 ```
 
 Claude Desktop / Cursor / Windsurf (`claude_desktop_config.json`, `~/.cursor/mcp.json`,
@@ -22,7 +22,7 @@ Claude Desktop / Cursor / Windsurf (`claude_desktop_config.json`, `~/.cursor/mcp
   "mcpServers": {
     "code2img": {
       "command": "npx",
-      "args": ["-y", "--package", "https://code2img.app/downloads/code2img-mcp.tgz", "code2img-mcp"],
+      "args": ["-y", "code2img-mcp"],
       "env": { "CODE2IMG_API_KEY": "c2i_live_…" }
     }
   }
