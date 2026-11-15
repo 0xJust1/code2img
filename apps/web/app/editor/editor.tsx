@@ -591,18 +591,20 @@ export default function Editor() {
         <section className="stage">
           <div className="canvas" ref={canvasRef}>
             {mounted && (
-              <iframe
-                ref={frameRef}
-                title="Card preview"
-                srcDoc={html}
-                sandbox="allow-same-origin"
-                onLoad={measureCard}
-                style={
-                  cardBox
-                    ? ({ width: `${cardBox.w}px`, height: `${cardBox.h}px`, zoom: fit } as React.CSSProperties)
-                    : undefined
-                }
-              />
+              <div className="fitbox" style={cardBox ? { width: cardBox.w * fit, height: cardBox.h * fit } : undefined}>
+                <iframe
+                  ref={frameRef}
+                  title="Card preview"
+                  srcDoc={html}
+                  sandbox="allow-same-origin"
+                  onLoad={measureCard}
+                  style={
+                    cardBox
+                      ? ({ width: `${cardBox.w}px`, height: `${cardBox.h}px`, transform: `scale(${fit})`, transformOrigin: "top left" } as React.CSSProperties)
+                      : undefined
+                  }
+                />
+              </div>
             )}
           </div>
 
