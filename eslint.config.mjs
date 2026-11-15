@@ -10,9 +10,9 @@ export default tseslint.config(
   },
   {
     // Node scripts (contract checks): Node globals + fetch, no framework.
-    files: ["scripts/**/*.mjs"],
+    files: ["scripts/**/*.mjs", "packages/*/scripts/**/*.mjs"],
     languageOptions: {
-      globals: { process: "readonly", console: "readonly", fetch: "readonly", FormData: "readonly", Buffer: "readonly" },
+      globals: { process: "readonly", console: "readonly", fetch: "readonly", FormData: "readonly", Buffer: "readonly", URL: "readonly" },
     },
   },
 );
