@@ -305,7 +305,7 @@ export function demoBlock(lang: Lang): string {
 <p class="error" id="demo-error" hidden></p>
 </div>
 <div>
-<div class="demo-out"><img id="demo-out" src="/examples/hero.jpg" alt="${t.alt}" width="640" height="360"></div>
+<div class="demo-out"><img id="demo-out" src="/examples/hero.jpg" alt="${t.alt}" width="1088" height="780"></div>
 <p class="demo-note">${t.note}</p>
 </div>
 </div>
@@ -363,6 +363,8 @@ function demoJs(lang: Lang): string {
     }).then(function (blob) {
       if (url) URL.revokeObjectURL(url);
       url = URL.createObjectURL(blob); out.src = url;
+      // a render keeps the card's own ratio: declare it, so the box never disagrees with the picture
+      out.onload = function () { out.width = out.naturalWidth; out.height = out.naturalHeight; out.onload = null; };
     }).catch(function (e) {
       err.textContent = e.message || ${JSON.stringify(t.failed)}; err.hidden = false;
     }).then(function () {

@@ -25,12 +25,12 @@ function faq(lang: Lang) {
 }
 
 const GALLERY = [
-  { file: "example-tokyo", theme: "tokyo-night", title: "deploy.sh" },
-  { file: "example-latte", theme: "catppuccin-latte", title: "App.tsx" },
-  { file: "example-rose", theme: "rose-pine", title: "query.sql" },
-  { file: "example-nord", theme: "nord", title: "main.go" },
-  { file: "example-dracula", theme: "dracula", title: "train.py" },
-  { file: "example-min", theme: "min-light", title: "notes.rs" },
+  { file: "theme-tokyo-night", theme: "tokyo-night", title: "deploy.sh" },
+  { file: "theme-catppuccin-latte", theme: "catppuccin-latte", title: "App.tsx" },
+  { file: "theme-rose-pine", theme: "rose-pine", title: "query.sql" },
+  { file: "theme-nord", theme: "nord", title: "main.go" },
+  { file: "theme-dracula", theme: "dracula", title: "train.py" },
+  { file: "theme-min-light", theme: "min-light", title: "notes.rs" },
 ];
 
 const apiSnippet = `curl -X POST ${BASE}/api/v1/images \\
@@ -175,7 +175,7 @@ export function home(lang: Lang): string {
 <p class="tight" data-reveal>${t.galP}</p>
 <div class="gal" style="margin-top:var(--s6)">${GALLERY.map(
     (g) =>
-      `<figure data-reveal><img src="/examples/${g.file}.jpg" alt="${lang === "fr" ? "Carte de code générée dans le thème" : "Code card rendered in the"} ${g.theme}${lang === "fr" ? " : " : " theme: "}${g.title}" width="2560" height="1440" loading="lazy" decoding="async"><figcaption>${g.theme} · ${g.title}</figcaption></figure>`,
+      `<figure data-reveal><img src="/examples/${g.file}.jpg" alt="${lang === "fr" ? "Carte de code générée dans le thème" : "Code card rendered in the"} ${g.theme}${lang === "fr" ? " : " : " theme: "}${g.title}" width="1200" height="675" loading="lazy" decoding="async"><figcaption>${g.theme} · ${g.title}</figcaption></figure>`,
   ).join("")}</div>
 </div></section>
 
@@ -429,18 +429,20 @@ export const LANGUAGES: { slug: string; name: string }[] = [
 /** A band of real renders, captioned. The product's own output is the honest picture on a
  * documentation page — and it is what the pictures floor is measuring. */
 export function renderBand(caption: string): string {
+  // width/height are the real pixels gen-assets.mjs writes: a wrong pair makes the browser reserve
+  // the wrong box before the picture arrives (Lighthouse: image-aspect-ratio).
   const shots = [
-    { file: "hero", cap: "cart.ts · github-dark" },
-    { file: "example-tokyo", cap: "deploy.sh · tokyo-night" },
-    { file: "example-dracula", cap: "train.py · dracula" },
-    { file: "example-min", cap: "notes.rs · min-light" },
+    { file: "hero", cap: "cart.ts · github-dark", w: 1088, h: 780 },
+    { file: "example-tokyo", cap: "deploy.sh · tokyo-night", w: 1032, h: 732 },
+    { file: "example-dracula", cap: "train.py · dracula", w: 1232, h: 636 },
+    { file: "example-min", cap: "notes.rs · min-light", w: 760, h: 636 },
   ];
   return `<section class="mk-sec" style="padding-block:var(--gap-section)"><div class="mk-wrap" data-reveal-group>
 <h2 data-reveal>${caption}</h2>
 <div class="mk-strip" data-reveal>${shots
     .map(
       (s) =>
-        `<figure><figcaption>${esc(s.cap)}</figcaption><img src="/examples/${s.file}.jpg" alt="A code card rendered by Code2Img: ${esc(s.cap)}" width="1280" height="720" loading="lazy" decoding="async"></figure>`,
+        `<figure><figcaption>${esc(s.cap)}</figcaption><img src="/examples/${s.file}.jpg" alt="A code card rendered by Code2Img: ${esc(s.cap)}" width="${s.w}" height="${s.h}" loading="lazy" decoding="async"></figure>`,
     )
     .join("")}</div>
 </div></section>`;

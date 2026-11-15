@@ -129,14 +129,16 @@
   border-radius: var(--r-panel);
   overflow: hidden;
 }
-.demo-out img { max-width: 100%; max-height: 420px; height: auto; border-radius: var(--r-ctl); display: block; }
+.demo-out img { max-width: 100%; height: auto; border-radius: var(--r-ctl); display: block; }
 .demo-note { color: var(--ink-3); font-size: var(--fs-body); margin: var(--s2) 0 0; }
 
 /* ——— gallery ————————————————————————————————————— */
 .gal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s6); }
-.gal figure { margin: 0; }
+.gal figure { margin: 0; display: grid; align-content: start; }
+/* the six tiles share one canvas ratio (the render is 16:9), so the row stays regular without
+   cropping any code; the band's tight cards are a different job, on a different page section */
 .gal img { display: block; width: 100%; height: auto; border-radius: var(--r-panel); background: var(--surface); }
-.gal figcaption { margin-top: var(--s2); color: var(--ink-3); font-size: var(--fs-body); }
+.gal figcaption { margin-top: var(--s3); color: var(--ink-3); font-size: var(--fs-body); }
 
 /* ——— features: a list, not a card grid ————————————— */
 .feat { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }

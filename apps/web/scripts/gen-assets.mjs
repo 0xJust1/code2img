@@ -117,12 +117,7 @@ writeFileSync(path.join(pub, "favicon.ico"), ico(pngs));
 
 // Gallery: the product renders its own examples, so the pictures are real output.
 mkdirSync(path.join(pub, "examples"), { recursive: true });
-for (const ex of examples) {
-  const config = {
-    code: ex.code, language: ex.lang, theme: ex.theme, font: "jetbrains-mono", fontSize: 15,
-    lineHeight: 1.6, padding: 48, radius: 12, shadow: true, windowStyle: "mac", title: ex.title,
-    lineNumbers: true, ratio: "auto", background: ex.bg, watermark: true,
-  };
+const renderExample = async (name, config) => {
   // jpg: these cards end up on a full-bleed background, no transparency needed, and a PNG of a
   // dithered gradient costs 1 MB while the same picture as JPEG costs a tenth of it.
   // Two widths: a phone gets the 1× file, a desktop the 2× one (srcset in the pages).
@@ -131,10 +126,23 @@ for (const ex of examples) {
       method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ config, format: "jpg", scale, quality: 88 }),
     });
-    if (!res.ok) { console.error(ex.file, res.status, await res.text()); process.exitCode = 1; continue; }
-    writeFileSync(path.join(pub, "examples", `${ex.file}${suffix}.jpg`), Buffer.from(await res.arrayBuffer()));
-    console.log("example", ex.file + suffix);
+    if (!res.ok) { console.error(name, res.status, await res.text()); process.exitCode = 1; continue; }
+    writeFileSync(path.join(pub, "examples", `${name}${suffix}.jpg`), Buffer.from(await res.arrayBuffer()));
+    console.log("example", name + suffix);
   }
+};
+const cfg = (ex, ratio) => ({
+  code: ex.code, language: ex.lang, theme: ex.theme, font: "jetbrains-mono", fontSize: 15,
+  lineHeight: 1.6, padding: 48, radius: 12, shadow: true, windowStyle: "mac", title: ex.title,
+  lineNumbers: true, ratio, background: ex.bg, watermark: true,
+});
+for (const ex of examples) {
+  await renderExample(ex.file, cfg(ex, "auto"));
+}
+// Six theme tiles for the gallery: one canvas ratio for all of them, so the grid stays regular
+// (tight cards next to a heading are the band's job, and their heights differ by snippet length).
+for (const ex of examples.filter((e) => e.file !== "hero")) {
+  await renderExample(`theme-${ex.theme}`, cfg(ex, "16:9"));
 }
 
 await browser.close();
