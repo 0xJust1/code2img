@@ -224,6 +224,7 @@ ${meta.preload ? `<link rel="preload" as="image" href="${meta.preload}" fetchpri
 <body class="mk">
 ${body}
 <script>${REVEAL_JS}</script>
+<script defer src="https://analytics.vaultkeepr.xyz/script.js" data-website-id="ff088c49-bd07-4821-bd81-be1a6e96bf68"></script>
 </body>
 </html>`;
 }
