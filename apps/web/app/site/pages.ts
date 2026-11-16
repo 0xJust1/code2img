@@ -711,7 +711,7 @@ export function legalPage(kind: "terms" | "privacy" | "mentions", lang: Lang = "
   const meta: Meta = {
     title: titles.title,
     description,
-    path: `/legal/${kind}`,
+    path: isFr ? `/fr/legal/${kind}` : `/legal/${kind}`,
     lang: pageLang,
     alt: isMentions ? (isFr ? "/legal/mentions" : "/fr/legal/mentions") : undefined,
     jsonLd: [breadcrumbs([{ name: isFr ? "Accueil" : "Home", path: isFr ? "/fr" : "/" }, { name: titles.h1, path: `/legal/${kind}` }], pageLang)],

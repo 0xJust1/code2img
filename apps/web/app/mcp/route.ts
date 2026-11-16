@@ -36,11 +36,12 @@ function selfApiUrl(): string {
 }
 
 function get(req: Request): Promise<Response> | Response {
-  // Browsers ask for HTML; MCP clients open the optional SSE stream.
-  if (req.headers.get("accept")?.includes("text/html")) {
-    return new Response(MCP_PAGE, { headers: { "content-type": "text/html; charset=utf-8" } });
+  // MCP clients open the optional SSE stream; everyone else (browsers, crawlers sending a
+  // generic Accept: */*, link previews) gets the setup page instead of a 401.
+  if (req.headers.get("accept")?.includes("text/event-stream")) {
+    return handler(req);
   }
-  return handler(req);
+  return new Response(MCP_PAGE, { headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
 export { handler as POST, handler as DELETE, get as GET };

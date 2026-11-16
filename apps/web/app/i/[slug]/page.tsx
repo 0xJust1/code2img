@@ -28,6 +28,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
+    // Third-party, ephemeral, thin content: keep it out of the index but let previews work.
+    robots: { index: false, follow: false },
     alternates: { canonical: publicUrl(share.slug) },
     openGraph: {
       type: "website",

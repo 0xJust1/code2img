@@ -269,6 +269,7 @@ export default function Editor() {
   return (
     <div className="app">
       <header className="appbar">
+        <h1 className="sr-only">Code2Img editor — create a code image</h1>
         <div className="appbar-brand">
           <a href="/" aria-label="Code2Img — code to image" className="appbar-logo">
             <Mark size={28} />

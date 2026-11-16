@@ -73,7 +73,7 @@ export function nav(lang: Lang, active = ""): string {
   const other = lang === "fr" ? { href: "/", label: "EN" } : { href: "/fr", label: "FR" };
   const prefix = lang === "fr" ? "/fr" : "";
   return `<header class="mk-nav"><div class="mk-wrap">${wordmark(lang)}<nav class="mk-links" aria-label="${t.main}">${p(
-    `${prefix}/editor`,
+    "/editor",
     t.editor,
   )}${p(
     `${prefix}/pricing`,
