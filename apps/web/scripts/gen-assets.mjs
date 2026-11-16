@@ -24,7 +24,7 @@ writeFileSync(path.join(pub, "brand", "mark.svg"), markSvg(32));
 // Favicon: the mark on its own dark tile so it survives a light tab bar.
 const tile = (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="${ground}"/>
-  <g transform="translate(4.6 4.6) scale(0.7125)">${markSvg(32).replace(/<\/?svg[^>]*>/g, "")}</g>
+  <g transform="translate(16 16) scale(0.8) translate(-16 -16)">${markSvg(32).replace(/<\/?svg[^>]*>/g, "")}</g>
 </svg>`;
 writeFileSync(path.join(pub, "favicon.svg"), tile(32));
 
