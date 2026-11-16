@@ -683,37 +683,49 @@ export function changelogPage(): string {
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
 
-export function legalPage(kind: "terms" | "privacy" | "mentions"): string {
+export function legalPage(kind: "terms" | "privacy" | "mentions", lang: Lang = "en"): string {
+  const isMentions = kind === "mentions";
+  const isFr = isMentions && lang === "fr";
+  const pageLang: Lang = isFr ? "fr" : "en";
   const titles = {
     terms: { title: "Terms of service — Code2Img", h1: "Terms of service" },
     privacy: { title: "Privacy — Code2Img", h1: "Privacy policy" },
-    mentions: { title: "Mentions légales — Code2Img", h1: "Mentions légales" },
+    mentions: isFr
+      ? { title: "Mentions légales — Code2Img", h1: "Mentions légales" }
+      : { title: "Legal notice — Code2Img", h1: "Legal notice" },
   }[kind];
-  const isMentions = kind === "mentions";
-  const meta: Meta = {
-    title: titles.title,
-    description:
-      kind === "terms"
-        ? "The terms that apply to the Code2Img editor, the paid Pro plan, the public API, the MCP server and the share pages."
-        : isMentions
+
+  const description =
+    kind === "terms"
+      ? "The terms that apply to the Code2Img editor, the paid Pro plan, the public API, the MCP server and the share pages."
+      : kind === "privacy"
+        ? "What Code2Img stores, for how long, where it lives, and how to get it deleted. No advertising, no third-party analytics."
+        : isFr
           ? "Éditeur, hébergement, données personnelles et médiation : les mentions légales de Code2Img."
-          : "What Code2Img stores, for how long, where it lives, and how to get it deleted. No advertising, no third-party analytics.",
-    path: `/legal/${kind}`,
-    lang: isMentions ? "fr" : "en",
-    jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: titles.h1, path: `/legal/${kind}` }], isMentions ? "fr" : "en")],
-  };
-  const lead = isMentions
+          : "Publisher, hosting, personal data and mediation: the legal notice for Code2Img.";
+
+  const lead = isFr
     ? "Éditeur : Code2Img (entreprise individuelle). Contact : hello@code2img.app. Dernière mise à jour : 15 novembre 2026."
     : "Last updated 15 November 2026. Operator: Code2Img. Contact: support@code2img.app.";
+
+  const meta: Meta = {
+    title: titles.title,
+    description,
+    path: `/legal/${kind}`,
+    lang: pageLang,
+    alt: isMentions ? (isFr ? "/legal/mentions" : "/fr/legal/mentions") : undefined,
+    jsonLd: [breadcrumbs([{ name: isFr ? "Accueil" : "Home", path: isFr ? "/fr" : "/" }, { name: titles.h1, path: `/legal/${kind}` }], pageLang)],
+  };
+  const contentFile = kind === "mentions" && !isFr ? `legal-${kind}-en` : `legal-${kind}`;
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${titles.h1}</h1>
 <p class="mk-lead" data-reveal style="max-width:60ch">${lead}</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`legal-${kind}`)}</div></div></section>`;
- return doc(meta, `${nav(meta.lang, "")}${body}${footer(meta.lang)}`);
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(contentFile)}</div></div></section>`;
+ return doc(meta, `${nav(pageLang, "")}${body}${footer(pageLang)}`);
 }
 
-/** Contact: two addresses, one question each. Sober, on the landing's frame. */
+/** Contact: form with dual choice (Support vs Partners), handled server-side. */
 export function contactPage(lang: Lang): string {
  const prefix = lang === "fr" ? "/fr" : "";
  const t =
