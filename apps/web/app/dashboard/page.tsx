@@ -127,7 +127,14 @@ export default function Dashboard() {
 
   const checkout = async (plan: "pro-monthly" | "pro-yearly") => {
     setBusy(true);
+    setNotice("");
     const r = await fetch("/api/billing/checkout", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ plan }) });
+    if (!r.ok) {
+      setBusy(false);
+      const text = await r.text().catch(() => "");
+      setNotice(text || `Checkout failed (${r.status})`);
+      return;
+    }
     const j = await r.json();
     setBusy(false);
     if (j.url) location.href = j.url;
@@ -136,7 +143,14 @@ export default function Dashboard() {
 
   const portal = async () => {
     setBusy(true);
+    setNotice("");
     const r = await fetch("/api/billing/portal", { method: "POST" });
+    if (!r.ok) {
+      setBusy(false);
+      const text = await r.text().catch(() => "");
+      setNotice(text || `Portal failed (${r.status})`);
+      return;
+    }
     const j = await r.json();
     setBusy(false);
     if (j.url) location.href = j.url;

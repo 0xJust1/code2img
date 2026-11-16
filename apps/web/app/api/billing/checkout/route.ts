@@ -21,11 +21,12 @@ export async function POST(req: Request) {
     metadata: { userId: user.id },
     customer: user.stripeCustomerId ?? undefined,
     customer_creation: user.stripeCustomerId ? undefined : "always",
-    automatic_tax: { enabled: true }, // Stripe Tax
-    tax_id_collection: { enabled: true },
+    automatic_tax: { enabled: false },
     allow_promotion_codes: true,
+    managed_payments: { enabled: false },
     success_url: `${process.env.APP_URL ?? "http://localhost:3335"}/dashboard?upgraded=1`,
     cancel_url: `${process.env.APP_URL ?? "http://localhost:3335"}/dashboard`,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
   return Response.json({ url: session.url });
 }
