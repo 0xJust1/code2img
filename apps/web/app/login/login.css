@@ -1,0 +1,116 @@
+/* Login: one centred panel on the site frame (.mk-wrap, --w-page), the same tokens as the dashboard and the contact form. */
+
+.login {
+  min-height: calc(100vh - 64px);
+  padding-block: clamp(40px, 7vw, 96px) var(--gap-section);
+}
+.login-wrap { display: grid; justify-items: start; }
+
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  display: grid;
+  gap: var(--s5);
+  padding: clamp(24px, 4vw, 36px);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-panel);
+}
+
+.login-kicker {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.login-card h1 {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: 620;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.login-lead {
+  margin: calc(var(--s2) * -1) 0 0;
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+}
+
+.login-form { display: grid; gap: var(--s4); }
+.login-field { display: grid; gap: 6px; }
+.login-field label { font-size: var(--fs-body); color: var(--ink-2); }
+.login-field input[type="email"] {
+  height: 40px;
+  padding: 0 var(--s4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-input);
+  background: var(--ground);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: var(--r-ctl);
+  outline: none;
+}
+.login-field input[type="email"]:hover { border-color: var(--border-strong); }
+.login-field input[type="email"]:focus { border-color: var(--border-strong); }
+.login-form .btn-submit {
+  height: 40px;
+  justify-content: center;
+  font-size: var(--fs-input);
+}
+
+.login-hint { margin: 0; color: var(--ink-3); font-size: var(--fs-small); line-height: 1.5; }
+
+.login-error {
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  color: var(--danger);
+  background: rgba(255, 143, 143, 0.08);
+  border: 1px solid rgba(255, 143, 143, 0.28);
+  border-radius: var(--r-ctl);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+
+.login-sent { display: grid; gap: var(--s3); }
+.login-sent h2 {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  color: var(--ink);
+}
+.login-sent p { margin: 0; color: var(--ink-2); font-size: var(--fs-body); line-height: 1.6; }
+.login-sent strong { color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
+.login-dev {
+  color: var(--ink-3) !important;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small) !important;
+}
+.login-sent .btn { justify-self: start; margin-top: var(--s1); }
+
+.login-back {
+  justify-self: start;
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+  text-decoration: none;
+}
+.login-back:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+.login-legal {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+}
+.login-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.login-legal a:hover { color: var(--ink); }
+.login-legal-out { margin-top: var(--s5); max-width: 440px; }
+
+/* header links stay reachable on phone: the row scrolls sideways (same rule as the dashboard) */
+@media (max-width: 720px) {
+  .mk-nav .mk-wrap { gap: var(--s4); }
+  .mk-nav .mk-links { gap: var(--s4); overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .mk-nav .mk-links a { white-space: nowrap; font-size: var(--fs-body); }
+}
