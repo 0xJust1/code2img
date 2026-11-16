@@ -43,15 +43,16 @@ function tooMany(r: LimitResult): Response {
 
 /** Authenticated API request: key + scope + quota + usage counter. */
 export async function guard(req: Request, opts: { scope?: Scope } = {}): Promise<ApiGuard> {
-  const db = getDb();
-  if (!db) return { ok: false, response: problem(503, "Service unavailable", "Database is not configured.") };
-
   const raw = rawKeyFrom(req.headers);
   if (!raw) {
-    const res = problem(401, "Unauthorized", "Send an API key: Authorization: Bearer c2i_live_…");
+    const res = problem(401, "Unauthorized", "Send an API key: Authorization: Bearer ***");
     res.headers.set("www-authenticate", 'Bearer realm="code2img"');
     return { ok: false, response: res };
   }
+
+  const db = getDb();
+  if (!db) return { ok: false, response: problem(503, "Service unavailable", "Database is not configured.") };
+
   const key = await keyFromRaw(db, raw);
   if (!key) return { ok: false, response: problem(401, "Invalid API key", "The key is unknown or has been revoked.") };
   if (opts.scope && !hasScope(key, opts.scope)) {

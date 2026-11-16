@@ -1,6 +1,6 @@
 import { getAuth } from "@/lib/auth";
 
-const handler = async (req: Request) => {
+const handler = async (req: Request, _ctx: { params: Promise<{ all: string[] }> }) => {
   const auth = getAuth();
   if (!auth) return Response.json({ error: "service unavailable: database not configured" }, { status: 503 });
   return auth.handler(req);
