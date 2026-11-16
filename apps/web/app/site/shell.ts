@@ -210,13 +210,14 @@ ${meta.noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${og.startsWith("http") ? og : BASE + og}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/brand/favicon-16.png" sizes="16x16">
-<link rel="icon" href="/brand/favicon-32.png" sizes="32x32">
-<link rel="icon" href="/brand/icon-192.png" sizes="192x192">
-<link rel="icon" href="/brand/icon-512.png" sizes="512x512">
-<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
-<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/brand/favicon-16.png?v=2" sizes="16x16" type="image/png">
+<link rel="icon" href="/brand/favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="icon" href="/brand/icon-192.png?v=2" sizes="192x192" type="image/png">
+<link rel="icon" href="/brand/icon-512.png?v=2" sizes="512x512" type="image/png">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png?v=2" sizes="180x180">
+<link rel="manifest" href="/manifest.webmanifest?v=2">
 ${ld}
 ${meta.preload ? `<link rel="preload" as="image" href="${meta.preload}" fetchpriority="high">` : ""}
 <style>${siteCss()}</style>

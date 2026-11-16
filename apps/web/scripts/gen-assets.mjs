@@ -82,7 +82,12 @@ const examples = [
 const browser = await chromium.launch();
 const shot = async (html, file, w, h, scale = 1) => {
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: scale });
-  await page.setContent(html, { waitUntil: "load" });
+  // Bare SVG markup gets Chromium's default 8px body margin, which pushes the mark off the canvas
+  // and crops it bottom-right. Wrap it in a zero-margin document first.
+  const doc = html.trimStart().startsWith("<svg")
+    ? `<!doctype html><html><head><style>*{margin:0}html,body{padding:0;background:transparent;overflow:hidden}svg{display:block}</style></head><body>${html}</body></html>`
+    : html;
+  await page.setContent(doc, { waitUntil: "load" });
   await page.screenshot({ path: file, omitBackground: true });
   await page.close();
 };

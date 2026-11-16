@@ -24,9 +24,10 @@ const HTML = `<!doctype html>
     <meta property="og:image" content="${SITE}/og.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="${SITE}/og.png" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/brand/favicon-32.png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+    <link rel="icon" href="/brand/favicon-32.png?v=2" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png?v=2" sizes="180x180" />
     <style>body{margin:0} .back{position:fixed;top:12px;right:16px;z-index:10;font:13px ui-sans-serif,system-ui;color:#555} noscript{display:block;max-width:65ch;margin:0 auto;padding:var(--s6,64px) 24px;font:16px/1.5 ui-sans-serif,system-ui}</style>
   </head>
   <body>
