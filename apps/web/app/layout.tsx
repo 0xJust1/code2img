@@ -44,6 +44,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_JS }} />
+        <script
+          defer
+          src="https://analytics.vaultkeepr.xyz/script.js"
+          data-website-id="ff088c49-bd07-4821-bd81-be1a6e96bf68"
+        />
       </body>
     </html>
   );
