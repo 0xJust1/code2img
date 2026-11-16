@@ -337,6 +337,45 @@
 }
 .langs a:hover { color: var(--ink); }
 
+/* ——— contact form ——————————————————————————————— */
+.contact-form { display: grid; gap: var(--s5); max-width: 64ch; }
+.contact-field { display: grid; gap: 6px; }
+.contact-field label { font-size: var(--fs-body); color: var(--ink-2); }
+.contact-field input[type="text"],
+.contact-field input[type="email"],
+.contact-field textarea {
+  font-family: var(--font-ui);
+  font-size: var(--fs-input);
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-ctl);
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+}
+.contact-field input:focus,
+.contact-field textarea:focus { border-color: var(--border-strong); }
+.contact-choices { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.contact-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.contact-choice input { accent-color: var(--accent); }
+.contact-choice:has(input:checked) { border-color: var(--accent); color: var(--ink); background: var(--accent-soft); }
+.contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s4); }
+.contact-status { margin: 0; font-size: var(--fs-body); color: var(--ink-2); max-width: 48ch; }
+.contact-form .err { color: var(--danger); font-size: var(--fs-body); margin-top: 2px; }
+.contact-form .err[hidden] { display: none; }
+
 /* example strip: three real renders, used where a page needs pictures of the output */
 .mk-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: var(--s4); margin-top: var(--s6); }
 .mk-strip figure { margin: 0; }

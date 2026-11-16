@@ -727,46 +727,150 @@ export function legalPage(kind: "terms" | "privacy" | "mentions", lang: Lang = "
 
 /** Contact: form with dual choice (Support vs Partners), handled server-side. */
 export function contactPage(lang: Lang): string {
- const prefix = lang === "fr" ? "/fr" : "";
- const t =
-   lang === "fr"
-     ? {
-         title: "Contact — Code2Img",
-         h1: "Contact.",
-         lead: "Une question, un bug, un partenariat ? Deux adresses, une réponse en principe sous 48 h ouvrées.",
-         supportH2: "Support technique",
-         supportP: "Bug, question d'usage, clé API, facturation : écrivez à <a href=\"mailto:support@code2img.app\">support@code2img.app</a>.",
-         helloH2: "Partenariats et tout le reste",
-         helloP: "Presse, partenariats, offres d'intégration ou simplement dire bonjour : <a href=\"mailto:hello@code2img.app\">hello@code2img.app</a>.",
-         band: "Une question sur le produit avant d'écrire ?",
-       }
-     : {
-         title: "Contact — Code2Img",
-         h1: "Contact.",
-         lead: "A question, a bug, a partnership? Two addresses, an answer in principle within 48 business hours.",
-         supportH2: "Technical support",
-         supportP: "Bug, usage question, API key, billing: write to <a href=\"mailto:support@code2img.app\">support@code2img.app</a>.",
-         helloH2: "Partnerships and everything else",
-         helloP: "Press, partnerships, integration offers, or just to say hi: <a href=\"mailto:hello@code2img.app\">hello@code2img.app</a>.",
-         band: "A question about the product before writing?",
-       };
- const meta: Meta = {
-   title: t.title,
-   description: t.lead,
-   path: `${prefix}/contact`,
-   lang,
-   alt: lang === "fr" ? "/contact" : "/fr/contact",
- };
- const body = `<section class="mk-hero"><div class="mk-wrap">
+  const prefix = lang === "fr" ? "/fr" : "";
+  const t =
+    lang === "fr"
+      ? {
+          title: "Contact — Code2Img",
+          h1: "Contact.",
+          lead: "Une question, un bug, un partenariat ? Remplissez le formulaire ci-dessous — réponse en principe sous 48 h ouvrées.",
+          support: "Support technique",
+          hello: "Partenaires & commercial",
+          nameLabel: "Nom",
+          emailLabel: "Email",
+          subjectLabel: "Sujet",
+          messageLabel: "Message",
+          send: "Envoyer",
+          sending: "Envoi en cours…",
+          sent: "Message envoyé — nous vous répondrons sous 48 h ouvrées.",
+          error: "Une erreur s'est produite. Réessayez plus tard.",
+          required: "Ce champ est requis.",
+          tooLong: "Trop long.",
+          invalidEmail: "Adresse email invalide.",
+          band: "Une question sur le produit avant d'écrire ?",
+        }
+      : {
+          title: "Contact — Code2Img",
+          h1: "Contact.",
+          lead: "A question, a bug, a partnership? Fill in the form below — an answer in principle within 48 business hours.",
+          support: "Technical support",
+          hello: "Partnerships & business",
+          nameLabel: "Name",
+          emailLabel: "Email",
+          subjectLabel: "Subject",
+          messageLabel: "Message",
+          send: "Send",
+          sending: "Sending…",
+          sent: "Message sent — we'll reply within 48 business hours.",
+          error: "Something went wrong. Please try again later.",
+          required: "This field is required.",
+          tooLong: "Too long.",
+          invalidEmail: "Invalid email address.",
+          band: "A question about the product before writing?",
+        };
+  const meta: Meta = {
+    title: t.title,
+    description: t.lead,
+    path: `${prefix}/contact`,
+    lang,
+    alt: lang === "fr" ? "/contact" : "/fr/contact",
+  };
+  const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 data-reveal>${t.h1}</h1>
 <p class="mk-lead" data-reveal style="max-width:60ch">${t.lead}</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>
-<div data-reveal><h2>${t.supportH2}</h2><p>${t.supportP}</p></div>
-<div data-reveal><h2>${t.helloH2}</h2><p>${t.helloP}</p></div>
-</div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><p data-reveal>${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>`;
- return doc(meta, `${nav(lang, "")}${body}${footer(lang)}`);
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><div data-reveal>
+<form id="cf" class="contact-form" action="/api/contact" method="post" novalidate>
+  <div class="contact-field">
+    <label for="cf-name">${t.nameLabel}</label>
+    <input type="text" id="cf-name" name="name" maxlength="100" required>
+    <span class="err" data-err="name"></span>
+  </div>
+  <div class="contact-field">
+    <label for="cf-email">${t.emailLabel}</label>
+    <input type="email" id="cf-email" name="email" maxlength="254" required>
+    <span class="err" data-err="email"></span>
+  </div>
+  <div class="contact-field">
+    <label>${t.subjectLabel}</label>
+    <div class="contact-choices">
+      <label class="contact-choice"><input type="radio" name="topic" value="support" checked><span>${t.support}</span></label>
+      <label class="contact-choice"><input type="radio" name="topic" value="hello"><span>${t.hello}</span></label>
+    </div>
+  </div>
+  <div class="contact-field">
+    <label for="cf-message">${t.messageLabel}</label>
+    <textarea id="cf-message" name="message" rows="6" maxlength="5000" required></textarea>
+    <span class="err" data-err="message"></span>
+  </div>
+  <div class="contact-field" style="display:none" aria-hidden="true">
+    <input type="text" name="website" tabindex="-1" autocomplete="off">
+  </div>
+  <div class="contact-actions">
+    <button type="submit" class="btn btn-primary btn-lg">${t.send}</button>
+    <p class="contact-status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+</div></div></section>
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><p data-reveal>${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>
+<script>${contactJs(lang, t)}</script>`;
+  return doc(meta, `${nav(lang, "")}${body}${footer(lang)}`);
+}
+
+function contactJs(lang: Lang, t: Record<string, string>): string {
+  return `(() => {
+  var form = document.getElementById("cf");
+  if (!form) return;
+  var status = form.querySelector(".contact-status");
+  function showErr(name, msg) {
+    var el = form.querySelector('[data-err="' + name + '"]');
+    if (el) { el.textContent = msg || ""; el.hidden = !msg; }
+  }
+  function clearErrs() {
+    form.querySelectorAll(".err").forEach(function (e) { e.hidden = true; e.textContent = ""; });
+  }
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearErrs();
+    var data = new FormData(form);
+    var name = String(data.get("name") || "").trim();
+    var email = String(data.get("email") || "").trim();
+    var message = String(data.get("message") || "").trim();
+    var topic = String(data.get("topic") || "support");
+    var ok = true;
+    if (!name) { showErr("name", ${JSON.stringify(t.required)}); ok = false; }
+    else if (name.length > 100) { showErr("name", ${JSON.stringify(t.tooLong)}); ok = false; }
+    if (!email) { showErr("email", ${JSON.stringify(t.required)}); ok = false; }
+    else if (email.indexOf("@") < 1 || email.lastIndexOf(".") <= email.indexOf("@")) { showErr("email", ${JSON.stringify(t.invalidEmail)}); ok = false; }
+    if (!message) { showErr("message", ${JSON.stringify(t.required)}); ok = false; }
+    else if (message.length > 5000) { showErr("message", ${JSON.stringify(t.tooLong)}); ok = false; }
+    if (!ok) return;
+    var btn = form.querySelector('button[type="submit"]');
+    var prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = ${JSON.stringify(t.sending)};
+    status.textContent = "";
+    fetch("/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name: name, email: email, message: message, topic: topic, website: data.get("website") || "" })
+    }).then(function (res) {
+      return res.json().then(function (j) { return { ok: res.ok, j: j }; });
+    }).then(function (r) {
+      if (r.ok) {
+        status.textContent = ${JSON.stringify(t.sent)};
+        form.reset();
+      } else {
+        status.textContent = r.j && r.j.error ? r.j.error : ${JSON.stringify(t.error)};
+      }
+    }).catch(function () {
+      status.textContent = ${JSON.stringify(t.error)};
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = prev;
+    });
+  });
+})();`;
 }
 
 export const API = { apiSnippet, mcpSnippet };
