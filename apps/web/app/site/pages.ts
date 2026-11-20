@@ -19,6 +19,7 @@ import {
   type Meta,
 } from "./shell";
 import { FAQ_EN, FAQ_FR } from "./faq";
+import { THEMES } from "@code2img/shared";
 
 function faq(lang: Lang) {
   return lang === "fr" ? FAQ_FR : FAQ_EN;
@@ -53,6 +54,23 @@ const mcpSnippet = `{
 }`;
 
 /* ————————————————————————————————————————————— landing ————————————— */
+
+/** The works band (landing only): the real catalogue names — data, not wording — duplicated so
+ *  the marquee can loop; the duplicate is hidden from assistive tech and from reduce-motion. */
+function worksBand(): string {
+  const tags = [
+    ...THEMES.map((theme) => `<span class="tag">${esc(theme)}</span>`),
+    ...LANGUAGES.map((l) => `<span class="tag">${esc(l.name)}</span>`),
+  ].join("");
+  return `<section class="works">
+  <div class="marquee">
+    <div class="marquee-track">
+      <div class="marquee-group">${tags}</div>
+      <div class="marquee-group marquee-dup" aria-hidden="true">${tags}</div>
+    </div>
+  </div>
+</section>`;
+}
 
 const HOME = {
   en: {
@@ -160,65 +178,65 @@ export function home(lang: Lang): string {
   const t = HOME[lang];
   const m = PRICES.monthly;
   const path = lang === "fr" ? "/fr" : "/";
-  const body = `<section class="mk-hero"><div class="mk-wrap">
-<div class="mk-hero-top">
-<h1>${t.h1}</h1>
-<div><p class="mk-lead">${t.lead}</p>
-<ul class="mk-aud">${t.aud.map((a) => `<li>${a}</li>`).join("")}</ul>
-<div class="mk-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div></div>
-</div>
-<figure class="mk-shot">
-<img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 800px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async">
-<figcaption>${t.shot}</figcaption>
+  const body = `<section class="mk-hero mk-hero-full"><div class="mk-hero-bg" aria-hidden="true"></div><div class="mk-wrap">
+<h1 class="hero-in" style="--hd:.15s">${t.h1}</h1>
+<p class="mk-lead hero-in" style="--hd:.3s">${t.lead}</p>
+<ul class="mk-aud hero-in" style="--hd:.42s">${t.aud.map((a) => `<li>${a}</li>`).join("")}</ul>
+<div class="mk-actions hero-in" style="--hd:.54s"><a class="btn btn-primary btn-lg shine" href="/editor">${t.cta}</a><a class="btn btn-lg btn-ghost" href="/pricing">${t.cta2}</a></div>
+<figure class="mk-shot hero-in" style="--hd:.66s">
+<div class="device-glow" aria-hidden="true"></div>
+<div class="device-float"><div class="device"><img src="/examples/hero.jpg" srcset="/examples/hero-sm.jpg 544w, /examples/hero.jpg 1088w" sizes="(max-width: 760px) 92vw, 800px" alt="${t.shotAlt}" width="1088" height="780" fetchpriority="high" decoding="async"></div></div>
+<figcaption class="hero-note">${t.shot}</figcaption>
 </figure>
 </div></section>
 
-<section class="mk-demo mk-sec"><div class="mk-wrap" data-reveal-group>
-<div><h2 data-reveal>${t.demoH2}</h2><p class="tight" data-reveal>${t.demoP}</p></div>
-<div data-reveal>${demoBlock(lang)}</div>
+<section class="mk-sec" id="demo"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${t.demoH2}</h2><p>${t.demoP}</p></div>
+${demoBlock(lang)}
 </div></section>
 
-<section class="mk-sec" id="examples"><div class="mk-wrap" data-reveal-group>
-<h2 data-reveal>${t.galH2(COUNTS.themes, COUNTS.fonts)}</h2>
-<p class="tight" data-reveal>${t.galP}</p>
-<div class="gal" style="margin-top:var(--s5)">${GALLERY.map(
+<section class="mk-sec" id="examples"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${t.galH2(COUNTS.themes, COUNTS.fonts)}</h2><p>${t.galP}</p></div>
+<div class="gal" data-stagger>${GALLERY.map(
     (g) =>
-      `<figure data-reveal><img src="/examples/${g.file}.jpg" alt="${lang === "fr" ? "Carte de code générée dans le thème" : "Code card rendered in the"} ${g.theme}${lang === "fr" ? " : " : " theme: "}${g.title}" width="1200" height="675" loading="lazy" decoding="async"><figcaption>${g.theme} · ${g.title}</figcaption></figure>`,
+      `<figure class="reveal"><img src="/examples/${g.file}.jpg" alt="${lang === "fr" ? "Carte de code générée dans le thème" : "Code card rendered in the"} ${g.theme}${lang === "fr" ? " : " : " theme: "}${g.title}" width="1200" height="675" loading="lazy" decoding="async"><figcaption>${g.theme} · ${g.title}</figcaption></figure>`,
   ).join("")}</div>
 </div></section>
 
-<section class="mk-sec" id="features"><div class="mk-wrap feat" data-reveal-group>
-<div><h2 data-reveal>${t.featH2}</h2><ul class="feat-list">${t.feats
-    .map((f) => `<li data-reveal><h3>${f.h}</h3><p>${f.p}</p></li>`)
+${worksBand()}
+
+<section class="mk-sec" id="features"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${t.featH2}</h2></div>
+<div class="feat">
+<div><ul class="feat-list" data-stagger>${t.feats
+    .map((f) => `<li class="feature reveal"><h3>${f.h}</h3><p>${f.p}</p></li>`)
     .join("")}</ul></div>
-<div data-reveal><img src="/examples/example-rose.jpg" alt="${t.featAlt}" width="2560" height="1440" loading="lazy" decoding="async" style="width:100%;height:auto;border-radius:var(--r-panel)"></div>
-</div></section>
-
-<section class="mk-sec dev" id="developers"><div class="mk-wrap" data-reveal-group>
-<h2 data-reveal>${t.devH2}</h2>
-<p class="tight" data-reveal>${t.devP(COUNTS.languages)}</p>
-<div class="dev-grid" style="margin-top:var(--s5)">
-<div data-reveal><p class="cap">${t.devR}</p><pre><code>${esc(apiSnippet)}</code></pre></div>
-<div data-reveal><p class="cap">${t.devM}</p><pre><code>${esc(mcpSnippet)}</code></pre></div>
+<div class="shot-card reveal"><img src="/examples/example-rose.jpg" alt="${t.featAlt}" width="2560" height="1440" loading="lazy" decoding="async"></div>
 </div>
-<p class="tight" data-reveal style="margin-top:var(--s4)">${t.devTail}</p>
 </div></section>
 
-<section class="mk-sec" id="pricing"><div class="mk-wrap" data-reveal-group>
-<div class="price-head"><h2 data-reveal style="margin:0">${t.priceH2(m)}</h2></div>
-<div data-reveal style="margin-top:var(--s5)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
-<p class="tight" data-reveal style="margin-top:var(--s4)">${t.priceP}</p>
+<section class="mk-sec" id="developers"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${t.devH2}</h2><p>${t.devP(COUNTS.languages)}</p></div>
+<div class="dev-grid" data-stagger>
+<div class="reveal"><p class="cap">${t.devR}</p><pre><code>${esc(apiSnippet)}</code></pre></div>
+<div class="reveal"><p class="cap">${t.devM}</p><pre><code>${esc(mcpSnippet)}</code></pre></div>
+</div>
+<p class="dev-tail reveal">${t.devTail}</p>
 </div></section>
 
-<section class="mk-sec" id="faq"><div class="mk-wrap" data-reveal-group>
-<div class="faq-grid"><h2 data-reveal>${t.faqH2}</h2>${faqBlock(faq(lang))}</div>
+<section class="mk-sec" id="pricing"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${t.priceH2(m)}</h2></div>
+<div class="reveal">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
+<p class="price-note reveal">${t.priceP}</p>
 </div></section>
 
-<section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap" data-reveal-group>
-<h2 data-reveal>${t.closeH2}</h2>
-<p class="tight" data-reveal>${t.closeP}</p>
-<div class="mk-actions" data-reveal style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg" href="/pricing">${t.cta2}</a></div>
-</div></section>`;
+<section class="mk-sec" id="faq"><div class="mk-wrap"><div class="faq-grid"><h2 class="reveal">${t.faqH2}</h2>${faqBlock(faq(lang))}</div></div></section>
+
+<section class="mk-sec mk-final"><div class="mk-wrap"><div class="final-inner reveal">
+<h2>${t.closeH2}</h2>
+<p class="tight">${t.closeP}</p>
+<div class="mk-actions final-actions"><a class="btn btn-primary btn-lg" href="/editor">${t.cta}</a><a class="btn btn-lg btn-ghost" href="/pricing">${t.cta2}</a></div>
+</div></div></section>`;
 
   const meta: Meta = {
     title: t.title,
@@ -291,20 +309,18 @@ export function pricingPage(lang: Lang): string {
         free: "Free",
         pro: "Pro",
       };
-  const body = `<section class="mk-hero"><div class="mk-wrap" data-reveal-group>
-<div class="mk-hero-top"><h1 data-reveal>${t.h1}</h1><p class="mk-lead" data-reveal>${t.lead(PRICES.monthly, PRICES.yearly)}</p></div>
+  const body = `<section class="mk-hero"><div class="mk-wrap">
+<div class="mk-hero-top"><h1 class="hero-in" style="--hd:.15s">${t.h1}</h1><p class="mk-lead hero-in" style="--hd:.3s">${t.lead(PRICES.monthly, PRICES.yearly)}</p></div>
 </div></section>
 
-<section class="mk-sec" aria-labelledby="strip" style="padding-top:0"><div class="mk-wrap" data-reveal-group>
-<h2 id="strip" data-reveal>${labels.h2Strip}</h2>
-<p class="tight" data-reveal style="margin-top:var(--s3)">${labels.pStrip}</p>
-
+<section class="mk-sec" aria-labelledby="strip" style="padding-top:0"><div class="mk-wrap">
+<div class="sect-head reveal"><h2 id="strip">${labels.h2Strip}</h2><p>${labels.pStrip}</p></div>
 </div></section>
 
-<section class="mk-sec"><div class="mk-wrap" data-reveal-group>
-<h2 data-reveal>${labels.h2Plans}</h2>
-<div data-reveal style="margin-top:var(--s4)">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
-<div data-reveal style="margin-top:var(--gap-section)">
+<section class="mk-sec"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${labels.h2Plans}</h2></div>
+<div class="reveal">${priceBlock(lang, PRICES.monthly, PRICES.yearly)}</div>
+<div class="reveal" style="margin-top:var(--gap-section)">
 <h2>${labels.h2Table}</h2>
 <table class="cmp" style="margin-top:var(--s4)">
 <thead><tr><th> </th><th>${labels.free}</th><th>${labels.pro}</th></tr></thead>
@@ -315,9 +331,9 @@ export function pricingPage(lang: Lang): string {
 </div>
 </div></section>
 
-<section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap faq-grid" data-reveal-group>
-<h2 data-reveal>${labels.h2Faq}</h2>${faqBlock(faq(lang))}
-</div></section>`;
+<section class="mk-sec"><div class="mk-wrap"><div class="faq-grid">
+<h2 class="reveal">${labels.h2Faq}</h2>${faqBlock(faq(lang))}
+</div></div></section>`;
 
   const meta: Meta = {
     title: t.title,
@@ -435,12 +451,12 @@ export function renderBand(caption: string): string {
     { file: "example-dracula", cap: "train.py · dracula", w: 1232, h: 636 },
     { file: "example-min", cap: "notes.rs · min-light", w: 760, h: 636 },
   ];
-  return `<section class="mk-sec" style="padding-block:var(--gap-section)"><div class="mk-wrap" data-reveal-group>
-<h2 data-reveal>${caption}</h2>
-<div class="mk-strip" data-reveal>${shots
+  return `<section class="mk-sec" style="padding-block:var(--gap-section)"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>${caption}</h2></div>
+<div class="mk-strip" data-stagger>${shots
     .map(
       (s) =>
-        `<figure><figcaption>${esc(s.cap)}</figcaption><img src="/examples/${s.file}.jpg" alt="A code card rendered by Code2Img: ${esc(s.cap)}" width="${s.w}" height="${s.h}" loading="lazy" decoding="async"></figure>`,
+        `<figure class="reveal"><figcaption>${esc(s.cap)}</figcaption><img src="/examples/${s.file}.jpg" alt="A code card rendered by Code2Img: ${esc(s.cap)}" width="${s.w}" height="${s.h}" loading="lazy" decoding="async"></figure>`,
     )
     .join("")}</div>
 </div></section>`;
@@ -463,11 +479,11 @@ export function docPage(p: DocPage, extraJsonLd?: unknown[]): string {
       ),
     ],
   };
-  const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>${p.h1}</h1><p class="mk-lead" data-reveal style="max-width:60ch">${p.description}</p>
+  const body = `<section class="mk-hero${p.file.startsWith("blog/") ? " mk-hero-post" : ""}"><div class="mk-wrap">
+<h1 class="hero-in" style="--hd:.15s">${p.h1}</h1><p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${p.description}</p>
 </div></section>
 ${p.pictures === true ? renderBand(p.band ?? "Rendered by Code2Img, at 2×.") : ""}
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(p.file)}</div></div></section>`;
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content(p.file)}</div></section>`;
   return doc(meta, `${nav(p.lang, "")}${body}${footer(p.lang)}`);
 }
 
@@ -533,13 +549,13 @@ export function blogIndex(): string {
       breadcrumbs([{ name: "Home", path: "/" }, { name: "Blog", path: "/blog" }], "en"),
     ],
   };
-  const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>Notes from the build.</h1>
-<p class="mk-lead" data-reveal style="max-width:58ch">How the render pipeline works, what makes a code card readable, and how to get a picture out of an agent. Short pieces, each one grounded in the shipped code.</p>
+  const body = `<section class="mk-hero mk-hero-blog"><div class="mk-wrap">
+<h1 class="hero-in" style="--hd:.15s">Notes from the build.</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:58ch">How the render pipeline works, what makes a code card readable, and how to get a picture out of an agent. Short pieces, each one grounded in the shipped code.</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap"><ul class="posts" data-reveal-group>${BLOG_POSTS.map(
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap"><ul class="posts" data-stagger>${BLOG_POSTS.map(
     (p) =>
-      `<li data-reveal><h2 data-reveal><a href="${p.path}">${p.h1}</a></h2><p data-reveal class="byline"><time datetime="${p.updated}">${longDate(p.updated)}</time> · ${readingMinutes(p.file)} min read</p><p data-reveal>${p.description}</p></li>`,
+      `<li class="reveal"><h2><a href="${p.path}">${p.h1}</a></h2><p class="byline"><time datetime="${p.updated}">${longDate(p.updated)}</time> · ${readingMinutes(p.file)} min read</p><p>${p.description}</p></li>`,
   ).join("")}</ul></div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
@@ -581,15 +597,14 @@ export function languagePage(slug: string): string | null {
   };
   const others = LANGUAGES.filter((l) => l.slug !== slug);
   const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>${h1}</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">${description}</p>
-<div class="mk-actions" data-reveal style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
+<h1 class="hero-in" style="--hd:.15s">${h1}</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${description}</p>
+<div class="mk-actions hero-in" style="--hd:.42s;margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg btn-ghost" href="/docs">API docs</a></div>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(`languages/${slug}`)}</div></div></section>
-<section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
-<h2>Other languages</h2>
-<p class="tight">The same advice, for the languages people paste most.</p>
-<ul class="langs" style="margin-top:var(--s4)">${others
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content(`languages/${slug}`)}</div></section>
+<section class="mk-sec"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>Other languages</h2><p>The same advice, for the languages people paste most.</p></div>
+<ul class="langs">${others
     .map((l) => `<li><a href="/code-screenshot/${l.slug}">${l.name}</a></li>`)
     .join("")}</ul>
 </div></section>`;
@@ -656,14 +671,14 @@ export function comparisonPage(slug: string): string | null {
     ],
   };
   const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>${c.h1}</h1><p class="mk-lead" data-reveal style="max-width:60ch">${c.description}</p>
+<h1 class="hero-in" style="--hd:.15s">${c.h1}</h1><p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${c.description}</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(c.file)}</div></div></section>
-<section class="mk-sec" style="background:var(--surface)"><div class="mk-wrap">
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content(c.file)}</div></section>
+<section class="mk-sec mk-final"><div class="mk-wrap"><div class="final-inner reveal">
 <h2>Try it on a snippet you have open.</h2>
 <p class="tight">The editor needs no account, and the API answers on a free key.</p>
-<div class="mk-actions" style="margin-top:var(--s4)"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg" href="/docs">API docs</a></div>
-</div></section>`;
+<div class="mk-actions final-actions"><a class="btn btn-primary btn-lg" href="/editor">Open the editor</a><a class="btn btn-lg btn-ghost" href="/docs">API docs</a></div>
+</div></div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
 
@@ -676,10 +691,10 @@ export function changelogPage(): string {
     jsonLd: [breadcrumbs([{ name: "Home", path: "/" }, { name: "Changelog", path: "/changelog" }], "en")],
   };
   const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>What shipped.</h1>
-<p class="mk-lead" data-reveal style="max-width:58ch">Every entry below is a change that is live on ${BASE.replace("https://", "")} today.</p>
+<h1 class="hero-in" style="--hd:.15s">What shipped.</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:58ch">Every entry below is a change that is live on ${BASE.replace("https://", "")} today.</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content("changelog")}</div></div></section>`;
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content("changelog")}</div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
 
@@ -718,10 +733,10 @@ export function legalPage(kind: "terms" | "privacy" | "mentions", lang: Lang = "
   };
   const contentFile = kind === "mentions" && !isFr ? `legal-${kind}-en` : `legal-${kind}`;
   const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>${titles.h1}</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">${lead}</p>
+<h1 class="hero-in" style="--hd:.15s">${titles.h1}</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${lead}</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group><div data-reveal>${content(contentFile)}</div></div></section>`;
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content(contentFile)}</div></section>`;
  return doc(meta, `${nav(pageLang, "")}${body}${footer(pageLang)}`);
 }
 
@@ -776,10 +791,10 @@ export function contactPage(lang: Lang): string {
     alt: lang === "fr" ? "/contact" : "/fr/contact",
   };
   const body = `<section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>${t.h1}</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">${t.lead}</p>
+<h1 class="hero-in" style="--hd:.15s">${t.h1}</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${t.lead}</p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><div data-reveal>
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><div class="reveal">
 <form id="cf" class="contact-form" action="/api/contact" method="post" novalidate>
   <div class="contact-field">
     <label for="cf-name">${t.nameLabel}</label>
@@ -812,7 +827,7 @@ export function contactPage(lang: Lang): string {
   </div>
 </form>
 </div></div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><p data-reveal>${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose"><p class="reveal">${lang === "fr" ? "La documentation couvre l'essentiel : <a href=\"/docs\">référence API</a>, <a href=\"/pricing\">tarifs</a>." : "Docs cover most questions: <a href=\"/docs\">API reference</a>, <a href=\"/pricing\">pricing</a>."}</p></div></section>
 <script>${contactJs(lang, t)}</script>`;
   return doc(meta, `${nav(lang, "")}${body}${footer(lang)}`);
 }

@@ -31,13 +31,18 @@ export function siteCss(): string {
 
 const contentCache = new Map<string, string>();
 /** A content fragment: content/<name>.html, hand-written HTML (no markdown step, no dependency).
- *  Every block gets data-reveal, so prose enters the way the other sections do. */
+ *  Every block carries class="reveal" (merged with an existing class), so prose enters the way
+ *  the other sections do. */
 export function content(name: string): string {
   const hit = contentCache.get(name);
   if (hit !== undefined) return hit;
   const html = readFile(`content/${name}.html`)
     .replace(/<!--\s*@lang:(fr|en)\s*-->/g, "")
-    .replace(/<(h2|h3|p|ul|ol|pre|figure|table)(\s|>)/g, "<$1 data-reveal$2");
+    .replace(/<(h2|h3|p|ul|ol|pre|figure|table)((?:\s[^>]*)?)>/g, (_m: string, tag: string, attrs: string) =>
+      attrs.includes('class="')
+        ? `<${tag}${attrs.replace(/class="/, 'class="reveal ')}>`
+        : `<${tag} class="reveal"${attrs}>`,
+    );
   contentCache.set(name, html);
   return html;
 }
@@ -88,7 +93,7 @@ export function footer(lang: Lang): string {
 <nav aria-label="${t.product}"><a href="/editor">${t.editor}</a><a href="${prefix}/pricing">${t.pricing}</a><a href="/dashboard">${t.dashboard}</a><a href="/blog">${t.blog}</a><a href="/changelog">${t.changelog}</a></nav>
 <nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a><a href="${GITHUB_URL}" rel="noopener" target="_blank">GitHub</a></nav>
 <nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="${prefix}/legal/mentions">${t.mentions}</a><a href="${prefix}/contact">${t.contact}</a></nav>
-</div><p class="legal"><span>© ${new Date().getFullYear()} ${APP_NAME}.</span><span>${t.independent}</span><span class="icons"><a class="icon" href="${GITHUB_URL}" rel="noopener" target="_blank" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07 1.87 3.75 3.65 3.95-.29.25-.54.73-.54 1.48 0 1.07.01 1.93.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a><a class="icon" href="https://x.com/0xJust1" rel="noopener" target="_blank" aria-label="X (Twitter)"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></span></p></div></footer>`;
+</div><p class="legal"><span>© ${new Date().getFullYear()} ${APP_NAME}.</span><span>${t.madeInFrance}</span><span>${t.independent}</span><span class="icons"><a class="icon" href="${GITHUB_URL}" rel="noopener" target="_blank" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07 1.87 3.75 3.65 3.95-.29.25-.54.73-.54 1.48 0 1.07.01 1.93.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a><a class="icon" href="https://x.com/0xJust1" rel="noopener" target="_blank" aria-label="X (Twitter)"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></span></p></div></footer>`;
 }
 
 interface NavLabels {
@@ -111,6 +116,7 @@ interface NavLabels {
   mentions: string;
   contact: string;
   independent: string;
+  madeInFrance: string;
 }
 
 const NAV: Record<Lang, NavLabels> = {
@@ -134,6 +140,7 @@ const NAV: Record<Lang, NavLabels> = {
     mentions: "Legal notice",
     contact: "Contact",
     independent: "Independent product.",
+    madeInFrance: "Made in France with ❤️",
   },
   fr: {
     main: "Navigation",
@@ -155,6 +162,7 @@ const NAV: Record<Lang, NavLabels> = {
     mentions: "Mentions légales",
     contact: "Contact",
     independent: "Produit indépendant.",
+    madeInFrance: "Fabriqué en France avec ❤️",
   },
 };
 
@@ -220,6 +228,7 @@ ${meta.noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="
 <link rel="manifest" href="/manifest.webmanifest?v=2">
 ${ld}
 ${meta.preload ? `<link rel="preload" as="image" href="${meta.preload}" fetchpriority="high">` : ""}
+<script>document.documentElement.classList.add('js')</script>
 <style>${siteCss()}</style>
 </head>
 <body class="mk">
@@ -244,8 +253,8 @@ export interface FaqItem {
 }
 
 export function faqBlock(items: FaqItem[]): string {
-  return `<div class="faq">${items
-    .map((f) => `<details data-reveal><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`)
+  return `<div class="faq" data-stagger>${items
+    .map((f) => `<details class="reveal"><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`)
     .join("")}</div>`;
 }
 
@@ -315,15 +324,15 @@ export function demoBlock(lang: Lang): string {
   const opts = (v: string) => `<option value="${v}">${v}</option>`;
   const THEME_PICK = ["github-dark", "tokyo-night", "catppuccin-latte", "rose-pine", "nord", "min-light"];
   const LANG_PICK = ["auto", "typescript", "python", "go", "rust", "sql", "shell"];
-  return `<div class="demo-grid">
-<div class="demo-controls">
+  return `<div class="demo-grid" data-stagger>
+<div class="demo-controls reveal">
 <label>${t.code}<textarea id="demo-code" aria-label="${t.code}" spellcheck="false">${esc(SAMPLE)}</textarea></label>
 <label>${t.theme}<select id="demo-theme" aria-label="${t.theme}">${THEME_PICK.map(opts).join("")}</select></label>
 <label>${t.language}<select id="demo-language" aria-label="${t.language}">${LANG_PICK.map(opts).join("")}</select></label>
-<button class="btn btn-primary" type="button" id="demo-render">${t.render}</button>
+<button class="btn btn-primary btn-sm" type="button" id="demo-render">${t.render}</button>
 <p class="error" id="demo-error" hidden></p>
 </div>
-<div>
+<div class="reveal">
 <div class="demo-out"><img id="demo-out" src="/examples/hero.jpg" alt="${t.alt}" width="1088" height="780"></div>
 <p class="demo-note">${t.note}</p>
 </div>
@@ -407,11 +416,11 @@ export function priceBlock(lang: Lang, monthly: number, yearly: number): string 
   return `<div class="price-block"><div class="toggle">
 <input type="radio" name="billing" id="billing-monthly" checked><label for="billing-monthly">${t.monthly}</label>
 <input type="radio" name="billing" id="billing-yearly"><label for="billing-yearly">${t.yearly}</label>
-</div><div class="plans">
-<section class="plan" aria-labelledby="plan-free"><div class="plan-head"><h3 id="plan-free">${t.free}</h3><div class="amount">0 € <span>${t.forever}</span></div></div>
-<a class="btn btn-primary btn-lg" href="/editor">${t.open}</a>
+</div><div class="plans" data-stagger>
+<section class="plan reveal" aria-labelledby="plan-free"><div class="plan-head"><h3 id="plan-free">${t.free}</h3><div class="amount">0 € <span>${t.forever}</span></div></div>
+<a class="btn btn-ghost btn-lg" href="/editor">${t.open}</a>
 <ul>${t.freeList.map((li) => `<li>${li}</li>`).join("")}</ul></section>
-<section class="plan pro" aria-labelledby="plan-pro"><div class="plan-head"><h3 id="plan-pro">Pro</h3>
+<section class="plan pro reveal" aria-labelledby="plan-pro"><div class="plan-head"><h3 id="plan-pro">Pro</h3>
 <div class="amount price-monthly">${monthly} € <span>${t.perMonth}</span></div>
 <div class="amount price-yearly">${yearly} € <span>${t.perYear}</span></div></div>
 <a class="btn btn-primary btn-lg" href="/login">${t.getPro}</a>

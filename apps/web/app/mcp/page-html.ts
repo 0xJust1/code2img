@@ -98,9 +98,9 @@ const TOOLS: [string, string][] = [
 ];
 
 // One copy button per snippet: the markup is a real <pre><code>, so the gate treats it as code.
-const block = (s: (typeof SNIPPETS)[number]) => `<h2 data-reveal>${esc(s.title)}</h2>
-<p data-reveal>${esc(s.note)}</p>
-<div class="code" data-reveal><pre><code id="${s.id}">${esc(s.code)}</code></pre><button class="btn" data-copy="${s.id}">Copy</button></div>`;
+const block = (s: (typeof SNIPPETS)[number]) => `<h2 class="reveal">${esc(s.title)}</h2>
+<p class="reveal">${esc(s.note)}</p>
+<div class="code reveal"><pre><code id="${s.id}">${esc(s.code)}</code></pre><button class="btn" data-copy="${s.id}">Copy</button></div>`;
 
 const COPY_JS = `(() => {
   document.querySelectorAll("button[data-copy]").forEach((b) => b.addEventListener("click", async () => {
@@ -123,19 +123,19 @@ export const MCP_PAGE = doc(
   },
   `${nav("en", "")}
 <section class="mk-hero"><div class="mk-wrap">
-<h1 data-reveal>Render code images from your agent.</h1>
-<p class="mk-lead" data-reveal style="max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is <code>code2img-mcp</code> on npm — the snippets below install it directly; the tarball at <code>/downloads/code2img-mcp.tgz</code> remains available as a fallback.</p>
-<p class="tight" data-reveal style="margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
+<h1 class="hero-in" style="--hd:.15s">Render code images from your agent.</h1>
+<p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">Seven MCP tools let an AI client render a code image, browse themes and backgrounds, create expiring share pages and read the remaining quota. Same API, same limits, same watermark as the REST API. The stdio package is <code>code2img-mcp</code> on npm — the snippets below install it directly; the tarball at <code>/downloads/code2img-mcp.tgz</code> remains available as a fallback.</p>
+<p class="tight hero-in" style="--hd:.42s;margin-top:var(--s5)">Endpoint <code>${esc(ENDPOINT)}</code> · Streamable HTTP · auth header <code>Authorization: Bearer YOUR_API_KEY</code> · keys in your <a href="/dashboard">dashboard</a></p>
 </div></section>
-<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose" data-reveal-group>
+<section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">
 ${SNIPPETS.map(block).join("\n")}
-<h2 data-reveal>Tools</h2>
-<table class="cmp" data-reveal><tbody>${TOOLS.map(
+<h2 class="reveal">Tools</h2>
+<table class="cmp reveal"><tbody>${TOOLS.map(
     ([name, desc]) => `<tr><th scope="row"><code>${esc(name)}</code></th><td>${esc(desc)}</td></tr>`,
   ).join("")}</tbody></table>
-<h2 data-reveal>Notes</h2>
-<p data-reveal>OAuth is planned for the remote endpoint; today it authenticates with API keys, which is what every MCP client supports. Every tool call consumes the key's quota exactly once: the server is a client of the public <a href="/api">API</a>, so there is no second rule book to keep in sync. Themes, languages and backgrounds are the same catalogs the editor uses.</p>
-<p>Full REST reference: <a href="/docs">/docs</a> · machine-readable: <a href="/api/v1/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a></p>
+<h2 class="reveal">Notes</h2>
+<p class="reveal">OAuth is planned for the remote endpoint; today it authenticates with API keys, which is what every MCP client supports. Every tool call consumes the key's quota exactly once: the server is a client of the public <a href="/api">API</a>, so there is no second rule book to keep in sync. Themes, languages and backgrounds are the same catalogs the editor uses.</p>
+<p class="reveal">Full REST reference: <a href="/docs">/docs</a> · machine-readable: <a href="/api/v1/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a></p>
 </div></section>
 ${footer("en")}
 <script>${COPY_JS}</script>`,
