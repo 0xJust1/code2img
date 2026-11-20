@@ -1437,6 +1437,13 @@ html {
   .mk .faq details > p {
     padding: 0 20px 20px;
   }
+  /* side gutters tightened so the widest cells ("code2img.app", "300 a minute")
+     still fit the content box at 390px: the comparison table never spills past
+     the wrap into a document-wide scrollbar. */
+  .mk .cmp th,
+  .mk .cmp td {
+    padding: 13px 8px;
+  }
   .mk .mk-foot .mk-wrap {
     grid-template-columns: 1fr;
   }
