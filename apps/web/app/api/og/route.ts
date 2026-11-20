@@ -51,7 +51,8 @@ export async function GET(req: Request) {
     headers: {
       "content-type": "image/png",
       "cache-control": "public, max-age=86400, stale-while-revalidate=604800",
-      "x-og-title": esc(title),
+      // Headers must be ByteStrings: percent-encode so titles with "—" or "…" can't 500 the card.
+      "x-og-title": encodeURIComponent(esc(title)),
     },
   });
 }
