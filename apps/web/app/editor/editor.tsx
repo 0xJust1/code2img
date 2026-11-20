@@ -268,7 +268,7 @@ export default function Editor() {
 
   return (
     <div className="app">
-      <header className="appbar">
+      <header className="appbar hero-in" style={{ "--hd": "0s" } as React.CSSProperties}>
         <h1 className="sr-only">Code2Img editor — create a code image</h1>
         <div className="appbar-brand">
           <a href="/" aria-label="Code2Img — code to image" className="appbar-logo">
@@ -294,7 +294,7 @@ export default function Editor() {
       </header>
 
       <div className="editor">
-        <aside className="panel" aria-label="Card options">
+        <aside className="panel hero-in" style={{ "--hd": ".1s" } as React.CSSProperties} aria-label="Card options">
           <section className="sect">
             <h2>Code</h2>
             <div className="fields">
@@ -601,7 +601,7 @@ export default function Editor() {
         </aside>
 
         <section className="stage">
-          <div className="canvas" ref={canvasRef}>
+          <div className="canvas hero-in" style={{ "--hd": ".18s" } as React.CSSProperties} ref={canvasRef}>
             {mounted && (
               <div className="fitbox" style={cardBox ? { width: cardBox.w * fit, height: cardBox.h * fit } : undefined}>
                 <iframe
@@ -620,7 +620,7 @@ export default function Editor() {
             )}
           </div>
 
-          <div className="toolbar">
+          <div className="toolbar hero-in" style={{ "--hd": ".26s" } as React.CSSProperties}>
             <label className="cluster">
               Format
               <select value={format} onChange={(e) => setFormat(e.target.value as typeof format)} aria-label="Export format">

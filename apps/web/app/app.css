@@ -1,0 +1,198 @@
+/* Écrans produit (body.app) — house style 2026-11 (maquettes validées t_4f635ce7).
+   Scope : chargé uniquement par /editor, /dashboard, /login (import dans ces 3 pages).
+   Les pages marketing (body.mk, siteCss()) ne voient pas ce fichier.
+   Tokens : lus dans tokens.css (aucune valeur dupliquée). */
+
+/* ——— nav (dashboard + login ; pattern maison : sticky 64px, verre rgba(8,9,10,.72) + blur 14px) ——— */
+.app .mk-nav{
+  background:rgba(8,9,10,.72);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.app .mk-links a{
+  color:var(--ink-2);text-decoration:none;
+  font:500 14px var(--font-ui);
+  padding:8px 13px;border-radius:var(--r-pill);
+  transition:color .2s ease,background .2s ease;
+}
+.app .mk-links a:hover{color:var(--ink);background:var(--glass-2)}
+.app .mk-links a[aria-current="page"]{color:var(--ink);background:var(--accent-soft)}
+
+/* ——— boutons : pill, fill inversé pour le primaire (kit maison) ——— */
+.app .btn{
+  border-radius:var(--r-pill);
+  background:var(--glass);
+  box-shadow:var(--inset);
+  transition:background-color .22s ease,border-color .22s ease,transform .22s ease,
+             box-shadow .22s ease,color .22s ease;
+}
+.app .btn:hover{border-color:var(--border-strong);background:var(--glass-2);transform:translateY(-1px)}
+.app .btn:active{transform:none;background:var(--overlay)}
+.app .btn[disabled]{opacity:.6;cursor:progress;transform:none}
+.app .btn-primary{
+  background:var(--primary);color:var(--primary-ink);border-color:transparent;font-weight:600;
+}
+.app .btn-primary:hover{
+  background:var(--primary-hover);border-color:transparent;transform:translateY(-1px);
+  box-shadow:0 10px 34px rgba(244,245,247,.22);
+}
+.app .btn-primary:active{background:var(--primary);transform:none;box-shadow:none}
+.app .btn.dash-danger{color:var(--danger)}
+.app .btn.dash-danger:hover{border-color:rgba(255,143,143,.4)}
+
+/* ——— animations : entrées courtes au load (hero-in) ;
+     reveal au scroll sur le dashboard UNIQUEMENT (page de lecture) ;
+     AUCUN reveal dans la zone de travail de l'éditeur ——— */
+.js .hero-in{
+  opacity:0;transform:translateY(26px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1) var(--hd,0s),
+             transform .7s cubic-bezier(.22,1,.36,1) var(--hd,0s);
+}
+.js.hero-go .hero-in{opacity:1;transform:none}
+.js .reveal{opacity:0}
+.js .reveal.in{
+  opacity:1;
+  animation:rise .9s cubic-bezier(.22,1,.36,1) var(--d,0s) backwards;
+}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* ——— /editor : appbar 52px (pattern produit conservé, verre + pill + mono) ——— */
+.app .appbar{background:var(--ground);border-bottom:1px solid var(--line)}
+.app .appbar-logo{border-radius:var(--r-pill);transition:background .2s ease}
+.app .appbar-logo:hover{background:var(--glass-2)}
+.app .icon{
+  border-radius:var(--r-pill);padding:4px;
+  transition:opacity .2s ease,background .2s ease;
+}
+.app .icon:hover{background:var(--glass-2)}
+.app kbd{
+  font-family:var(--font-mono);
+  background:var(--glass);border-color:var(--line);
+  box-shadow:var(--inset);
+}
+
+/* ——— /editor : layout — panneau 340px scrollable (géométrie inchangée, traits --line) ——— */
+.app .panel{border-right:1px solid var(--line)}
+.app .sect + .sect{border-top:1px solid var(--line)}
+/* titres de panneau en label mono uppercase (maquette) */
+.app .sect > h2{
+  margin:0 0 var(--s3);
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-2);
+}
+/* labels de contrôle mono 500 12px ls .16em uppercase (maquette) */
+.app .fld > .lbl{
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+
+/* ——— /editor : champs — recette formulaire maison (fond noir translucide, radius 12) ——— */
+.app input[type="text"],.app input[type="number"],.app input[type="url"],
+.app input[type="color"],.app select,.app textarea{
+  background:rgba(0,0,0,.30);
+  border-radius:var(--r-panel);
+  transition:border-color .2s ease,background .2s ease;
+}
+.app input[type="text"]:focus,.app input[type="number"]:focus,
+.app input[type="url"]:focus,.app select:focus,.app textarea:focus{
+  border-color:var(--accent);
+}
+
+/* ——— /editor : stage — plan de travail (surface + trame technique maison) ——— */
+.app .canvas{position:relative;border-bottom:1px solid var(--line)}
+/* trame blueprint discrète, masque radial (pattern hero de la landing, adapté à l'outil) */
+.app .canvas::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:54px 54px;
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 45%,#000 30%,transparent 80%);
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 45%,#000 30%,transparent 80%);
+}
+
+/* ——— /editor : toolbar (zone dense : glass + pill + labels mono) ——— */
+.app .toolbar{gap:var(--s2) var(--s3)}
+.app .cluster{
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+/* min-width serrés pour garder la vraie rangée unique du produit à 1440 (maquette) */
+.app .cluster select,.app .cluster input{width:auto;min-width:60px}
+.app .cluster input[type="text"]{min-width:88px;font-family:var(--font-ui);letter-spacing:0;text-transform:none}
+.app .sep{background:var(--line)}
+
+/* ——— /dashboard — surfaces restylées glass sur la structure page.tsx conservée ——— */
+.app .dash-top{border-bottom:1px solid var(--line)}
+.app .dash-kicker{
+  margin:0 0 var(--s1);
+  color:var(--accent);
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+}
+.app .dash-title h1{
+  margin:0;font-size:26px;font-weight:620;line-height:1.15;letter-spacing:-.02em;color:var(--ink);
+}
+.app .dash-plan{
+  padding:2px var(--s2);
+  border:1px solid var(--border);border-radius:var(--r-pill);
+  color:var(--ink-2);
+  font:500 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;
+}
+.app .dash-card{
+  min-width:0;
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--inset);
+  padding:var(--s5) var(--s6);
+}
+.app .dash-meta{
+  color:var(--ink-3);
+  font:400 12px var(--font-mono);font-variant-numeric:tabular-nums;
+}
+.app .dash-list li{border-top:1px solid var(--line)}
+
+/* ——— /login — un panneau centré sur le frame site, recette glass + radius 18 + liseré inset ——— */
+.app .login-card{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--inset);
+}
+.app .login-kicker{
+  margin:0;
+  color:var(--accent);
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;
+}
+.app .login-card h1{
+  margin:0;
+  font-size:26px;font-weight:620;line-height:1.15;letter-spacing:-.02em;color:var(--ink);
+}
+/* label mono uppercase, champ fond noir translucide radius 12 (maquette) */
+.app .login-field label{
+  font:500 12px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+}
+.app .login-field input[type="email"]{
+  background:rgba(0,0,0,.30);
+  border-radius:var(--r-panel);
+  transition:border-color .2s ease,background .2s ease;
+}
+.app .login-field input[type="email"]::placeholder{color:var(--ink-3)}
+.app .login-field input[type="email"]:focus{border-color:var(--accent)}
+
+/* ——— reduced motion : coupe TOUT (le JS pose .in immédiatement en plus, reveal.ts) ——— */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .reveal{opacity:1}
+  .js .hero-in{opacity:1;transform:none}
+}
+
+/* ——— phone — pattern réel produit : la rangée de liens défile en horizontal ——— */
+@media (max-width:720px){
+  .app .mk-nav .mk-links a{white-space:nowrap;font-size:var(--fs-body);padding:8px 10px}
+}
+/* ——— /editor phone (≤900px : preview d'abord, panneaux dessous — globals.css, traits --line) ——— */
+@media (max-width:900px){
+  .app .panel{border-right:0;border-bottom:1px solid var(--line)}
+  .app .toolbar{border-bottom:1px solid var(--line)}
+}

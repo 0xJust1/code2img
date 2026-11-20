@@ -2,6 +2,7 @@
 
 import "../nav.css";
 import "./dashboard.css";
+import "../app.css";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { createAuthClient } from "better-auth/react";
 
@@ -83,7 +84,7 @@ function SiteHeader() {
 
 function Card({ title, meta, wide, children }: { title: string; meta?: string; wide?: boolean; children: ReactNode }) {
   return (
-    <section className={wide ? "dash-card dash-card--wide" : "dash-card"}>
+    <section className={wide ? "dash-card dash-card--wide reveal" : "dash-card reveal"}>
       <div className="dash-card-head">
         <h2>{title}</h2>
         {meta && <span className="dash-meta">{meta}</span>}
@@ -198,7 +199,7 @@ export default function Dashboard() {
       <>
         <SiteHeader />
         <main className="dash">
-          <section className="dash-card dash-card--narrow">
+          <section className="dash-card dash-card--narrow reveal">
             <h2>Not signed in</h2>
             <p className="dash-note">The editor works without an account. An account keeps your presets, exports and API keys.</p>
             <div className="dash-row">
@@ -220,10 +221,10 @@ export default function Dashboard() {
       <main className="dash">
         <header className="dash-top">
           <div className="dash-title">
-            <p className="dash-kicker">Account</p>
-            <h1>Dashboard</h1>
+            <p className="dash-kicker hero-in" style={{ "--hd": "0s" } as React.CSSProperties}>Account</p>
+            <h1 className="hero-in" style={{ "--hd": ".15s" } as React.CSSProperties}>Dashboard</h1>
           </div>
-          <div className="dash-who">
+          <div className="dash-who hero-in" style={{ "--hd": ".3s" } as React.CSSProperties}>
             <span className="dash-email">{me?.user?.email}</span>
             <span className={isPro ? "dash-plan dash-plan--pro" : "dash-plan"}>{plan}</span>
             <button onClick={signOut} className="btn btn-sm">
@@ -232,7 +233,7 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <div className="dash-grid">
+        <div className="dash-grid" data-stagger>
           <Card title="Billing" meta={isPro ? "Pro" : "Free"}>
             {notice && <p className="dash-danger" role="alert">{notice}</p>}
             {isPro ? (

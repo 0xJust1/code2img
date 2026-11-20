@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Editor from "./editor";
+import "../app.css";
 
 // /editor is a public page in the sitemap: it needs its own title, description and canonical
 // instead of inheriting the homepage metadata.

@@ -2,6 +2,7 @@
 
 import "../nav.css";
 import "./login.css";
+import "../app.css";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
@@ -79,7 +80,7 @@ export default function LoginPage() {
       <SiteHeader />
       <main className="login">
         <div className="mk-wrap login-wrap">
-          <section className="login-card" aria-labelledby="login-title">
+          <section className="login-card hero-in" style={{ "--hd": ".15s" } as React.CSSProperties} aria-labelledby="login-title">
             <p className="login-kicker">Account</p>
             <h1 id="login-title">Sign in to code2img</h1>
 
@@ -133,7 +134,7 @@ export default function LoginPage() {
               ← Back to editor
             </a>
           </section>
-          <p className="login-legal login-legal-out">
+          <p className="login-legal login-legal-out hero-in" style={{ "--hd": ".3s" } as React.CSSProperties}>
             By signing in you agree to our <a href="/legal/terms">Terms</a> and <a href="/legal/privacy">Privacy policy</a>.
           </p>
         </div>
