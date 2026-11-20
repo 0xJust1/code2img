@@ -31,6 +31,17 @@
   --accent-soft: rgba(91, 157, 255, 0.16);
   --danger: #ff8f8f;
 
+  /* house style marketing (2026-11) — additifs uniquement, les écrans produit ne les lisent pas */
+  --line: rgba(255, 255, 255, 0.08);        /* séparateurs, bordures glass */
+  --line-2: rgba(255, 255, 255, 0.14);      /* bordure hover ghost */
+  --glass: rgba(255, 255, 255, 0.05);       /* fond cards glass */
+  --glass-2: rgba(255, 255, 255, 0.08);     /* fond hover pills/boutons ghost */
+  --inset: inset 0 1px 0 rgba(255, 255, 255, 0.12); /* liseré top des cards */
+  --accent-glow: rgba(91, 157, 255, 0.20);  /* halo hero */
+  --accent-line: rgba(91, 157, 255, 0.35);  /* bordure accent au hover des cards */
+  --radius: 18px;                           /* cards marketing (--r-panel reste 12px produit) */
+  --container: 1120px;                      /* frame marketing (--w-page reste 1200px produit) */
+
   /* type */
   --font-ui: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
   --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, monospace;

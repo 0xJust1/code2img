@@ -1,18 +1,28 @@
-// Progressive enhancement: [data-reveal] elements run their entrance once, when they enter.
-// A plain inline script rather than a client component, so the marketing pages ship no hydration
-// work for it — the CSS default is the visible state, so nothing is lost without JS.
+// Progressive enhancement: .reveal elements run their entrance once, when they enter the
+// viewport. A plain inline script rather than a client component, so the marketing pages ship
+// no hydration work for it. The .js class (set in <head> by doc()) gates the hidden state, so
+// without JS the CSS default is the visible state: nothing is lost.
+//
+// Animation, not transition: `animation-fill-mode: backwards` with a --d delay frees transform
+// for the hover-lift on cards (a transition-based reveal would impose its own duration on hover).
 export const REVEAL_JS = `(() => {
-  var els = document.querySelectorAll("[data-reveal]");
-  if (!("IntersectionObserver" in window)) { els.forEach(function (el) { el.classList.add("in"); }); return; }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      var el = entry.target, group = el.closest("[data-reveal-group]");
-      var index = group ? Array.prototype.indexOf.call(group.querySelectorAll("[data-reveal]"), el) : 0;
-      el.style.setProperty("--rd", Math.min(index, 6) * 70 + "ms");
-      el.classList.add("in");
-      io.unobserve(el);
+  var root = document.documentElement;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.querySelectorAll("[data-stagger]").forEach(function (group) {
+    var kids = group.querySelectorAll(":scope > .reveal");
+    Array.prototype.forEach.call(kids, function (el, i) {
+      el.style.setProperty("--d", (i * 0.1).toFixed(2) + "s");
     });
-  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.12 });
+  });
+  requestAnimationFrame(function () { root.classList.add("hero-go"); });
+  var els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window) || reduce) {
+    els.forEach(function (el) { el.classList.add("in"); }); return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
   els.forEach(function (el) { io.observe(el); });
 })();`;
