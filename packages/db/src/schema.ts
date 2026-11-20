@@ -3,6 +3,7 @@
 // billing fields live directly on user.
 import { relations } from "drizzle-orm";
 import {
+  bigserial,
   boolean,
   index,
   integer,
@@ -12,6 +13,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("user", {
@@ -188,6 +190,22 @@ export const webhookEvents = pgTable("webhook_event", {
   deadLetter: boolean("dead_letter").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Append-only request log for the public API surface (/api/* and /mcp), read by the
+// Grafana dashboard. Metadata only: never the query string (signed URLs/tokens live
+// there), never headers, IPs or bodies.
+export const apiRequests = pgTable(
+  "api_requests",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    ts: timestamp("ts", { withTimezone: true }).notNull().defaultNow(),
+    method: varchar("method", { length: 8 }).notNull(),
+    path: text("path").notNull(),
+    status: integer("status").notNull(),
+    durationMs: integer("duration_ms").notNull(),
+  },
+  (t) => [index("api_requests_ts_idx").on(t.ts)],
+);
 
 // Better Auth relations (drizzle adapter expects these to exist for relations queries; core uses plain selects).
 export const usersRelations = relations(users, ({ many }) => ({

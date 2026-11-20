@@ -15,6 +15,13 @@
       "when": 1794709570997,
       "tag": "0001_strong_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795193846719,
+      "tag": "0002_nosy_blockbuster",
+      "breakpoints": true
     }
   ]
 }
