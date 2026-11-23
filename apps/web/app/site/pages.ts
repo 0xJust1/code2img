@@ -565,6 +565,22 @@ function readingMinutes(file: string): number {
   return Math.max(1, Math.round(words / 220));
 }
 
+/** Every /code-screenshot/<lang> guide as a pill list. The sitemap alone leaves these pages
+ *  orphaned: a crawler only follows <a> tags, so each one needs a real inbound link (SEO-004). */
+export function languageGuideLinks(): string {
+  return `<ul class="langs">${LANGUAGES.map(
+    (l) => `<li><a href="/code-screenshot/${l.slug}">${l.name} code screenshot</a></li>`,
+  ).join("")}</ul>`;
+}
+
+/** The /vs/* comparisons, minus the one being read: a comparison page links its siblings, never
+ *  itself (SEO-004 cross-linking). */
+export function comparisonLinks(skip?: string): string {
+  return `<ul class="langs">${VS.filter((v) => v.path !== skip)
+    .map((v) => `<li><a href="${v.path}">Code2Img vs ${v.tool}</a></li>`)
+    .join("")}</ul>`;
+}
+
 export function languagePage(slug: string): string | null {
   const entry = LANGUAGES.find((l) => l.slug === slug);
   if (!entry) return null;
@@ -607,6 +623,10 @@ export function languagePage(slug: string): string | null {
 <ul class="langs">${others
     .map((l) => `<li><a href="/code-screenshot/${l.slug}">${l.name}</a></li>`)
     .join("")}</ul>
+</div></section>
+<section class="mk-sec"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>How Code2Img compares</h2><p>Feature by feature, against the other code screenshot tools.</p></div>
+${comparisonLinks()}
 </div></section>`;
   return doc(meta, `${nav("en", "")}${body}${footer("en")}`);
 }
@@ -618,6 +638,8 @@ export interface Comparison {
   description: string;
   file: string;
   path: string;
+  /** the competitor's product name, for anchors and cross-links ("ray.so", "Carbon") */
+  tool: string;
 }
 
 export const VS: Comparison[] = [
@@ -629,6 +651,7 @@ export const VS: Comparison[] = [
       "Both turn a snippet into a picture. ray.so is a fast, beautiful one-off export; Code2Img adds the parts you need when the image has to come from a script, an API or an agent.",
     file: "vs/ray-so",
     path: "/vs/ray-so",
+    tool: "ray.so",
   },
   {
     slug: "carbon",
@@ -638,6 +661,7 @@ export const VS: Comparison[] = [
       "Carbon made the code screenshot a genre. Code2Img is that idea with an API, share pages, an MCP server and exports up to 4× built in.",
     file: "vs/carbon",
     path: "/vs/carbon",
+    tool: "Carbon",
   },
   {
     slug: "snappify",
@@ -647,6 +671,7 @@ export const VS: Comparison[] = [
       "Snappify builds presentations and animated walkthroughs around code. Code2Img stays narrower: one snippet, one image, from the editor, the API or an agent.",
     file: "vs/snappify",
     path: "/vs/snappify",
+    tool: "Snappify",
   },
 ];
 
@@ -674,6 +699,12 @@ export function comparisonPage(slug: string): string | null {
 <h1 class="hero-in" style="--hd:.15s">${c.h1}</h1><p class="mk-lead hero-in" style="--hd:.3s;max-width:60ch">${c.description}</p>
 </div></section>
 <section class="mk-sec" style="padding-top:0"><div class="mk-wrap prose">${content(c.file)}</div></section>
+<section class="mk-sec"><div class="mk-wrap">
+<div class="sect-head reveal"><h2>Compare the other tools</h2><p>The same comparison, for the editor you might be switching from.</p></div>
+${comparisonLinks(c.path)}
+<div class="sect-head reveal" style="margin-top:var(--s6)"><h2>Code screenshots by language</h2><p>Theming and settings that read well, one guide per language.</p></div>
+${languageGuideLinks()}
+</div></section>
 <section class="mk-sec mk-final"><div class="mk-wrap"><div class="final-inner reveal">
 <h2>Try it on a snippet you have open.</h2>
 <p class="tight">The editor needs no account, and the API answers on a free key.</p>

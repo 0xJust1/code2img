@@ -15,11 +15,18 @@
 </p>
 
 <p align="center">
-  <a href="https://code2img.app">Editor</a> ·
-  <a href="https://code2img.app/docs">API docs</a> ·
-  <a href="https://code2img.app/mcp">MCP setup</a> ·
+  <a href="https://code2img.app">Online code screenshot editor</a> ·
+  <a href="https://code2img.app/docs">Code to image API</a> ·
+  <a href="https://code2img.app/mcp">MCP server for code screenshots</a> ·
   <a href="https://code2img.app/pricing">Pricing</a> ·
   <a href="https://code2img.app/llms.txt">llms.txt</a>
+</p>
+
+<p align="center">
+  Code2Img is an <a href="https://code2img.app">online code screenshot editor</a>:
+  paste a snippet, pick a theme, export a PNG. The same card is available from a
+  <a href="https://code2img.app/docs">code to image API</a> and from an
+  <a href="https://code2img.app/mcp">MCP server</a>, so an agent or a CI job can render it too.
 </p>
 
 <p align="center">
@@ -28,7 +35,7 @@
 
 ## Quickstart (editor)
 
-1. Open **https://code2img.app**.
+1. Open the [online code screenshot editor](https://code2img.app).
 2. Paste code, pick a language, theme and font.
 3. Export PNG, JPG or PDF. Free renders carry a small watermark; Pro removes it.
 
@@ -122,4 +129,5 @@ pnpm typecheck && pnpm lint
 
 ## License
 
-MIT. Inspired by ray.so (MIT © Raycast Technologies); this is a reimplementation with no ray.so assets or branding.
+MIT — see [LICENSE](LICENSE). Inspired by ray.so (MIT © Raycast Technologies); this is a
+reimplementation with no ray.so assets or branding.

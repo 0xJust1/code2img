@@ -856,7 +856,8 @@
 }
 .mk .mk-foot .mk-wrap {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  /* wordmark + 4 nav columns: product, developers, comparisons, legal (SEO-004) */
+  grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
   gap: 40px;
 }
 .mk .mk-foot .cols {

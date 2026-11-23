@@ -11,7 +11,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl();
   const fr = (path: string) => `${base}${path === "/" ? "/fr" : `/fr${path}`}`;
   const en = (path: string) => `${base}${path === "/" ? "/" : path}`;
-  const languages = (path: string) => ({ languages: { en: en(path), fr: fr(path) } });
+  // x-default is the fallback for every locale we do not translate (SEO-003): crawlers and
+  // Google's language matching use it when no hreflang matches the visitor. The marketing pages
+  // already declare it (see site/shell.ts doc()); the sitemap has to agree with them.
+  const languages = (path: string) => ({ languages: { en: en(path), fr: fr(path), "x-default": en(path) } });
 
   /** Both language versions, each with its own <loc> plus the reciprocal hreflang links. */
   const bilingual = (path: string, priority: number, changeFrequency: "weekly" | "monthly") => [

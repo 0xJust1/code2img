@@ -92,6 +92,7 @@ export function footer(lang: Lang): string {
   return `<footer class="mk-foot"><div class="mk-wrap">${wordmark(lang)}<div class="cols">
 <nav aria-label="${t.product}"><a href="/editor">${t.editor}</a><a href="${prefix}/pricing">${t.pricing}</a><a href="/dashboard">${t.dashboard}</a><a href="/blog">${t.blog}</a><a href="/changelog">${t.changelog}</a></nav>
 <nav aria-label="${t.developers}"><a href="/docs">${t.apiRef}</a><a href="/mcp">MCP server</a><a href="/api/v1/openapi.json">OpenAPI spec</a><a href="/llms.txt">llms.txt</a><a href="${GITHUB_URL}" rel="noopener" target="_blank">GitHub</a></nav>
+<nav aria-label="${t.compare}"><a href="/vs/ray-so">Code2Img vs ray.so</a><a href="/vs/carbon">Code2Img vs Carbon</a><a href="/vs/snappify">Code2Img vs Snappify</a></nav>
 <nav aria-label="${t.legalHeading}"><a href="/legal/terms">${t.terms}</a><a href="/legal/privacy">${t.privacy}</a><a href="${prefix}/legal/mentions">${t.mentions}</a><a href="${prefix}/contact">${t.contact}</a></nav>
 </div><p class="legal"><span>© ${new Date().getFullYear()} ${APP_NAME}.</span><span>${t.madeInFrance}</span><span>${t.independent}</span><span class="icons"><a class="icon" href="${GITHUB_URL}" rel="noopener" target="_blank" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07 1.87 3.75 3.65 3.95-.29.25-.54.73-.54 1.48 0 1.07.01 1.93.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a><a class="icon" href="https://x.com/0xJust1" rel="noopener" target="_blank" aria-label="X (Twitter)"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></span></p></div></footer>`;
 }
@@ -110,6 +111,7 @@ interface NavLabels {
   apiRef: string;
   developers: string;
   product: string;
+  compare: string;
   legalHeading: string;
   terms: string;
   privacy: string;
@@ -134,6 +136,7 @@ const NAV: Record<Lang, NavLabels> = {
     apiRef: "API reference",
     developers: "Developers",
     product: "Product",
+    compare: "Comparisons",
     legalHeading: "Contact and legal",
     terms: "Terms",
     privacy: "Privacy",
@@ -156,6 +159,7 @@ const NAV: Record<Lang, NavLabels> = {
     apiRef: "Référence API",
     developers: "Développeurs",
     product: "Produit",
+    compare: "Comparatifs",
     legalHeading: "Contact et mentions",
     terms: "Conditions",
     privacy: "Confidentialité",
@@ -217,6 +221,8 @@ ${meta.noindex ? '<meta name="robots" content="noindex,follow">' : '<meta name="
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(meta.title)}">
+<meta name="twitter:description" content="${esc(meta.description)}">
 <meta name="twitter:image" content="${og.startsWith("http") ? og : BASE + og}">
 <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 <link rel="icon" href="/brand/favicon-16.png?v=2" sizes="16x16" type="image/png">
