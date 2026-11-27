@@ -74,9 +74,9 @@ function worksBand(): string {
 
 const HOME = {
   en: {
-    title: "Code to image — paste a snippet, export a PNG | Code2Img",
+    title: "Code to image: share code that looks sharp | Code2Img",
     description:
-      "Code to image in the browser: paste a snippet, pick a theme, export PNG, JPG or PDF at up to 4×, or render it from the REST API or an MCP server.",
+      "Paste your code, pick a theme, and share an image that stays readable on slides and social feeds. Free with no sign-up, plus a REST API and MCP server.",
     h1: "Code to image.",
     lead: "Paste a snippet, choose a theme, export PNG, JPG or PDF. No account required.",
     aud: ["From a script: one POST returns the PNG.", "From an agent: one MCP tool call renders it."],
