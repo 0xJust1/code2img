@@ -21,6 +21,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [canonicalHostRedirect];
   },
+  // HSTS on every route (audit `hsts_missing`). `preload` is deliberately omitted: joining the
+  // browser preload list is a hard-to-reverse commitment and is only enabled on an explicit go.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [{ key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" }],
+      },
+    ];
+  },
   async rewrites() {
     // /api/render is a route handler now (auth + entitlements live there).
     return [{ source: "/api/fonts/:file", destination: `${renderUrl}/fonts/:file` }];

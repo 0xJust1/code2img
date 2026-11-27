@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Editor from "./editor";
+import { siteUrl } from "@/lib/share";
 import "../app.css";
 
 // /editor is a public page in the sitemap: it needs its own title, description and canonical
@@ -25,6 +26,27 @@ export const metadata: Metadata = {
   },
 };
 
+// Structured data (audit `structured_data_missing`): /editor is the WebApplication the site offers.
+const EDITOR_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Code2Img editor",
+  url: `${siteUrl()}/editor`,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Web",
+  description:
+    "Paste a code snippet, pick from 18 syntax themes and 7 code fonts, customize the background, then export a 2× or 4× PNG, JPG or PDF code image.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR", name: "Free" },
+};
+
 export default function Page() {
-  return <Editor />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(EDITOR_JSON_LD) }}
+      />
+      <Editor />
+    </>
+  );
 }

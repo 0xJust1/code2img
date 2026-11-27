@@ -11,14 +11,14 @@ export async function GET() {
 
 ## MCP server (recommended for agents)
 
-- Remote, Streamable HTTP: ${site}/mcp — auth: \`Authorization: Bearer <api key>\`
+- Remote, Streamable HTTP: ${site}/mcp — auth: \`Authorization: Bearer <API_KEY>\`
 - stdio package: \`npx -y code2img-mcp\` (or \`npm i -g code2img-mcp\`) with \`CODE2IMG_API_KEY\` in the environment — the tarball at ${site}/downloads/code2img-mcp.tgz remains available as a fallback
 - Setup snippets per client: ${site}/mcp
 - Tools: render_code_image, list_themes, list_languages, list_backgrounds, create_share_link, get_usage, get_share_urls
 
 ## REST API
 
-- Base: ${site}/api/v1 — auth: \`Authorization: Bearer <api key>\` (create keys at ${site}/dashboard)
+- Base: ${site}/api/v1 — auth: \`Authorization: Bearer <API_KEY>\` (create keys at ${site}/dashboard)
 - OpenAPI 3.1: ${site}/api/v1/openapi.json — human docs: ${site}/docs
 - Render: POST /api/v1/images { code, language, theme, font, title } → image bytes, or \`response_type:"url"\` → { id, url, expires_at }
 - Share page: POST /api/v1/share { code, expiry: "1d"|"7d"|"30d"|"never" } → { slug, url, expires_at }

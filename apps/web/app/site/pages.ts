@@ -777,7 +777,7 @@ export function contactPage(lang: Lang): string {
   const t =
     lang === "fr"
       ? {
-          title: "Contact — Code2Img",
+          title: "Contactez-nous — Code2Img",
           h1: "Contact.",
           lead: "Une question, un bug, un partenariat ? Remplissez le formulaire ci-dessous — réponse en principe sous 48 h ouvrées.",
           support: "Support technique",
@@ -820,6 +820,16 @@ export function contactPage(lang: Lang): string {
     path: `${prefix}/contact`,
     lang,
     alt: lang === "fr" ? "/contact" : "/fr/contact",
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        name: t.title,
+        description: t.lead,
+        url: `${BASE}${prefix}/contact`,
+        inLanguage: lang,
+      },
+    ],
   };
   const body = `<section class="mk-hero"><div class="mk-wrap">
 <h1 class="hero-in" style="--hd:.15s">${t.h1}</h1>
